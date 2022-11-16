@@ -63,8 +63,8 @@ Table of Contents
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
      1.1.  Conventions used in this document . . . . . . . . . . . .   3
    2.  Extension elements  . . . . . . . . . . . . . . . . . . . . .   3
-   3.  EPP command mapping . . . . . . . . . . . . . . . . . . . . .   3
-     3.1.  EPP query commands  . . . . . . . . . . . . . . . . . . .   3
+   3.  EPP command mapping . . . . . . . . . . . . . . . . . . . . .   4
+     3.1.  EPP query commands  . . . . . . . . . . . . . . . . . . .   4
        3.1.1.  EPP <info> command  . . . . . . . . . . . . . . . . .   4
      3.2.  EPP transform commands  . . . . . . . . . . . . . . . . .   6
        3.2.1.  EPP <create> command  . . . . . . . . . . . . . . . .   6
@@ -78,15 +78,15 @@ Table of Contents
    6.  Operational considerations  . . . . . . . . . . . . . . . . .  11
      6.1.  Operational impact of TTL values  . . . . . . . . . . . .  11
      6.2.  When the TTL should be changed  . . . . . . . . . . . . .  12
-   7.  Security considerations . . . . . . . . . . . . . . . . . . .  12
-   8.  IANA considerations . . . . . . . . . . . . . . . . . . . . .  12
-     8.1.  XML namespace . . . . . . . . . . . . . . . . . . . . . .  12
+   7.  Security considerations . . . . . . . . . . . . . . . . . . .  13
+   8.  IANA considerations . . . . . . . . . . . . . . . . . . . . .  13
+     8.1.  XML namespace . . . . . . . . . . . . . . . . . . . . . .  13
      8.2.  EPP extension registry  . . . . . . . . . . . . . . . . .  13
-   9.  Formal specification  . . . . . . . . . . . . . . . . . . . .  13
-   10. References  . . . . . . . . . . . . . . . . . . . . . . . . .  14
-     10.1.  Normative references . . . . . . . . . . . . . . . . . .  14
-     10.2.  Informative references . . . . . . . . . . . . . . . . .  15
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  15
+   9.  Formal specification  . . . . . . . . . . . . . . . . . . . .  14
+   10. References  . . . . . . . . . . . . . . . . . . . . . . . . .  15
+     10.1.  Normative references . . . . . . . . . . . . . . . . . .  15
+     10.2.  Informative references . . . . . . . . . . . . . . . . .  16
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  16
 
 1.  Introduction
 
@@ -95,15 +95,15 @@ Table of Contents
    registered within a zone (such as a top-level domain).  These records
    include, at minimum, one or more NS records, but may also include A
    and/or AAAA glue records, DS records, and DNAME records for IDN
-   variants.
+   variants ([RFC6927]).
 
-   Typically, the Time-To-Live (TTL) of these records is determined by
-   the registry operator.  However, in some circumstances it may be
-   desirable to allow the sponsoring client of a domain name to change
-   the TTL used for a that domain: for example, to reduce the amount of
-   time required to complete a change of DNS servers or DNSSEC
-   deployment of key rollover, or to allow for rollback of such changes.
-
+   Typically, the Time-To-Live (TTL, see Section 5 of [RFC8499]) of
+   these records is determined by the registry operator.  However, in
+   some circumstances it may be] desirable to allow the sponsoring
+   client of a domain name to change the TTL used for a that domain: for
+   example, to reduce the amount of time required to complete a change
+   of DNS servers or DNSSEC deployment of key rollover, or to allow for
+   fast rollback of such changes.
 
 
 
@@ -142,26 +142,26 @@ Internet-Draft             TTL mapping for EPP             November 2022
    framework and to identify schemas required for XML instance parsing
    and validation.  These namespaces and schema definitions are used to
    identify both the base protocol schema and the schemas for managed
-   objects.  The XML namespace prefixes used in examples (such as the
-   string ttl in xmlns:ttl) are solely for illustrative purposes.  A
-   conforming implementation MUST NOT require the use of these or any
-   other specific namespace prefixes.
+   objects.
+
+   The XML namespace prefixes used in examples (such as the string ttl
+   in xmlns:ttl) are solely for illustrative purposes.  A conforming
+   implementation MUST NOT require the use of these or any other
+   specific namespace prefixes.
 
 2.  Extension elements
 
-   This specification defines a single new element, <ttl:secs>, which
-   contains a 32-bit unsigned integer indicating the TTL (expressed in
-   seconds) which will be applied to the delegation records for the
-   associated domain name or host object.
+   This specification defines a two new elements that are included in
+   <info>, <create> and <update> commands:
 
-   Example:
+   *  <ttl:secs>, which contains a 32-bit unsigned integer indicating
+      the TTL (expressed in seconds) which will be applied to the
+      delegation records for the associated domain name or host object;
+      and
 
-   <ttl xmlns="urn:ietf:params:xml:ns:ttl-1.0">3600</ttl>
-
-3.  EPP command mapping
-
-3.1.  EPP query commands
-
+   *  <ttl:until>, which contains a date and time after which a TTL
+      (specified using the <ttl:secs> element) should revert to the
+      server's default value.
 
 
 
@@ -170,45 +170,45 @@ Brown                      Expires 20 May 2023                  [Page 3]
 Internet-Draft             TTL mapping for EPP             November 2022
 
 
+   Examples:
+
+   <secs xmlns="urn:ietf:params:xml:ns:ttl-1.0">3600</secs>
+
+<until xmlns="urn:ietf:params:xml:ns:ttl-1.0">2022-12-01T08:00:00.0Z</until>
+
+   The <ttl:until> element is OPTIONAL in <create>, <update> and <info>
+   commands.  EPP servers which do not support this element MUST reject
+   commands which contain it with a 2012 "Unimplemented option"
+   response.
+
+   Conversely, EPP servers whose policies require the use of the
+   <ttl:until> element MUST reject commands which do not contain it with
+   a 2003 "Required parameter missing" response.
+
+3.  EPP command mapping
+
+3.1.  EPP query commands
+
 3.1.1.  EPP <info> command
 
    This extension defines additional elements for EPP <info> responses
    for domain and host objects.
 
    The <info> response MAY contain an <extension> element, which MAY
-   contain a <ttl:infData> element.  This element contains a single
-   <ttl:secs> element.
+   contain a <ttl:infData> element, which contains the following child
+   elements:
+
+   *  A <ttl:secs> element showing the current TTL for the object; and
+
+   *  An OPTIONAL <ttl:until> element containing the date and time after
+      which the TTL will revert to the server's default value.
+
+   The <ttl:until> MUST NOT appear in <info> responses if: (1) the
+   server does not support this element, (2) the object already has the
+   server's default TTL value, or (3) the server does not implement
+   automatic reversion of custom TTL values.
 
    Example domain <info> response:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -261,6 +261,7 @@ Internet-Draft             TTL mapping for EPP             November 2022
    S:       <ttl:infData
    S:         xmlns:ttl="urn:ietf:params:xml:ns:ttl-1.0">
    S:         <ttl:secs>3600</ttl:secs>
+   S:         <ttl:until>2022-12-01T08:30:00.0Z</ttl:until>
    S:       </ttl:infData>
    S:     </extension>
    S:     <trID>
@@ -271,7 +272,6 @@ Internet-Draft             TTL mapping for EPP             November 2022
    S: </epp>
 
    Example host <info> response:
-
 
 
 
@@ -310,6 +310,7 @@ Internet-Draft             TTL mapping for EPP             November 2022
    S:        <ttl:infData
    S:          xmlns:ttl="urn:ietf:params:xml:ns:ttl-1.0">
    S:          <ttl:secs>3600</ttl:secs>
+   S:         <ttl:until>2022-12-01T08:30:00.0Z</ttl:until>
    S:        </ttl:infData>
    S:      </extension>
    S:     <trID>
@@ -327,9 +328,8 @@ Internet-Draft             TTL mapping for EPP             November 2022
    for domain and host objects.
 
    The <create> command MAY contain an <extension> element which MAY
-   contain a <ttl:create> element.  This element contains a single
-   <ttl:secs> element.
-
+   contain a <ttl:create> element, which contains the following child
+   elements:
 
 
 
@@ -337,6 +337,11 @@ Brown                      Expires 20 May 2023                  [Page 6]
 
 Internet-Draft             TTL mapping for EPP             November 2022
 
+
+   *  A <ttl:secs> element showing the desired TTL for the object; and
+
+   *  An OPTIONAL <ttl:until> element containing the date and time after
+      which the TTL should revert to the server's default value.
 
    Example domain <create> command:
 
@@ -364,6 +369,7 @@ Internet-Draft             TTL mapping for EPP             November 2022
    C:       <ttl:create
    C:         xmlns:ttl="urn:ietf:params:xml:ns:ttl-1.0">
    C:         <ttl:secs>3600</ttl:secs>
+   S:         <ttl:until>2022-12-01T08:30:00.0Z</ttl:until>
    C:       </ttl:create>
    C:     </extension>
    C:     <clTRID>ABC-12345</clTRID>
@@ -371,12 +377,6 @@ Internet-Draft             TTL mapping for EPP             November 2022
    C: </epp>
 
    Example host <create> command:
-
-
-
-
-
-
 
 
 
@@ -410,11 +410,16 @@ Internet-Draft             TTL mapping for EPP             November 2022
    C:       <ttl:create
    C:         xmlns:ttl="urn:ietf:params:xml:ns:ttl-1.0">
    C:         <ttl:secs>3600</ttl:secs>
+   S:         <ttl:until>2022-12-01T08:30:00.0Z</ttl:until>
    C:       </ttl:create>
    C:     </extension>
    C:     <clTRID>ABC-12345</clTRID>
    C:   </command>
    C: </epp>
+
+   EPP servers which do not support the <ttl:until> element MUST reject
+   commands which contain it with a 2012 "Unimplemented option"
+   response.
 
 3.2.2.  EPP <update> command
 
@@ -422,20 +427,15 @@ Internet-Draft             TTL mapping for EPP             November 2022
    for domain and host objects.
 
    The <update> command MAY contain an <extension> element which MAY
-   contain a <ttl:update> element.  This element contains a single
-   <ttl:secs> element.
+   contain a <ttl:create> element, which contains the following child
+   elements:
+
+   *  A <ttl:secs> element showing the desired TTL for the object; and
+
+   *  An OPTIONAL <ttl:until> element containing the date and time after
+      which the TTL should revert to the server's default value.
 
    Example domain <update> command:
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -464,6 +464,7 @@ Internet-Draft             TTL mapping for EPP             November 2022
    C:        <ttl:update>
    C:          xmlns:ttl="urn:ietf:params:xml:ns:ttl-1.0">
    C:          <ttl:secs>3600</ttl:secs>
+   S:         <ttl:until>2022-12-01T08:30:00.0Z</ttl:until>
    C:        </ttl:update>
    C:      </extension>
    C:     <clTRID>ABC-12345</clTRID>
@@ -471,7 +472,6 @@ Internet-Draft             TTL mapping for EPP             November 2022
    C: </epp>
 
    Example host <update> command:
-
 
 
 
@@ -529,11 +529,16 @@ Internet-Draft             TTL mapping for EPP             November 2022
    C:        <ttl:update>
    C:          xmlns:ttl="urn:ietf:params:xml:ns:ttl-1.0">
    C:          <ttl:secs>3600</ttl:secs>
+   S:         <ttl:until>2022-12-01T08:30:00.0Z</ttl:until>
    C:        </ttl:update>
    C:      </extension>
    C:     <clTRID>ABC-12345</clTRID>
    C:   </command>
    C: </epp>
+
+   EPP servers which do not support the <ttl:until> element MUST reject
+   commands which contain it with a 2012 "Unimplemented option"
+   response.
 
 4.  Server processing of TTL values
 
@@ -547,11 +552,6 @@ Internet-Draft             TTL mapping for EPP             November 2022
    EPP servers which implement this extension SHOULD use the values
    provided by EPP clients for the TTL values of NS, A, AAAA and DS
    records published in the DNS for the corresponding delegation.
-
-
-
-
-
 
 
 
@@ -589,7 +589,7 @@ Internet-Draft             TTL mapping for EPP             November 2022
    issues, make changes to TTL values out-of-band (that is, not in
    response to an <update> command received from the sponsoring client).
 
-   Additionally, server operators may implement an automatic reset of
+   Additionally, server operators MAY implement an automatic reset of
    TTL values, so that they may be changed for a finite period before
    and after a planned change, and then revert to a standard value.
 
@@ -625,11 +625,54 @@ Internet-Draft             TTL mapping for EPP             November 2022
    prevent scenarios where an excessively high or low TTL causes
    operational issues on either side of the zone cut.
 
+   Similarly, EPP servers which support the <ttl:until> element MUST
+   reject commands (with a 2004 "parameter value range error" response)
+   if the specified date and time is in the past, or is otherwise
+   outside a server-defined range of acceptable values.
+
+   EPP servers MAY vary the range of acceptable values for the
+   <ttl:until> element based on the value of the <ttl:secs> element: for
+   example, to allow the setting of a very short TTL for a short period
+   of time, while permitting longer TTLs to be used for longer periods,
+   as the following table illustrates:
+
+                  +=================+==================+
+                  | TTL value range | Maximum duration |
+                  +=================+==================+
+                  |      0-60s      |        -         |
+                  +-----------------+------------------+
+                  |     61-299s     |      3600s       |
+                  +-----------------+------------------+
+                  |    300-1099s    |      43200s      |
+                  +-----------------+------------------+
+                  |    1200-3599s   |      86400s      |
+                  +-----------------+------------------+
+                  |     >= 3600s    |       any        |
+                  +-----------------+------------------+
+
+                      Table 1: Example TTL/Duration
+                               Policy Table
+
+   In the above policy, the default TTL is one hour, and the server will
+   reject any TTL below 60 seconds.  Clients can set TTLs of between one
+   and five minutes for a maximum of one hour, or between five minutes
+   and thirty minutes for up to twelve hours, or between 30 minutes and
+   one hour for up to one day.
+
 6.2.  When the TTL should be changed
 
    A common operational mistake is changing of DNS record TTLs during or
    after the planned change to the records themselves.  This arises due
    to a misunderstanding about how TTLs work.
+
+
+
+
+
+Brown                      Expires 20 May 2023                 [Page 12]
+
+Internet-Draft             TTL mapping for EPP             November 2022
+
 
    Client implementations of this specification SHOULD ensure that the
    user understands that changes to a TTL are only effective in
@@ -667,13 +710,6 @@ Internet-Draft             TTL mapping for EPP             November 2022
 
       *URI:* urn:ietf:params:xml:ns:ttl-1.0
 
-
-
-Brown                      Expires 20 May 2023                 [Page 12]
-
-Internet-Draft             TTL mapping for EPP             November 2022
-
-
       *Registrant Contact:* See the author of this document
 
       *XML:* See the "Formal specification" section of this document
@@ -684,6 +720,15 @@ Internet-Draft             TTL mapping for EPP             November 2022
    the IANA in the Extensions for the "Extensible Provisioning Protocol
    (EPP)" registry described in [RFC7451].  The details of the
    registration are as follows:
+
+
+
+
+
+Brown                      Expires 20 May 2023                 [Page 13]
+
+Internet-Draft             TTL mapping for EPP             November 2022
+
 
       *Name of Extension:* Extensible Provisioning Protocol (EPP)
       Mapping for DNS Time-To-Live (TTL) values
@@ -725,7 +770,18 @@ Internet-Draft             TTL mapping for EPP             November 2022
 
 
 
-Brown                      Expires 20 May 2023                 [Page 13]
+
+
+
+
+
+
+
+
+
+
+
+Brown                      Expires 20 May 2023                 [Page 14]
 
 Internet-Draft             TTL mapping for EPP             November 2022
 
@@ -742,15 +798,16 @@ Internet-Draft             TTL mapping for EPP             November 2022
      </annotation>
 
      <!-- Child elements found in EPP commands -->
-     <element name="create" type="ttl:secs"/>
-     <element name="update" type="ttl:secs"/>
+     <element name="create" type="ttl:ttlType"/>
+     <element name="update" type="ttl:ttlType"/>
 
      <!-- Child elements found in EPP responses -->
-     <element name="infData" type="ttl:secs"/>
+     <element name="infData" type="ttl:ttlType"/>
 
-     <complexType name="secs">
+     <complexType name="ttlType">
        <sequence>
-         <element name="secs" type="ttl:nonNegativeInteger"/>
+       <element name="secs" type="ttl:nonNegativeInteger"/>
+       <element name="until" type="dateTime" minoccurs="0"/>
        </sequence>
      </complexType>
 
@@ -760,7 +817,8 @@ Internet-Draft             TTL mapping for EPP             November 2022
          <maxInclusive value="4294967295"/>
        </restriction>
      </simpleType>
-   </schema>
+
+     </schema>
 
 10.  References
 
@@ -779,9 +837,7 @@ Internet-Draft             TTL mapping for EPP             November 2022
 
 
 
-
-
-Brown                      Expires 20 May 2023                 [Page 14]
+Brown                      Expires 20 May 2023                 [Page 15]
 
 Internet-Draft             TTL mapping for EPP             November 2022
 
@@ -798,6 +854,11 @@ Internet-Draft             TTL mapping for EPP             November 2022
    [RFC7451]  Hollenbeck, S., "Extension Registry for the Extensible
               Provisioning Protocol", RFC 7451, DOI 10.17487/RFC7451,
               February 2015, <https://www.rfc-editor.org/info/rfc7451>.
+
+   [RFC8499]  Hoffman, P., Sullivan, A., Fujiwara, K., and RFC
+              Publisher, "DNS Terminology", BCP 219, RFC 8499,
+              DOI 10.17487/RFC8499, January 2019,
+              <https://www.rfc-editor.org/info/rfc8499>.
 
    [RFC8590]  Gould, J. and K. Feher, "Change Poll Extension for the
               Extensible Provisioning Protocol (EPP)", RFC 8590,
@@ -832,9 +893,4 @@ Author's Address
 
 
 
-
-
-
-
-
-Brown                      Expires 20 May 2023                 [Page 15]
+Brown                      Expires 20 May 2023                 [Page 16]

@@ -6,6 +6,7 @@
 <!ENTITY RFC5732 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5732.xml">
 <!ENTITY RFC6927 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6927.xml">
 <!ENTITY RFC7451 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7451.xml">
+<!ENTITY RFC8499 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8499.xml">
 <!ENTITY RFC8590 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8590.xml">
 ]>
 <?xml-stylesheet type="text/xsl" href="rfc2629.xslt" ?>
@@ -60,15 +61,16 @@
 				records, but may also include <spanx style="verb">A</spanx>
 				and/or <spanx style="verb">AAAA</spanx> glue records, <spanx
 				style="verb">DS</spanx> records, and <spanx
-				style="verb">DNAME</spanx> records for IDN variants.</t>
+				style="verb">DNAME</spanx> records for IDN variants (<xref
+        target="RFC6927"/>).</t>
 
-      <t>Typically, the Time-To-Live (TTL) of these records is
-				determined by the registry operator. However, in some
-				circumstances it may be desirable to allow the sponsoring
-				client of a domain name to change the TTL used for a
-				that domain: for example, to reduce the amount of
-				time required to complete a change of DNS servers or
-				DNSSEC deployment of key rollover, or to allow for
+      <t>Typically, the Time-To-Live (TTL, see Section 5 of <xref
+        target="RFC8499" />) of these records is determined by the
+        registry operator. However, in some circumstances it may be]
+        desirable to allow the sponsoring	client of a domain name to
+        change the TTL used for a that domain: for example, to reduce
+        the amount of	time required to complete a change of DNS servers
+        or DNSSEC deployment of key rollover, or to allow for fast
         rollback of such changes.</t>
 
       <t>This document describes an EPP extension to the domain
@@ -96,35 +98,57 @@
 
         <t>XML is case sensitive. Unless stated otherwise, XML
 					specifications and examples provided in this document
-					<bcp14>MUST</bcp14> be interpreted in the character case presented
-					in order to develop a conforming implementation.</t>
+					<bcp14>MUST</bcp14> be interpreted in the character case
+          presented in order to develop a conforming implementation.</t>
 
         <t>EPP uses XML namespaces to provide an extensible
 					object management framework and to identify schemas
 					required for XML instance parsing and validation.
 					These namespaces and schema definitions are used to
 					identify both the base protocol schema and the
-					schemas for managed objects. The XML namespace
-					prefixes used in examples (such as the string
-					<spanx style="verb">ttl</spanx> in <spanx
+					schemas for managed objects.</t>
+
+        <t>The XML namespace prefixes used in examples (such as the
+          string <spanx style="verb">ttl</spanx> in <spanx
 					style="verb">xmlns:ttl</spanx>) are solely for
 					illustrative purposes. A conforming implementation
-					<bcp14>MUST NOT</bcp14> require the use of these or any other
-					specific namespace prefixes.</t>
+					<bcp14>MUST NOT</bcp14> require the use of these or any
+          other specific namespace prefixes.</t>
       </section>
     </section>
 
     <section title="Extension elements">
-      <t>This specification defines a single new element,
-				<spanx style="verb">&lt;ttl:secs&gt;</spanx>, which contains
-				a 32-bit unsigned integer indicating the TTL (expressed in
-				seconds) which will be applied to the delegation records
-				for the associated domain name or host object.</t>
+      <t>This specification defines a two new elements that are
+        included in <spanx style="verb">&lt;info&gt;</spanx>,
+        <spanx style="verb">&lt;create&gt;</spanx> and
+        <spanx style="verb">&lt;update&gt;</spanx> commands:</t>
+        <t><list style="symbols">
+  				<t><spanx style="verb">&lt;ttl:secs&gt;</spanx>, which contains
+  				a 32-bit unsigned integer indicating the TTL (expressed in
+  				seconds) which will be applied to the delegation records
+  				for the associated domain name or host object; and</t>
+  				<t><spanx style="verb">&lt;ttl:until&gt;</spanx>, which contains
+          a date and time after which a TTL (specified using the
+          <spanx style="verb">&lt;ttl:secs&gt;</spanx> element) should
+          revert to the server's default value.</t>
+        </list></t>
 
-      <t>Example:</t>
+      <t>Examples:</t>
       <figure>
-        <artwork>&lt;ttl xmlns="urn:ietf:params:xml:ns:ttl-1.0"&gt;3600&lt;/ttl&gt;</artwork>
+        <artwork>&lt;secs xmlns="urn:ietf:params:xml:ns:ttl-1.0"&gt;3600&lt;/secs&gt;</artwork>
+
+        <artwork>&lt;until xmlns="urn:ietf:params:xml:ns:ttl-1.0"&gt;2022-12-01T08:00:00.0Z&lt;/until&gt;</artwork>
       </figure>
+
+      <t>The <spanx style="verb">&lt;ttl:until&gt;</spanx> element is <bcp14>OPTIONAL</bcp14>
+        in <spanx style="verb">&lt;create&gt;</spanx>, <spanx style="verb">&lt;update&gt;</spanx>
+        and <spanx style="verb">&lt;info&gt;</spanx> commands. EPP servers which do not support this
+        element <bcp14>MUST</bcp14> reject commands which contain it with a 2012 "Unimplemented
+        option" response.</t>
+
+      <t>Conversely, EPP servers whose policies require the use of the <spanx style="verb">&lt;ttl:until&gt;</spanx>
+        element <bcp14>MUST</bcp14> reject commands which do not contain it with a 2003 "Required parameter missing"
+        response.</t>
     </section>
 
     <section title="EPP command mapping">
@@ -134,11 +158,24 @@
 						<spanx style="verb">&lt;info&gt;</spanx> responses for
 						domain and host objects.</t>
 
-          <t>The <spanx style="verb">&lt;info&gt;</spanx> response MAY
+          <t>The <spanx style="verb">&lt;info&gt;</spanx> response <bcp14>MAY</bcp14>
 						contain an <spanx style="verb">&lt;extension&gt;</spanx> element,
-						which MAY contain a <spanx style="verb">&lt;ttl:infData&gt;</spanx>
-						element. This element contains a single <spanx
-						style="verb">&lt;ttl:secs&gt;</spanx> element.</t>
+						which <bcp14>MAY</bcp14> contain a <spanx style="verb">&lt;ttl:infData&gt;</spanx>
+						element, which contains the following child elements:</t>
+
+          <t><list style="symbols">
+            <t>A <spanx style="verb">&lt;ttl:secs&gt;</spanx> element showing the
+              current TTL for the object; and</t>
+            <t>An <bcp14>OPTIONAL</bcp14> <spanx style="verb">&lt;ttl:until&gt;</spanx>
+              element containing the date and time after which the TTL will revert
+              to the server's default value.</t>
+          </list></t>
+
+          <t>The <spanx style="verb">&lt;ttl:until&gt;</spanx> <bcp14>MUST NOT</bcp14>
+            appear in <spanx style="verb">&lt;info&gt;</spanx> responses if: (1) the
+            server does not support this element, (2) the object already has the
+            server's default TTL value, or (3) the server does not implement automatic
+            reversion of custom TTL values.</t>
 
           <t>Example domain <spanx style="verb">&lt;info&gt;</spanx> response:</t>
           <figure>
@@ -178,6 +215,7 @@ S:     &lt;extension&gt;
 S:       &lt;ttl:infData
 S:         xmlns:ttl="urn:ietf:params:xml:ns:ttl-1.0"&gt;
 S:         &lt;ttl:secs&gt;3600&lt;/ttl:secs&gt;
+S:         &lt;ttl:until&gt;2022-12-01T08:30:00.0Z&lt;/ttl:until&gt;
 S:       &lt;/ttl:infData&gt;
 S:     &lt;/extension&gt;
 S:     &lt;trID&gt;
@@ -218,6 +256,7 @@ S:      &lt;extension&gt;
 S:        &lt;ttl:infData
 S:          xmlns:ttl="urn:ietf:params:xml:ns:ttl-1.0"&gt;
 S:          &lt;ttl:secs&gt;3600&lt;/ttl:secs&gt;
+S:         &lt;ttl:until&gt;2022-12-01T08:30:00.0Z&lt;/ttl:until&gt;
 S:        &lt;/ttl:infData&gt;
 S:      &lt;/extension&gt;
 S:     &lt;trID&gt;
@@ -227,7 +266,6 @@ S:     &lt;/trID&gt;
 S:   &lt;/response&gt;
 S: &lt;/epp&gt;</artwork>
           </figure>
-
         </section>
       </section>
 
@@ -238,10 +276,17 @@ S: &lt;/epp&gt;</artwork>
 						and host objects.</t>
 
           <t>The <spanx style="verb">&lt;create&gt;</spanx> command
-						MAY contain an <spanx style="verb">&lt;extension&gt;</spanx>
-						element which MAY contain a <spanx style="verb">&lt;ttl:create&gt;</spanx>
-						element. This element contains a single
-						<spanx style="verb">&lt;ttl:secs&gt;</spanx> element.</t>
+						<bcp14>MAY</bcp14> contain an <spanx style="verb">&lt;extension&gt;</spanx>
+						element which <bcp14>MAY</bcp14> contain a <spanx style="verb">&lt;ttl:create&gt;</spanx>
+						element, which contains the following child elements:</t>
+
+          <t><list style="symbols">
+            <t>A <spanx style="verb">&lt;ttl:secs&gt;</spanx> element showing the
+              desired TTL for the object; and</t>
+            <t>An <bcp14>OPTIONAL</bcp14> <spanx style="verb">&lt;ttl:until&gt;</spanx>
+              element containing the date and time after which the TTL should revert
+              to the server's default value.</t>
+          </list></t>
 
           <t>Example domain <spanx style="verb">&lt;create&gt;</spanx> command:</t>
           <figure>
@@ -269,6 +314,7 @@ C:     &lt;extension&gt;
 C:       &lt;ttl:create
 C:         xmlns:ttl="urn:ietf:params:xml:ns:ttl-1.0"&gt;
 C:         &lt;ttl:secs&gt;3600&lt;/ttl:secs&gt;
+S:         &lt;ttl:until&gt;2022-12-01T08:30:00.0Z&lt;/ttl:until&gt;
 C:       &lt;/ttl:create&gt;
 C:     &lt;/extension&gt;
 C:     &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
@@ -294,6 +340,7 @@ C:     &lt;extension&gt;
 C:       &lt;ttl:create
 C:         xmlns:ttl="urn:ietf:params:xml:ns:ttl-1.0"&gt;
 C:         &lt;ttl:secs&gt;3600&lt;/ttl:secs&gt;
+S:         &lt;ttl:until&gt;2022-12-01T08:30:00.0Z&lt;/ttl:until&gt;
 C:       &lt;/ttl:create&gt;
 C:     &lt;/extension&gt;
 C:     &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
@@ -301,6 +348,11 @@ C:   &lt;/command&gt;
 C: &lt;/epp&gt;
 </artwork>
           </figure>
+
+          <t>EPP servers which do not support the <spanx style="verb">&lt;ttl:until&gt;</spanx>
+            element <bcp14>MUST</bcp14> reject commands which contain
+            it with a 2012 "Unimplemented option" response.</t>
+
         </section>
 
         <section title="EPP &lt;update&gt; command">
@@ -309,10 +361,17 @@ C: &lt;/epp&gt;
 						and host objects.</t>
 
           <t>The <spanx style="verb">&lt;update&gt;</spanx> command
-						MAY contain an <spanx style="verb">&lt;extension&gt;</spanx>
-						element which MAY contain a <spanx style="verb">&lt;ttl:update&gt;</spanx>
-						element. This element contains a single <spanx
-						style="verb">&lt;ttl:secs&gt;</spanx> element.</t>
+					<bcp14>MAY</bcp14> contain an <spanx style="verb">&lt;extension&gt;</spanx>
+					element which <bcp14>MAY</bcp14> contain a <spanx style="verb">&lt;ttl:create&gt;</spanx>
+					element, which contains the following child elements:</t>
+
+        <t><list style="symbols">
+          <t>A <spanx style="verb">&lt;ttl:secs&gt;</spanx> element showing the
+            desired TTL for the object; and</t>
+          <t>An <bcp14>OPTIONAL</bcp14> <spanx style="verb">&lt;ttl:until&gt;</spanx>
+            element containing the date and time after which the TTL should revert
+            to the server's default value.</t>
+        </list></t>
 
           <t>Example domain <spanx style="verb">&lt;update&gt;</spanx> command:</t>
           <figure>
@@ -331,6 +390,7 @@ C:     &lt;extension&gt;
 C:        &lt;ttl:update&gt;
 C:          xmlns:ttl="urn:ietf:params:xml:ns:ttl-1.0"&gt;
 C:          &lt;ttl:secs&gt;3600&lt;/ttl:secs&gt;
+S:         &lt;ttl:until&gt;2022-12-01T08:30:00.0Z&lt;/ttl:until&gt;
 C:        &lt;/ttl:update&gt;
 C:      &lt;/extension&gt;
 C:     &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
@@ -363,12 +423,18 @@ C:     &lt;extension&gt;
 C:        &lt;ttl:update&gt;
 C:          xmlns:ttl="urn:ietf:params:xml:ns:ttl-1.0"&gt;
 C:          &lt;ttl:secs&gt;3600&lt;/ttl:secs&gt;
+S:         &lt;ttl:until&gt;2022-12-01T08:30:00.0Z&lt;/ttl:until&gt;
 C:        &lt;/ttl:update&gt;
 C:      &lt;/extension&gt;
 C:     &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
 C:   &lt;/command&gt;
 C: &lt;/epp&gt;</artwork>
           </figure>
+
+          <t>EPP servers which do not support the <spanx style="verb">&lt;ttl:until&gt;</spanx>
+            element <bcp14>MUST</bcp14> reject commands which contain
+            it with a 2012 "Unimplemented option" response.</t>
+
         </section>
       </section>
     </section>
@@ -414,12 +480,12 @@ C: &lt;/epp&gt;</artwork>
     </section>
 
     <section title="Out-of-band changes to TTL values">
-      <t>EPP server operators MAY, in order to address operational or security issues,
+      <t>EPP server operators <bcp14>MAY</bcp14>, in order to address operational or security issues,
 				make changes to TTL values out-of-band (that is, not in response to an
 				<spanx style="verb">&lt;update&gt;</spanx> command received from the sponsoring
 				client).</t>
 
-      <t>Additionally, server operators may implement an automatic reset of TTL values,
+      <t>Additionally, server operators <bcp14>MAY</bcp14> implement an automatic reset of TTL values,
 				so that they may be changed for a finite period before and after a planned
 				change, and then revert to a standard value.</t>
 
@@ -443,6 +509,43 @@ C: &lt;/epp&gt;</artwork>
 					format="title"/> (which were chosen to allow any TTL permitted in DNS
 					records), in order to prevent scenarios where an excessively high or low
 					TTL causes operational issues on either side of the zone cut.</t>
+
+        <t>Similarly, EPP servers which support the <spanx style="verb">&lt;ttl:until&gt;</spanx>
+          element <bcp14>MUST</bcp14> reject commands (with a 2004 "parameter value range
+          error" response) if the specified date and time is in the past, or is otherwise
+          outside a server-defined range of acceptable values.</t>
+
+        <t>EPP servers <bcp14>MAY</bcp14> vary the range of acceptable values for the 
+          <spanx style="verb">&lt;ttl:until&gt;</spanx> element based on the value of
+          the <spanx style="verb">&lt;ttl:secs&gt;</spanx> element: for example, to allow
+          the setting of a very short TTL for a short period of time, while permitting
+          longer TTLs to be used for longer periods, as the following table illustrates:</t>
+
+          <texttable title="Example TTL/Duration Policy Table">
+            <ttcol align="center">TTL value range</ttcol>
+            <ttcol align="center">Maximum duration</ttcol>
+
+            <c>0-60s</c>
+            <c>-</c>
+
+            <c>61-299s</c>
+            <c>3600s</c>
+
+            <c>300-1099s</c>
+            <c>43200s</c>
+
+            <c>1200-3599s</c>
+            <c>86400s</c>
+
+            <c>&ge; 3600s</c>
+            <c>any</c>
+          </texttable>
+
+          <t>In the above policy, the default TTL is one hour, and the server will reject any TTL
+            below 60 seconds. Clients can set TTLs of between one and five minutes for a maximum
+            of one hour, or between five minutes and thirty minutes for up to twelve hours, or
+            between 30 minutes and one hour for up to one day.</t>
+
       </section>
 
       <section title="When the TTL should be changed">
@@ -523,15 +626,16 @@ C: &lt;/epp&gt;</artwork>
   &lt;/annotation&gt;
 
   &lt;!-- Child elements found in EPP commands --&gt;
-  &lt;element name="create" type="ttl:secs"/&gt;
-  &lt;element name="update" type="ttl:secs"/&gt;
+  &lt;element name="create" type="ttl:ttlType"/&gt;
+  &lt;element name="update" type="ttl:ttlType"/&gt;
 
   &lt;!-- Child elements found in EPP responses --&gt;
-  &lt;element name="infData" type="ttl:secs"/&gt;
+  &lt;element name="infData" type="ttl:ttlType"/&gt;
 
-  &lt;complexType name="secs"&gt;
+  &lt;complexType name="ttlType"&gt;
     &lt;sequence&gt;
-      &lt;element name="secs" type="ttl:nonNegativeInteger"/&gt;
+    &lt;element name="secs" type="ttl:nonNegativeInteger"/&gt;
+    &lt;element name="until" type="dateTime" minoccurs="0"/&gt;
     &lt;/sequence&gt;
   &lt;/complexType&gt;
 
@@ -541,7 +645,8 @@ C: &lt;/epp&gt;</artwork>
       &lt;maxInclusive value="4294967295"/&gt;
     &lt;/restriction&gt;
   &lt;/simpleType&gt;
-&lt;/schema&gt;</artwork>
+
+  &lt;/schema&gt;</artwork>
       </figure>
     </section>
   </middle>
@@ -553,6 +658,7 @@ C: &lt;/epp&gt;</artwork>
       &RFC5731;
       &RFC5732;
       &RFC7451;      
+      &RFC8499;
       &RFC8590;
     </references>
     <references title="Informative references">

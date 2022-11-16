@@ -1380,14 +1380,13 @@ li > p:last-of-type {
  registered within a zone (such as a top-level domain). These
  records include, at minimum, one or more <code>NS</code>
  records, but may also include <code>A</code>
- and/or <code>AAAA</code> glue records, <code>DS</code> records, and <code>DNAME</code> records for IDN variants.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">Typically, the Time-To-Live (TTL) of these records is
- determined by the registry operator. However, in some
- circumstances it may be desirable to allow the sponsoring
- client of a domain name to change the TTL used for a
- that domain: for example, to reduce the amount of
- time required to complete a change of DNS servers or
- DNSSEC deployment of key rollover, or to allow for
+ and/or <code>AAAA</code> glue records, <code>DS</code> records, and <code>DNAME</code> records for IDN variants (<span>[<a href="#RFC6927" class="xref">RFC6927</a>]</span>).<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">Typically, the Time-To-Live (TTL, see Section 5 of <span>[<a href="#RFC8499" class="xref">RFC8499</a>]</span>) of these records is determined by the
+        registry operator. However, in some circumstances it may be]
+        desirable to allow the sponsoring client of a domain name to
+        change the TTL used for a that domain: for example, to reduce
+        the amount of time required to complete a change of DNS servers
+        or DNSSEC deployment of key rollover, or to allow for fast
         rollback of such changes.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">This document describes an EPP extension to the domain
  name and host object mappings (described in <span>[<a href="#RFC5731" class="xref">RFC5731</a>]</span> and <span>[<a href="#RFC5732" class="xref">RFC5732</a>]</span>,
@@ -1412,34 +1411,58 @@ li > p:last-of-type {
  this document.<a href="#section-1.1-3" class="pilcrow">¶</a></p>
 <p id="section-1.1-4">XML is case sensitive. Unless stated otherwise, XML
  specifications and examples provided in this document
- <span class="bcp14">MUST</span> be interpreted in the character case presented
- in order to develop a conforming implementation.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
+ <span class="bcp14">MUST</span> be interpreted in the character case
+          presented in order to develop a conforming implementation.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
 <p id="section-1.1-5">EPP uses XML namespaces to provide an extensible
  object management framework and to identify schemas
  required for XML instance parsing and validation.
  These namespaces and schema definitions are used to
  identify both the base protocol schema and the
- schemas for managed objects. The XML namespace
- prefixes used in examples (such as the string
- <code>ttl</code> in <code>xmlns:ttl</code>) are solely for
+ schemas for managed objects.<a href="#section-1.1-5" class="pilcrow">¶</a></p>
+<p id="section-1.1-6">The XML namespace prefixes used in examples (such as the
+          string <code>ttl</code> in <code>xmlns:ttl</code>) are solely for
  illustrative purposes. A conforming implementation
- <span class="bcp14">MUST NOT</span> require the use of these or any other
- specific namespace prefixes.<a href="#section-1.1-5" class="pilcrow">¶</a></p>
+ <span class="bcp14">MUST NOT</span> require the use of these or any
+          other specific namespace prefixes.<a href="#section-1.1-6" class="pilcrow">¶</a></p>
 </section>
 </section>
 <section id="section-2">
       <h2 id="name-extension-elements">
 <a href="#section-2" class="section-number selfRef">2. </a><a href="#name-extension-elements" class="section-name selfRef">Extension elements</a>
       </h2>
-<p id="section-2-1">This specification defines a single new element,
- <code>&lt;ttl:secs&gt;</code>, which contains
- a 32-bit unsigned integer indicating the TTL (expressed in
- seconds) which will be applied to the delegation records
- for the associated domain name or host object.<a href="#section-2-1" class="pilcrow">¶</a></p>
-<p id="section-2-2">Example:<a href="#section-2-2" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-2-3">
-<pre>&lt;ttl xmlns="urn:ietf:params:xml:ns:ttl-1.0"&gt;3600&lt;/ttl&gt;</pre><a href="#section-2-3" class="pilcrow">¶</a>
+<p id="section-2-1">This specification defines a two new elements that are
+        included in <code>&lt;info&gt;</code>,
+        <code>&lt;create&gt;</code> and
+        <code>&lt;update&gt;</code> commands:<a href="#section-2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-2-2.1">
+          <code>&lt;ttl:secs&gt;</code>, which contains
+   a 32-bit unsigned integer indicating the TTL (expressed in
+   seconds) which will be applied to the delegation records
+   for the associated domain name or host object; and<a href="#section-2-2.1" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="section-2-2.2">
+          <code>&lt;ttl:until&gt;</code>, which contains
+          a date and time after which a TTL (specified using the
+          <code>&lt;ttl:secs&gt;</code> element) should
+          revert to the server's default value.<a href="#section-2-2.2" class="pilcrow">¶</a>
+</li>
+      </ul>
+<p id="section-2-3">Examples:<a href="#section-2-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-2-4">
+<pre>&lt;secs xmlns="urn:ietf:params:xml:ns:ttl-1.0"&gt;3600&lt;/secs&gt;</pre><a href="#section-2-4" class="pilcrow">¶</a>
 </div>
+<div class="alignLeft art-text artwork" id="section-2-5">
+<pre>&lt;until xmlns="urn:ietf:params:xml:ns:ttl-1.0"&gt;2022-12-01T08:00:00.0Z&lt;/until&gt;</pre><a href="#section-2-5" class="pilcrow">¶</a>
+</div>
+<p id="section-2-6">The <code>&lt;ttl:until&gt;</code> element is <span class="bcp14">OPTIONAL</span>
+        in <code>&lt;create&gt;</code>, <code>&lt;update&gt;</code>
+        and <code>&lt;info&gt;</code> commands. EPP servers which do not support this
+        element <span class="bcp14">MUST</span> reject commands which contain it with a 2012 "Unimplemented
+        option" response.<a href="#section-2-6" class="pilcrow">¶</a></p>
+<p id="section-2-7">Conversely, EPP servers whose policies require the use of the <code>&lt;ttl:until&gt;</code>
+        element <span class="bcp14">MUST</span> reject commands which do not contain it with a 2003 "Required parameter missing"
+        response.<a href="#section-2-7" class="pilcrow">¶</a></p>
 </section>
 <section id="section-3">
       <h2 id="name-epp-command-mapping">
@@ -1456,12 +1479,26 @@ li > p:last-of-type {
 <p id="section-3.1.1-1">This extension defines additional elements for EPP
  <code>&lt;info&gt;</code> responses for
  domain and host objects.<a href="#section-3.1.1-1" class="pilcrow">¶</a></p>
-<p id="section-3.1.1-2">The <code>&lt;info&gt;</code> response MAY
+<p id="section-3.1.1-2">The <code>&lt;info&gt;</code> response <span class="bcp14">MAY</span>
  contain an <code>&lt;extension&gt;</code> element,
- which MAY contain a <code>&lt;ttl:infData&gt;</code>
- element. This element contains a single <code>&lt;ttl:secs&gt;</code> element.<a href="#section-3.1.1-2" class="pilcrow">¶</a></p>
-<p id="section-3.1.1-3">Example domain <code>&lt;info&gt;</code> response:<a href="#section-3.1.1-3" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.1.1-4">
+ which <span class="bcp14">MAY</span> contain a <code>&lt;ttl:infData&gt;</code>
+ element, which contains the following child elements:<a href="#section-3.1.1-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.1.1-3.1">A <code>&lt;ttl:secs&gt;</code> element showing the
+              current TTL for the object; and<a href="#section-3.1.1-3.1" class="pilcrow">¶</a>
+</li>
+            <li class="normal" id="section-3.1.1-3.2">An <span class="bcp14">OPTIONAL</span> <code>&lt;ttl:until&gt;</code>
+              element containing the date and time after which the TTL will revert
+              to the server's default value.<a href="#section-3.1.1-3.2" class="pilcrow">¶</a>
+</li>
+          </ul>
+<p id="section-3.1.1-4">The <code>&lt;ttl:until&gt;</code> <span class="bcp14">MUST NOT</span>
+            appear in <code>&lt;info&gt;</code> responses if: (1) the
+            server does not support this element, (2) the object already has the
+            server's default TTL value, or (3) the server does not implement automatic
+            reversion of custom TTL values.<a href="#section-3.1.1-4" class="pilcrow">¶</a></p>
+<p id="section-3.1.1-5">Example domain <code>&lt;info&gt;</code> response:<a href="#section-3.1.1-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.1.1-6">
 <pre>
 S: &lt;?xml version="1.0" encoding="utf-8" standalone="no"?&gt;
 S: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
@@ -1498,6 +1535,7 @@ S:     &lt;extension&gt;
 S:       &lt;ttl:infData
 S:         xmlns:ttl="urn:ietf:params:xml:ns:ttl-1.0"&gt;
 S:         &lt;ttl:secs&gt;3600&lt;/ttl:secs&gt;
+S:         &lt;ttl:until&gt;2022-12-01T08:30:00.0Z&lt;/ttl:until&gt;
 S:       &lt;/ttl:infData&gt;
 S:     &lt;/extension&gt;
 S:     &lt;trID&gt;
@@ -1505,10 +1543,10 @@ S:       &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
 S:       &lt;svTRID&gt;54322-XYZ&lt;/svTRID&gt;
 S:     &lt;/trID&gt;
 S:   &lt;/response&gt;
-S: &lt;/epp&gt;</pre><a href="#section-3.1.1-4" class="pilcrow">¶</a>
+S: &lt;/epp&gt;</pre><a href="#section-3.1.1-6" class="pilcrow">¶</a>
 </div>
-<p id="section-3.1.1-5">Example host <code>&lt;info&gt;</code> response:<a href="#section-3.1.1-5" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.1.1-6">
+<p id="section-3.1.1-7">Example host <code>&lt;info&gt;</code> response:<a href="#section-3.1.1-7" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.1.1-8">
 <pre>S:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
 S: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
 S:   &lt;response&gt;
@@ -1537,6 +1575,7 @@ S:      &lt;extension&gt;
 S:        &lt;ttl:infData
 S:          xmlns:ttl="urn:ietf:params:xml:ns:ttl-1.0"&gt;
 S:          &lt;ttl:secs&gt;3600&lt;/ttl:secs&gt;
+S:         &lt;ttl:until&gt;2022-12-01T08:30:00.0Z&lt;/ttl:until&gt;
 S:        &lt;/ttl:infData&gt;
 S:      &lt;/extension&gt;
 S:     &lt;trID&gt;
@@ -1544,7 +1583,7 @@ S:       &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
 S:       &lt;svTRID&gt;54322-XYZ&lt;/svTRID&gt;
 S:     &lt;/trID&gt;
 S:   &lt;/response&gt;
-S: &lt;/epp&gt;</pre><a href="#section-3.1.1-6" class="pilcrow">¶</a>
+S: &lt;/epp&gt;</pre><a href="#section-3.1.1-8" class="pilcrow">¶</a>
 </div>
 </section>
 </section>
@@ -1559,12 +1598,20 @@ S: &lt;/epp&gt;</pre><a href="#section-3.1.1-6" class="pilcrow">¶</a>
 <p id="section-3.2.1-1">This extension defines additional elements for EPP <code>&lt;create&gt;</code> commands for domain
  and host objects.<a href="#section-3.2.1-1" class="pilcrow">¶</a></p>
 <p id="section-3.2.1-2">The <code>&lt;create&gt;</code> command
- MAY contain an <code>&lt;extension&gt;</code>
- element which MAY contain a <code>&lt;ttl:create&gt;</code>
- element. This element contains a single
- <code>&lt;ttl:secs&gt;</code> element.<a href="#section-3.2.1-2" class="pilcrow">¶</a></p>
-<p id="section-3.2.1-3">Example domain <code>&lt;create&gt;</code> command:<a href="#section-3.2.1-3" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.2.1-4">
+ <span class="bcp14">MAY</span> contain an <code>&lt;extension&gt;</code>
+ element which <span class="bcp14">MAY</span> contain a <code>&lt;ttl:create&gt;</code>
+ element, which contains the following child elements:<a href="#section-3.2.1-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.2.1-3.1">A <code>&lt;ttl:secs&gt;</code> element showing the
+              desired TTL for the object; and<a href="#section-3.2.1-3.1" class="pilcrow">¶</a>
+</li>
+            <li class="normal" id="section-3.2.1-3.2">An <span class="bcp14">OPTIONAL</span> <code>&lt;ttl:until&gt;</code>
+              element containing the date and time after which the TTL should revert
+              to the server's default value.<a href="#section-3.2.1-3.2" class="pilcrow">¶</a>
+</li>
+          </ul>
+<p id="section-3.2.1-4">Example domain <code>&lt;create&gt;</code> command:<a href="#section-3.2.1-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.2.1-5">
 <pre>C: &lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
 C: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
 C:   &lt;command&gt;
@@ -1589,14 +1636,15 @@ C:     &lt;extension&gt;
 C:       &lt;ttl:create
 C:         xmlns:ttl="urn:ietf:params:xml:ns:ttl-1.0"&gt;
 C:         &lt;ttl:secs&gt;3600&lt;/ttl:secs&gt;
+S:         &lt;ttl:until&gt;2022-12-01T08:30:00.0Z&lt;/ttl:until&gt;
 C:       &lt;/ttl:create&gt;
 C:     &lt;/extension&gt;
 C:     &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
 C:   &lt;/command&gt;
-C: &lt;/epp&gt;</pre><a href="#section-3.2.1-4" class="pilcrow">¶</a>
+C: &lt;/epp&gt;</pre><a href="#section-3.2.1-5" class="pilcrow">¶</a>
 </div>
-<p id="section-3.2.1-5">Example host <code>&lt;create&gt;</code> command:<a href="#section-3.2.1-5" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.2.1-6">
+<p id="section-3.2.1-6">Example host <code>&lt;create&gt;</code> command:<a href="#section-3.2.1-6" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.2.1-7">
 <pre>C:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
 C: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
 C:   &lt;command&gt;
@@ -1613,13 +1661,17 @@ C:     &lt;extension&gt;
 C:       &lt;ttl:create
 C:         xmlns:ttl="urn:ietf:params:xml:ns:ttl-1.0"&gt;
 C:         &lt;ttl:secs&gt;3600&lt;/ttl:secs&gt;
+S:         &lt;ttl:until&gt;2022-12-01T08:30:00.0Z&lt;/ttl:until&gt;
 C:       &lt;/ttl:create&gt;
 C:     &lt;/extension&gt;
 C:     &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
 C:   &lt;/command&gt;
 C: &lt;/epp&gt;
-</pre><a href="#section-3.2.1-6" class="pilcrow">¶</a>
+</pre><a href="#section-3.2.1-7" class="pilcrow">¶</a>
 </div>
+<p id="section-3.2.1-8">EPP servers which do not support the <code>&lt;ttl:until&gt;</code>
+            element <span class="bcp14">MUST</span> reject commands which contain
+            it with a 2012 "Unimplemented option" response.<a href="#section-3.2.1-8" class="pilcrow">¶</a></p>
 </section>
 <section id="section-3.2.2">
           <h4 id="name-epp-update-command">
@@ -1628,11 +1680,20 @@ C: &lt;/epp&gt;
 <p id="section-3.2.2-1">This extension defines additional elements for EPP <code>&lt;update&gt;</code> commands for domain
  and host objects.<a href="#section-3.2.2-1" class="pilcrow">¶</a></p>
 <p id="section-3.2.2-2">The <code>&lt;update&gt;</code> command
- MAY contain an <code>&lt;extension&gt;</code>
- element which MAY contain a <code>&lt;ttl:update&gt;</code>
- element. This element contains a single <code>&lt;ttl:secs&gt;</code> element.<a href="#section-3.2.2-2" class="pilcrow">¶</a></p>
-<p id="section-3.2.2-3">Example domain <code>&lt;update&gt;</code> command:<a href="#section-3.2.2-3" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.2.2-4">
+ <span class="bcp14">MAY</span> contain an <code>&lt;extension&gt;</code>
+ element which <span class="bcp14">MAY</span> contain a <code>&lt;ttl:create&gt;</code>
+ element, which contains the following child elements:<a href="#section-3.2.2-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.2.2-3.1">A <code>&lt;ttl:secs&gt;</code> element showing the
+            desired TTL for the object; and<a href="#section-3.2.2-3.1" class="pilcrow">¶</a>
+</li>
+            <li class="normal" id="section-3.2.2-3.2">An <span class="bcp14">OPTIONAL</span> <code>&lt;ttl:until&gt;</code>
+            element containing the date and time after which the TTL should revert
+            to the server's default value.<a href="#section-3.2.2-3.2" class="pilcrow">¶</a>
+</li>
+          </ul>
+<p id="section-3.2.2-4">Example domain <code>&lt;update&gt;</code> command:<a href="#section-3.2.2-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.2.2-5">
 <pre>
 C: &lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
 C: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
@@ -1648,14 +1709,15 @@ C:     &lt;extension&gt;
 C:        &lt;ttl:update&gt;
 C:          xmlns:ttl="urn:ietf:params:xml:ns:ttl-1.0"&gt;
 C:          &lt;ttl:secs&gt;3600&lt;/ttl:secs&gt;
+S:         &lt;ttl:until&gt;2022-12-01T08:30:00.0Z&lt;/ttl:until&gt;
 C:        &lt;/ttl:update&gt;
 C:      &lt;/extension&gt;
 C:     &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
 C:   &lt;/command&gt;
-C: &lt;/epp&gt;</pre><a href="#section-3.2.2-4" class="pilcrow">¶</a>
+C: &lt;/epp&gt;</pre><a href="#section-3.2.2-5" class="pilcrow">¶</a>
 </div>
-<p id="section-3.2.2-5">Example host <code>&lt;update&gt;</code> command:<a href="#section-3.2.2-5" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.2.2-6">
+<p id="section-3.2.2-6">Example host <code>&lt;update&gt;</code> command:<a href="#section-3.2.2-6" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.2.2-7">
 <pre>C:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
 C: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
 C:   &lt;command&gt;
@@ -1679,12 +1741,16 @@ C:     &lt;extension&gt;
 C:        &lt;ttl:update&gt;
 C:          xmlns:ttl="urn:ietf:params:xml:ns:ttl-1.0"&gt;
 C:          &lt;ttl:secs&gt;3600&lt;/ttl:secs&gt;
+S:         &lt;ttl:until&gt;2022-12-01T08:30:00.0Z&lt;/ttl:until&gt;
 C:        &lt;/ttl:update&gt;
 C:      &lt;/extension&gt;
 C:     &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
 C:   &lt;/command&gt;
-C: &lt;/epp&gt;</pre><a href="#section-3.2.2-6" class="pilcrow">¶</a>
+C: &lt;/epp&gt;</pre><a href="#section-3.2.2-7" class="pilcrow">¶</a>
 </div>
+<p id="section-3.2.2-8">EPP servers which do not support the <code>&lt;ttl:until&gt;</code>
+            element <span class="bcp14">MUST</span> reject commands which contain
+            it with a 2012 "Unimplemented option" response.<a href="#section-3.2.2-8" class="pilcrow">¶</a></p>
 </section>
 </section>
 </section>
@@ -1734,11 +1800,11 @@ C: &lt;/epp&gt;</pre><a href="#section-3.2.2-6" class="pilcrow">¶</a>
       <h2 id="name-out-of-band-changes-to-ttl-">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-out-of-band-changes-to-ttl-" class="section-name selfRef">Out-of-band changes to TTL values</a>
       </h2>
-<p id="section-5-1">EPP server operators MAY, in order to address operational or security issues,
+<p id="section-5-1">EPP server operators <span class="bcp14">MAY</span>, in order to address operational or security issues,
  make changes to TTL values out-of-band (that is, not in response to an
  <code>&lt;update&gt;</code> command received from the sponsoring
  client).<a href="#section-5-1" class="pilcrow">¶</a></p>
-<p id="section-5-2">Additionally, server operators may implement an automatic reset of TTL values,
+<p id="section-5-2">Additionally, server operators <span class="bcp14">MAY</span> implement an automatic reset of TTL values,
  so that they may be changed for a finite period before and after a planned
  change, and then revert to a standard value.<a href="#section-5-2" class="pilcrow">¶</a></p>
 <p id="section-5-3">In the event of changes to TTL values taking place out-of-band, EPP server
@@ -1765,6 +1831,53 @@ C: &lt;/epp&gt;</pre><a href="#section-3.2.2-6" class="pilcrow">¶</a>
  permitted in the XML schema in the <a href="#formal-specification" class="xref">Formal specification</a> (which were chosen to allow any TTL permitted in DNS
  records), in order to prevent scenarios where an excessively high or low
  TTL causes operational issues on either side of the zone cut.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
+<p id="section-6.1-3">Similarly, EPP servers which support the <code>&lt;ttl:until&gt;</code>
+          element <span class="bcp14">MUST</span> reject commands (with a 2004 "parameter value range
+          error" response) if the specified date and time is in the past, or is otherwise
+          outside a server-defined range of acceptable values.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
+<p id="section-6.1-4">EPP servers <span class="bcp14">MAY</span> vary the range of acceptable values for the 
+          <code>&lt;ttl:until&gt;</code> element based on the value of
+          the <code>&lt;ttl:secs&gt;</code> element: for example, to allow
+          the setting of a very short TTL for a short period of time, while permitting
+          longer TTLs to be used for longer periods, as the following table illustrates:<a href="#section-6.1-4" class="pilcrow">¶</a></p>
+<span id="name-example-ttl-duration-policy"></span><table class="center" id="table-1">
+          <caption>
+<a href="#table-1" class="selfRef">Table 1</a>:
+<a href="#name-example-ttl-duration-policy" class="selfRef">Example TTL/Duration Policy Table</a>
+          </caption>
+<thead>
+            <tr>
+              <th class="text-center" rowspan="1" colspan="1">TTL value range</th>
+              <th class="text-center" rowspan="1" colspan="1">Maximum duration</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-center" rowspan="1" colspan="1">0-60s</td>
+              <td class="text-center" rowspan="1" colspan="1">-</td>
+            </tr>
+            <tr>
+              <td class="text-center" rowspan="1" colspan="1">61-299s</td>
+              <td class="text-center" rowspan="1" colspan="1">3600s</td>
+            </tr>
+            <tr>
+              <td class="text-center" rowspan="1" colspan="1">300-1099s</td>
+              <td class="text-center" rowspan="1" colspan="1">43200s</td>
+            </tr>
+            <tr>
+              <td class="text-center" rowspan="1" colspan="1">1200-3599s</td>
+              <td class="text-center" rowspan="1" colspan="1">86400s</td>
+            </tr>
+            <tr>
+              <td class="text-center" rowspan="1" colspan="1">&gt;= 3600s</td>
+              <td class="text-center" rowspan="1" colspan="1">any</td>
+            </tr>
+          </tbody>
+        </table>
+<p id="section-6.1-6">In the above policy, the default TTL is one hour, and the server will reject any TTL
+            below 60 seconds. Clients can set TTLs of between one and five minutes for a maximum
+            of one hour, or between five minutes and thirty minutes for up to twelve hours, or
+            between 30 minutes and one hour for up to one day.<a href="#section-6.1-6" class="pilcrow">¶</a></p>
 </section>
 <section id="section-6.2">
         <h3 id="name-when-the-ttl-should-be-chan">
@@ -1887,15 +2000,16 @@ C: &lt;/epp&gt;</pre><a href="#section-3.2.2-6" class="pilcrow">¶</a>
   &lt;/annotation&gt;
 
   &lt;!-- Child elements found in EPP commands --&gt;
-  &lt;element name="create" type="ttl:secs"/&gt;
-  &lt;element name="update" type="ttl:secs"/&gt;
+  &lt;element name="create" type="ttl:ttlType"/&gt;
+  &lt;element name="update" type="ttl:ttlType"/&gt;
 
   &lt;!-- Child elements found in EPP responses --&gt;
-  &lt;element name="infData" type="ttl:secs"/&gt;
+  &lt;element name="infData" type="ttl:ttlType"/&gt;
 
-  &lt;complexType name="secs"&gt;
+  &lt;complexType name="ttlType"&gt;
     &lt;sequence&gt;
-      &lt;element name="secs" type="ttl:nonNegativeInteger"/&gt;
+    &lt;element name="secs" type="ttl:nonNegativeInteger"/&gt;
+    &lt;element name="until" type="dateTime" minoccurs="0"/&gt;
     &lt;/sequence&gt;
   &lt;/complexType&gt;
 
@@ -1905,7 +2019,8 @@ C: &lt;/epp&gt;</pre><a href="#section-3.2.2-6" class="pilcrow">¶</a>
       &lt;maxInclusive value="4294967295"/&gt;
     &lt;/restriction&gt;
   &lt;/simpleType&gt;
-&lt;/schema&gt;</pre><a href="#section-9-1" class="pilcrow">¶</a>
+
+  &lt;/schema&gt;</pre><a href="#section-9-1" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
@@ -1937,6 +2052,10 @@ C: &lt;/epp&gt;</pre><a href="#section-3.2.2-6" class="pilcrow">¶</a>
 <dt id="RFC7451">[RFC7451]</dt>
         <dd>
 <span class="refAuthor">Hollenbeck, S.</span>, <span class="refTitle">"Extension Registry for the Extensible Provisioning Protocol"</span>, <span class="seriesInfo">RFC 7451</span>, <span class="seriesInfo">DOI 10.17487/RFC7451</span>, <time datetime="2015-02" class="refDate">February 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7451">https://www.rfc-editor.org/info/rfc7451</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8499">[RFC8499]</dt>
+        <dd>
+<span class="refAuthor">Hoffman, P.</span>, <span class="refAuthor">Sullivan, A.</span>, <span class="refAuthor">Fujiwara, K.</span>, and <span class="refAuthor">RFC Publisher</span>, <span class="refTitle">"DNS Terminology"</span>, <span class="seriesInfo">BCP 219</span>, <span class="seriesInfo">RFC 8499</span>, <span class="seriesInfo">DOI 10.17487/RFC8499</span>, <time datetime="2019-01" class="refDate">January 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8499">https://www.rfc-editor.org/info/rfc8499</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8590">[RFC8590]</dt>
       <dd>

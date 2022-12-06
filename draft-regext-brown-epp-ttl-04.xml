@@ -119,12 +119,19 @@
 
     <section title="Extension elements">
       <t>This specification introduces the <spanx style="verb">&lt;ttl:secs&gt;</spanx>
-        element, which contains a 32-bit unsigned integer indicating the TTL
-        (expressed in seconds) which will be applied to the delegation records
-				for the associated domain name or host objects. This element
-        is included in <spanx style="verb">&lt;info&gt;</spanx>,
-        <spanx style="verb">&lt;create&gt;</spanx> and
-        <spanx style="verb">&lt;update&gt;</spanx> commands.</t>
+        element, which is included in <spanx style="verb">&lt;info&gt;</spanx>,
+        <spanx style="verb">&lt;create&gt;</spanx> and <spanx
+        style="verb">&lt;update&gt;</spanx> commands. This element has two forms:
+        the first contains a 32-bit unsigned integer indicating the TTL (expressed in
+        seconds) which will be applied to the delegation records for the associated
+        domain name or host objects. The second form contains no content and is
+        used to indicate that the server's default TTL will be applied.</t>
+
+        <t>Example of a &lt;ttl:secs&gt; element containing a TTL value:</t>
+        <figure><artwork>&lt;ttl:secs&gt;3600&lt;/ttl:secs&gt;</artwork></figure>
+
+        <t>Example of a &lt;ttl:secs&gt; element with no value:</t>
+        <figure><artwork>&lt;ttl:secs/&gt;</artwork></figure>
     </section>
 
     <section title="EPP command mapping">
@@ -512,8 +519,8 @@ C: &lt;/epp&gt;</artwork>
 
     <section anchor="formal-specification" title="Formal specification">
       <figure>
-        <artwork>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;schema xmlns:ttl="urn:ietf:params:xml:ns:ttl-1.0"&gt;
+        <artwork>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;schema xmlns:ttl=&quot;urn:ietf:params:xml:ns:ttl-1.0&quot;&gt;
   &lt;annotation&gt;
     &lt;documentation&gt;
       Extensible Provisioning Protocol v1.0 domain name
@@ -524,22 +531,23 @@ C: &lt;/epp&gt;</artwork>
   &lt;/annotation&gt;
 
   &lt;!-- Child elements found in EPP commands --&gt;
-  &lt;element name="create" type="ttl:ttlType"/&gt;
-  &lt;element name="update" type="ttl:ttlType"/&gt;
+  &lt;element name=&quot;create&quot; type=&quot;ttl:ttlType&quot;/&gt;
+  &lt;element name=&quot;update&quot; type=&quot;ttl:ttlType&quot;/&gt;
 
   &lt;!-- Child elements found in EPP responses --&gt;
-  &lt;element name="infData" type="ttl:ttlType"/&gt;
+  &lt;element name=&quot;infData&quot; type=&quot;ttl:ttlType&quot;/&gt;
 
-  &lt;complexType name="ttlType"&gt;
-    &lt;sequence&gt;
-      &lt;element name="secs" type="ttl:nonNegativeInteger"/&gt;
-    &lt;/sequence&gt;
+  &lt;complexType name=&quot;ttlType&quot;&gt;
+    &lt;choice&gt;
+      &lt;element name=&quot;secs&quot; type=&quot;ttl:nonNegativeInteger&quot;/&gt;
+      &lt;element name=&quot;secs&quot;/&gt;
+    &lt;/choice&gt;
   &lt;/complexType&gt;
 
-  &lt;simpleType name="nonNegativeInteger"&gt;
-    &lt;restriction base="nonNegativeInteger"&gt;
-      &lt;minInclusive value="1"/&gt;
-      &lt;maxInclusive value="4294967295"/&gt;
+  &lt;simpleType name=&quot;nonNegativeInteger&quot;&gt;
+    &lt;restriction base=&quot;nonNegativeInteger&quot;&gt;
+      &lt;minInclusive value=&quot;1&quot;/&gt;
+      &lt;maxInclusive value=&quot;4294967295&quot;/&gt;
     &lt;/restriction&gt;
   &lt;/simpleType&gt;
 

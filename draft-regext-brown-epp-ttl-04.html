@@ -1431,12 +1431,20 @@ li > p:last-of-type {
 <a href="#section-2" class="section-number selfRef">2. </a><a href="#name-extension-elements" class="section-name selfRef">Extension elements</a>
       </h2>
 <p id="section-2-1">This specification introduces the <code>&lt;ttl:secs&gt;</code>
-        element, which contains a 32-bit unsigned integer indicating the TTL
-        (expressed in seconds) which will be applied to the delegation records
- for the associated domain name or host objects. This element
-        is included in <code>&lt;info&gt;</code>,
-        <code>&lt;create&gt;</code> and
-        <code>&lt;update&gt;</code> commands.<a href="#section-2-1" class="pilcrow">¶</a></p>
+        element, which is included in <code>&lt;info&gt;</code>,
+        <code>&lt;create&gt;</code> and <code>&lt;update&gt;</code> commands. This element has two forms:
+        the first contains a 32-bit unsigned integer indicating the TTL (expressed in
+        seconds) which will be applied to the delegation records for the associated
+        domain name or host objects. The second form contains no content and is
+        used to indicate that the server's default TTL will be applied.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<p id="section-2-2">Example of a &lt;ttl:secs&gt; element containing a TTL value:<a href="#section-2-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-2-3">
+<pre>&lt;ttl:secs&gt;3600&lt;/ttl:secs&gt;</pre><a href="#section-2-3" class="pilcrow">¶</a>
+</div>
+<p id="section-2-4">Example of a &lt;ttl:secs&gt; element with no value:<a href="#section-2-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-2-5">
+<pre>&lt;ttl:secs/&gt;</pre><a href="#section-2-5" class="pilcrow">¶</a>
+</div>
 </section>
 <section id="section-3">
       <h2 id="name-epp-command-mapping">
@@ -1893,9 +1901,10 @@ C: &lt;/epp&gt;</pre><a href="#section-3.2.2-6" class="pilcrow">¶</a>
   &lt;element name="infData" type="ttl:ttlType"/&gt;
 
   &lt;complexType name="ttlType"&gt;
-    &lt;sequence&gt;
+    &lt;choice&gt;
       &lt;element name="secs" type="ttl:nonNegativeInteger"/&gt;
-    &lt;/sequence&gt;
+      &lt;element name="secs"/&gt;
+    &lt;/choice&gt;
   &lt;/complexType&gt;
 
   &lt;simpleType name="nonNegativeInteger"&gt;

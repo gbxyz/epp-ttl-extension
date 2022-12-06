@@ -100,10 +100,10 @@ Table of Contents
    Typically, the Time-To-Live (TTL, see Section 5 of [RFC8499]) of
    these records is determined by the registry operator.  However, in
    some circumstances it may be desirable to allow the sponsoring client
-   of a domain name to change the TTL used for a that domain: for
-   example, to reduce the amount of time required to complete a change
-   of DNS servers or DNSSEC deployment of key rollover, or to allow for
-   fast rollback of such changes.
+   of a domain name to change the TTL used for that domain: for example,
+   to reduce the amount of time required to complete a change of DNS
+   servers or DNSSEC secure entry point, or to allow for fast rollback
+   of such changes.
 
 
 
@@ -151,17 +151,17 @@ Internet-Draft             TTL mapping for EPP             December 2022
 
 2.  Extension elements
 
-   This specification defines the <ttl:secs> element, which contains a
-   32-bit unsigned integer indicating the TTL (expressed in seconds)
-   which will be applied to the delegation records for the associated
-   domain name or host objects.  This element is included in <info>,
-   <create> and <update> commands.
+   This specification introduces the <ttl:secs> element, which is
+   included in <info>, <create> and <update> commands.  This element has
+   two forms: the first contains a 32-bit unsigned integer indicating
+   the TTL (expressed in seconds) which will be applied to the
+   delegation records for the associated domain name or host objects.
+   The second form contains no content and is used to indicate that the
+   server's default TTL will be applied.
 
+   Example of a <ttl:secs> element containing a TTL value:
 
-
-
-
-
+   <ttl:secs>3600</ttl:secs>
 
 
 
@@ -169,6 +169,10 @@ Brown                      Expires 9 June 2023                  [Page 3]
 
 Internet-Draft             TTL mapping for EPP             December 2022
 
+
+   Example of a <ttl:secs> element with no value:
+
+   <ttl:secs/>
 
 3.  EPP command mapping
 
@@ -184,10 +188,6 @@ Internet-Draft             TTL mapping for EPP             December 2022
    showing the current TTL for the object.
 
    Example domain <info> response:
-
-
-
-
 
 
 
@@ -749,9 +749,10 @@ Internet-Draft             TTL mapping for EPP             December 2022
      <element name="infData" type="ttl:ttlType"/>
 
      <complexType name="ttlType">
-       <sequence>
+       <choice>
          <element name="secs" type="ttl:nonNegativeInteger"/>
-       </sequence>
+         <element name="secs"/>
+       </choice>
      </complexType>
 
      <simpleType name="nonNegativeInteger">
@@ -775,7 +776,6 @@ Internet-Draft             TTL mapping for EPP             December 2022
    [RFC3688]  Mealling, M., "The IETF XML Registry", BCP 81, RFC 3688,
               DOI 10.17487/RFC3688, January 2004,
               <https://www.rfc-editor.org/info/rfc3688>.
-
 
 
 

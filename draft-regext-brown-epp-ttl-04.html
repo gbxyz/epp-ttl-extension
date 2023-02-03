@@ -7,28 +7,28 @@
 <title>Extensible Provisioning Protocol (EPP) mapping for DNS Time-To-Live (TTL) values</title>
 <meta content="Gavin Brown" name="author">
 <meta content="
-       This document describes an extension to the Extensible Provisioning
- Protocol (EPP) that allows EPP clients to manage the Time-To-Live
- (TTL) value for domain name delegation records. 
+       
+This document describes an extension to the Extensible Provisioning Protocol (EPP) that allows EPP clients to manage the Time-To-Live (TTL) value for domain name delegation records.
+ 
     " name="description">
-<meta content="xml2rfc 3.14.2" name="generator">
+<meta content="xml2rfc 3.8.0" name="generator">
 <meta content="draft-regext-brown-epp-ttl-04" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.14.2
-    Python 3.10.8
+  xml2rfc 3.8.0
+    Python 3.9.16
     appdirs 1.4.4
-    ConfigArgParse 1.5.3
-    google-i18n-address 2.5.2
+    ConfigArgParse 1.4.1
+    google-i18n-address 2.4.0
     html5lib 1.1
     intervaltree 3.1.0
     Jinja2 3.1.2
     kitchen 1.2.6
     lxml 4.9.1
-    MarkupSafe 2.1.1
     pycountry 22.3.5
-    PyYAML 6.0
+    pyflakes 2.3.1
+    PyYAML 5.4.1
     requests 2.28.1
-    setuptools 65.4.1
+    setuptools 65.6.3
     six 1.16.0
 -->
 <link href="draft-regext-brown-epp-ttl-04.xml" rel="alternate" type="application/rfc+xml">
@@ -171,8 +171,11 @@ svg {
   margin: 1em 0;
 }
 .alignCenter > *:first-child {
-  display: table;
   border: none;
+  /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
+     support flexbox yet.
+  */
+  display: table;
   margin: 0 auto;
 }
 
@@ -195,9 +198,6 @@ ul.empty, .ulEmpty {
 }
 ul.empty li, .ulEmpty li {
   margin-top: 0.5em;
-}
-ul.ulBare, li.ulBare {
-  margin-left: 0em !important;
 }
 ul.compact, .ulCompact,
 ol.compact, .olCompact {
@@ -381,12 +381,6 @@ hr {
 #identifiers dd {
   float: left;
   margin-bottom: 0;
-}
-/* Fix PDF info block run off issue */
-@media print {
-  #identifiers dd {
-    float: none;
-  }
 }
 #identifiers .authors .author {
   display: inline-block;
@@ -651,9 +645,6 @@ hr.addr {
   }
   figure {
     overflow: scroll;
-  }
-  pre.breakable {
-    break-inside: auto;
   }
   h1, h2, h3, h4, h5, h6 {
     page-break-after: avoid;
@@ -1066,9 +1057,6 @@ table {
 td {
   border-top: 1px solid #ddd;
 }
-tr {
-  break-inside: avoid;
-}
 tr:nth-child(2n+1) > td {
   background-color: #f8f8f8;
 }
@@ -1088,7 +1076,7 @@ tr:nth-child(2n+1) > td {
 }
 /* Change the approach to avoiding breaks inside artwork etc. */
 figure, pre, table, .artwork, .sourcecode  {
-  break-before: auto;
+  break-before: avoid-page;
   break-after: auto;
 }
 /* Avoid breaks between <dt> and <dd> */
@@ -1189,11 +1177,11 @@ li > p:last-of-type {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">TTL mapping for EPP</td>
-<td class="right">December 2022</td>
+<td class="right">February 2023</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Brown</td>
-<td class="center">Expires 9 June 2023</td>
+<td class="center">Expires 7 August 2023</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1206,12 +1194,12 @@ li > p:last-of-type {
 <dd class="internet-draft">draft-regext-brown-epp-ttl-04</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-12-06" class="published">6 December 2022</time>
+<time datetime="2023-02-03" class="published">3 February 2023</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
-<dd class="intended-status">Experimental</dd>
+<dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2023-06-09">9 June 2023</time></dd>
+<dd class="expires"><time datetime="2023-08-07">7 August 2023</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1224,9 +1212,8 @@ li > p:last-of-type {
 <h1 id="title">Extensible Provisioning Protocol (EPP) mapping for DNS Time-To-Live (TTL) values</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This document describes an extension to the Extensible Provisioning
- Protocol (EPP) that allows EPP clients to manage the Time-To-Live
- (TTL) value for domain name delegation records.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">
+This document describes an extension to the Extensible Provisioning Protocol (EPP) that allows EPP clients to manage the Time-To-Live (TTL) value for domain name delegation records.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <div id="status-of-memo">
 <section id="section-boilerplate.1">
@@ -1247,7 +1234,7 @@ li > p:last-of-type {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 9 June 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 7 August 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1256,7 +1243,7 @@ li > p:last-of-type {
 <a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
         </h2>
 <p id="section-boilerplate.2-1">
-            Copyright (c) 2022 IETF Trust and the persons identified as the
+            Copyright (c) 2023 IETF Trust and the persons identified as the
             document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.2-2">
             This document is subject to BCP 78 and the IETF Trust's Legal
@@ -1264,7 +1251,10 @@ li > p:last-of-type {
             (<span><a href="https://trustee.ietf.org/license-info">https://trustee.ietf.org/license-info</a></span>) in effect on the date of
             publication of this document. Please review these documents
             carefully, as they describe your rights and restrictions with
-            respect to this document.<a href="#section-boilerplate.2-2" class="pilcrow">¶</a></p>
+            respect to this document. Code Components extracted from this
+            document must include Simplified BSD License text as described in
+            Section 4.e of the Trust Legal Provisions and are provided without
+            warranty as described in the Simplified BSD License.<a href="#section-boilerplate.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="toc">
@@ -1272,100 +1262,100 @@ li > p:last-of-type {
         <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
 <a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
         </h2>
-<nav class="toc"><ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
+<nav class="toc"><ul class="ulEmpty toc compact">
+<li class="ulEmpty toc compact" id="section-toc.1-1.1">
             <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="xref">1</a>.  <a href="#name-introduction" class="xref">Introduction</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
+<ul class="ulEmpty toc compact">
+<li class="ulEmpty toc compact" id="section-toc.1-1.1.2.1">
                 <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="xref">1.1</a>.  <a href="#name-conventions-used-in-this-do" class="xref">Conventions used in this document</a></p>
 </li>
             </ul>
 </li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
+          <li class="ulEmpty toc compact" id="section-toc.1-1.2">
             <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="xref">2</a>.  <a href="#name-extension-elements" class="xref">Extension elements</a></p>
 </li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
+          <li class="ulEmpty toc compact" id="section-toc.1-1.3">
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="xref">3</a>.  <a href="#name-epp-command-mapping" class="xref">EPP command mapping</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
+<ul class="ulEmpty toc compact">
+<li class="ulEmpty toc compact" id="section-toc.1-1.3.2.1">
                 <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="xref">3.1</a>.  <a href="#name-epp-query-commands" class="xref">EPP query commands</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1.2.1">
+<ul class="ulEmpty toc compact">
+<li class="ulEmpty toc compact" id="section-toc.1-1.3.2.1.2.1">
                     <p id="section-toc.1-1.3.2.1.2.1.1"><a href="#section-3.1.1" class="xref">3.1.1</a>.  <a href="#name-epp-info-command" class="xref">EPP &lt;info&gt; command</a></p>
 </li>
                 </ul>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
+              <li class="ulEmpty toc compact" id="section-toc.1-1.3.2.2">
                 <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="xref">3.2</a>.  <a href="#name-epp-transform-commands" class="xref">EPP transform commands</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2.2.1">
+<ul class="ulEmpty toc compact">
+<li class="ulEmpty toc compact" id="section-toc.1-1.3.2.2.2.1">
                     <p id="section-toc.1-1.3.2.2.2.1.1"><a href="#section-3.2.1" class="xref">3.2.1</a>.  <a href="#name-epp-create-command" class="xref">EPP &lt;create&gt; command</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2.2.2">
+                  <li class="ulEmpty toc compact" id="section-toc.1-1.3.2.2.2.2">
                     <p id="section-toc.1-1.3.2.2.2.2.1"><a href="#section-3.2.2" class="xref">3.2.2</a>.  <a href="#name-epp-update-command" class="xref">EPP &lt;update&gt; command</a></p>
 </li>
                 </ul>
 </li>
             </ul>
 </li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
+          <li class="ulEmpty toc compact" id="section-toc.1-1.4">
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="xref">4</a>.  <a href="#name-server-processing-of-ttl-va" class="xref">Server processing of TTL values</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
+<ul class="ulEmpty toc compact">
+<li class="ulEmpty toc compact" id="section-toc.1-1.4.2.1">
                 <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="xref">4.1</a>.  <a href="#name-use-of-ttl-values-in-delega" class="xref">Use of TTL values in delegation records</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
+              <li class="ulEmpty toc compact" id="section-toc.1-1.4.2.2">
                 <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="xref">4.2</a>.  <a href="#name-relationship-between-host-o" class="xref">Relationship between host object and domain object TTL values</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
+              <li class="ulEmpty toc compact" id="section-toc.1-1.4.2.3">
                 <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="xref">4.3</a>.  <a href="#name-use-of-ttl-values-for-idn-v" class="xref">Use of TTL values for IDN variants</a></p>
 </li>
             </ul>
 </li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
+          <li class="ulEmpty toc compact" id="section-toc.1-1.5">
             <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-out-of-band-changes-to-ttl-" class="xref">Out-of-band changes to TTL values</a></p>
 </li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
+          <li class="ulEmpty toc compact" id="section-toc.1-1.6">
             <p id="section-toc.1-1.6.1"><a href="#section-6" class="xref">6</a>.  <a href="#name-operational-considerations" class="xref">Operational considerations</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
+<ul class="ulEmpty toc compact">
+<li class="ulEmpty toc compact" id="section-toc.1-1.6.2.1">
                 <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="xref">6.1</a>.  <a href="#name-operational-impact-of-ttl-v" class="xref">Operational impact of TTL values</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
+              <li class="ulEmpty toc compact" id="section-toc.1-1.6.2.2">
                 <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="xref">6.2</a>.  <a href="#name-when-the-ttl-should-be-chan" class="xref">When the TTL should be changed</a></p>
 </li>
             </ul>
 </li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
+          <li class="ulEmpty toc compact" id="section-toc.1-1.7">
             <p id="section-toc.1-1.7.1"><a href="#section-7" class="xref">7</a>.  <a href="#name-security-considerations" class="xref">Security considerations</a></p>
 </li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+          <li class="ulEmpty toc compact" id="section-toc.1-1.8">
             <p id="section-toc.1-1.8.1"><a href="#section-8" class="xref">8</a>.  <a href="#name-iana-considerations" class="xref">IANA considerations</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
+<ul class="ulEmpty toc compact">
+<li class="ulEmpty toc compact" id="section-toc.1-1.8.2.1">
                 <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="xref">8.1</a>.  <a href="#name-xml-namespace" class="xref">XML namespace</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
+              <li class="ulEmpty toc compact" id="section-toc.1-1.8.2.2">
                 <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="xref">8.2</a>.  <a href="#name-epp-extension-registry" class="xref">EPP extension registry</a></p>
 </li>
             </ul>
 </li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+          <li class="ulEmpty toc compact" id="section-toc.1-1.9">
             <p id="section-toc.1-1.9.1"><a href="#section-9" class="xref">9</a>.  <a href="#name-formal-specification" class="xref">Formal specification</a></p>
 </li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
+          <li class="ulEmpty toc compact" id="section-toc.1-1.10">
             <p id="section-toc.1-1.10.1"><a href="#section-10" class="xref">10</a>. <a href="#name-references" class="xref">References</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.1">
+<ul class="ulEmpty toc compact">
+<li class="ulEmpty toc compact" id="section-toc.1-1.10.2.1">
                 <p id="section-toc.1-1.10.2.1.1"><a href="#section-10.1" class="xref">10.1</a>.  <a href="#name-normative-references" class="xref">Normative references</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.2">
+              <li class="ulEmpty toc compact" id="section-toc.1-1.10.2.2">
                 <p id="section-toc.1-1.10.2.2.1"><a href="#section-10.2" class="xref">10.2</a>.  <a href="#name-informative-references" class="xref">Informative references</a></p>
 </li>
             </ul>
 </li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
-            <p id="section-toc.1-1.11.1"><a href="#appendix-A" class="xref"></a><a href="#name-authors-address" class="xref">Author's Address</a></p>
+          <li class="ulEmpty toc compact" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#section-appendix.a" class="xref"></a><a href="#name-authors-address" class="xref">Author's Address</a></p>
 </li>
         </ul>
 </nav>
@@ -1375,75 +1365,48 @@ li > p:last-of-type {
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">The principal output of any domain name provisioning system is a
- DNS zone file, which contains the delegation record(s) for names
- registered within a zone (such as a top-level domain). These
- records include, at minimum, one or more <code>NS</code>
- records, but may also include <code>A</code>
- and/or <code>AAAA</code> glue records, <code>DS</code> records, and <code>DNAME</code> records for IDN variants (<span>[<a href="#RFC6927" class="xref">RFC6927</a>]</span>).<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">Typically, the Time-To-Live (TTL, see Section 5 of <span>[<a href="#RFC8499" class="xref">RFC8499</a>]</span>) of these records is determined by the
-        registry operator. However, in some circumstances it may be
-        desirable to allow the sponsoring client of a domain name to
-        change the TTL used for that domain: for example, to reduce
-        the amount of time required to complete a change of DNS servers or
-        DNSSEC secure entry point, or to allow for fast
-        rollback of such changes.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3">This document describes an EPP extension to the domain
- name and host object mappings (described in <span>[<a href="#RFC5731" class="xref">RFC5731</a>]</span> and <span>[<a href="#RFC5732" class="xref">RFC5732</a>]</span>,
- respectively) which allows the sponsor of a domain name
- or host object to change the TTL associated with that
- object.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-1">
+The principal output of any domain name provisioning system is a DNS zone file, which contains the delegation record(s) for names registered within a zone (such as a top-level domain).
+These records include, at minimum, one or more <code>NS</code> records, but may also include <code>A</code> and/or <code>AAAA</code> glue records, <code>DS</code> records, and <code>DNAME</code> records for IDN variants (<span>[<a href="#RFC6927" class="xref">RFC6927</a>]</span>).<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">
+Typically, the Time-To-Live value (TTL, see Section 5 of <span>[<a href="#RFC8499" class="xref">RFC8499</a>]</span>) of these records is determined by the registry operator.
+However, in some circumstances it may be] desirable to allow the sponsoring client of a domain name to change the TTL used for that domain: for example, to reduce the amount of time required to complete a change of DNS servers, DNSSEC deployment or key rollover, or to allow for fast rollback of such changes.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">
+This document describes an EPP extension to the domain name and host object mappings (described in <span>[<a href="#RFC5731" class="xref">RFC5731</a>]</span> and <span>[<a href="#RFC5732" class="xref">RFC5732</a>]</span>, respectively) which allows the sponsor of a domain name or host object to change the TTL associated with that object.<a href="#section-1-3" class="pilcrow">¶</a></p>
 <section id="section-1.1">
         <h3 id="name-conventions-used-in-this-do">
 <a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-conventions-used-in-this-do" class="section-name selfRef">Conventions used in this document</a>
         </h3>
-<p id="section-1.1-1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
- "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED",
- "MAY", and "OPTIONAL" in this document are to be
- interpreted as described in <span>[<a href="#RFC2119" class="xref">RFC2119</a>]</span>.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
-<p id="section-1.1-2">In examples, "C:" represents lines sent by a protocol
- client and "S:" represents lines returned by a protocol
- server. Indentation and white space in examples are
- provided only to illustrate element relationships and
- are not REQUIRED features of this protocol.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
-<p id="section-1.1-3">A protocol client that is authorized to manage an existing
- object is described as a "sponsoring" client throughout
- this document.<a href="#section-1.1-3" class="pilcrow">¶</a></p>
-<p id="section-1.1-4">XML is case sensitive. Unless stated otherwise, XML
- specifications and examples provided in this document
- <span class="bcp14">MUST</span> be interpreted in the character case
-          presented in order to develop a conforming implementation.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
-<p id="section-1.1-5">EPP uses XML namespaces to provide an extensible
- object management framework and to identify schemas
- required for XML instance parsing and validation.
- These namespaces and schema definitions are used to
- identify both the base protocol schema and the
- schemas for managed objects.<a href="#section-1.1-5" class="pilcrow">¶</a></p>
-<p id="section-1.1-6">The XML namespace prefixes used in examples (such as the
-          string <code>ttl</code> in <code>xmlns:ttl</code>) are solely for
- illustrative purposes. A conforming implementation
- <span class="bcp14">MUST NOT</span> require the use of these or any
-          other specific namespace prefixes.<a href="#section-1.1-6" class="pilcrow">¶</a></p>
+<p id="section-1.1-1">
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <span>[<a href="#RFC2119" class="xref">RFC2119</a>]</span>.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.1-2">
+In examples, "C:" represents lines sent by a protocol client and "S:" represents lines returned by a protocol server.
+Indentation and white space in examples are provided only to illustrate element relationships and are not REQUIRED features of this protocol.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
+<p id="section-1.1-3">
+A protocol client that is authorized to manage an existing object is described as a "sponsoring" client throughout this document.<a href="#section-1.1-3" class="pilcrow">¶</a></p>
+<p id="section-1.1-4">
+XML is case sensitive.
+Unless stated otherwise, XML specifications and examples provided in this document <span class="bcp14">MUST</span> be interpreted in the character case presented in order to develop a conforming implementation.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
+<p id="section-1.1-5">
+EPP uses XML namespaces to provide an extensible object management framework and to identify schemas required for XML instance parsing and validation.
+These namespaces and schema definitions are used to identify both the base protocol schema and the schemas for managed objects.<a href="#section-1.1-5" class="pilcrow">¶</a></p>
+<p id="section-1.1-6">
+The XML namespace prefixes used in examples (such as the string <code>ttl</code> in <code>xmlns:ttl</code>) are solely for illustrative purposes.
+A conforming implementation <span class="bcp14">MUST NOT</span> require the use of these or any other specific namespace prefixes.<a href="#section-1.1-6" class="pilcrow">¶</a></p>
 </section>
 </section>
 <section id="section-2">
       <h2 id="name-extension-elements">
 <a href="#section-2" class="section-number selfRef">2. </a><a href="#name-extension-elements" class="section-name selfRef">Extension elements</a>
       </h2>
-<p id="section-2-1">This specification introduces the <code>&lt;ttl:secs&gt;</code>
-        element, which is included in <code>&lt;info&gt;</code>,
-        <code>&lt;create&gt;</code> and <code>&lt;update&gt;</code> commands. This element has two forms:
-        the first contains a 32-bit unsigned integer indicating the TTL (expressed in
-        seconds) which will be applied to the delegation records for the associated
-        domain name or host objects. The second form contains no content and is
-        used to indicate that the server's default TTL will be applied.<a href="#section-2-1" class="pilcrow">¶</a></p>
-<p id="section-2-2">Example of a &lt;ttl:secs&gt; element containing a TTL value:<a href="#section-2-2" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-2-3">
-<pre>&lt;ttl:secs&gt;3600&lt;/ttl:secs&gt;</pre><a href="#section-2-3" class="pilcrow">¶</a>
-</div>
-<p id="section-2-4">Example of a &lt;ttl:secs&gt; element with no value:<a href="#section-2-4" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-2-5">
-<pre>&lt;ttl:secs/&gt;</pre><a href="#section-2-5" class="pilcrow">¶</a>
+<p id="section-2-1">
+This specification defines a new element, <code>&lt;ttl:secs&gt;</code>, that is included in <code>&lt;info&gt;</code>, <code>&lt;create&gt;</code> and <code>&lt;update&gt;</code> commands.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<p id="section-2-2">
+The <code>&lt;ttl:secs&gt;</code> element contains a 32-bit unsigned integer indicating the TTL (expressed in seconds) which will be applied to the delegation records for the associated domain name or host object.<a href="#section-2-2" class="pilcrow">¶</a></p>
+<p id="section-2-3">
+Example:<a href="#section-2-3" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-2-4">
+<pre>&lt;secs xmlns="urn:ietf:params:xml:ns:ttl-1.0"&gt;3600&lt;/secs&gt;</pre><a href="#section-2-4" class="pilcrow">¶</a>
 </div>
 </section>
 <section id="section-3">
@@ -1458,16 +1421,14 @@ li > p:last-of-type {
           <h4 id="name-epp-info-command">
 <a href="#section-3.1.1" class="section-number selfRef">3.1.1. </a><a href="#name-epp-info-command" class="section-name selfRef">EPP &lt;info&gt; command</a>
           </h4>
-<p id="section-3.1.1-1">This extension defines additional elements for EPP
- <code>&lt;info&gt;</code> responses for
- domain and host objects.<a href="#section-3.1.1-1" class="pilcrow">¶</a></p>
-<p id="section-3.1.1-2">The <code>&lt;info&gt;</code> response <span class="bcp14">MAY</span>
- contain an <code>&lt;extension&gt;</code> element,
- which <span class="bcp14">MAY</span> contain a <code>&lt;ttl:infData&gt;</code>
- element, which contains a <code>&lt;ttl:secs&gt;</code> element
-            showing the current TTL for the object.<a href="#section-3.1.1-2" class="pilcrow">¶</a></p>
-<p id="section-3.1.1-3">Example domain <code>&lt;info&gt;</code> response:<a href="#section-3.1.1-3" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.1.1-4">
+<p id="section-3.1.1-1">
+This extension defines an additional element for EPP <code>&lt;info&gt;</code> responses for domain and host objects.<a href="#section-3.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1.1-2">
+The <code>&lt;info&gt;</code> response MAY contain an <code>&lt;extension&gt;</code> element, which MAY contain a <code>&lt;ttl:infData&gt;</code> element.
+This element contains a single <code>&lt;ttl:secs&gt;</code> element.<a href="#section-3.1.1-2" class="pilcrow">¶</a></p>
+<p id="section-3.1.1-3">
+Example domain <code>&lt;info&gt;</code> response:<a href="#section-3.1.1-3" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-3.1.1-4">
 <pre>
 S: &lt;?xml version="1.0" encoding="utf-8" standalone="no"?&gt;
 S: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
@@ -1513,8 +1474,9 @@ S:     &lt;/trID&gt;
 S:   &lt;/response&gt;
 S: &lt;/epp&gt;</pre><a href="#section-3.1.1-4" class="pilcrow">¶</a>
 </div>
-<p id="section-3.1.1-5">Example host <code>&lt;info&gt;</code> response:<a href="#section-3.1.1-5" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.1.1-6">
+<p id="section-3.1.1-5">
+Example host <code>&lt;info&gt;</code> response:<a href="#section-3.1.1-5" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-3.1.1-6">
 <pre>S:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
 S: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
 S:   &lt;response&gt;
@@ -1562,15 +1524,13 @@ S: &lt;/epp&gt;</pre><a href="#section-3.1.1-6" class="pilcrow">¶</a>
           <h4 id="name-epp-create-command">
 <a href="#section-3.2.1" class="section-number selfRef">3.2.1. </a><a href="#name-epp-create-command" class="section-name selfRef">EPP &lt;create&gt; command</a>
           </h4>
-<p id="section-3.2.1-1">This extension defines additional elements for EPP <code>&lt;create&gt;</code> commands for domain
- and host objects.<a href="#section-3.2.1-1" class="pilcrow">¶</a></p>
-<p id="section-3.2.1-2">The <code>&lt;create&gt;</code> command
- <span class="bcp14">MAY</span> contain an <code>&lt;extension&gt;</code>
- element which <span class="bcp14">MAY</span> contain a <code>&lt;ttl:create&gt;</code>
- element, which contains a <code>&lt;ttl:secs&gt;</code> element showing the
-            desired TTL for the object.<a href="#section-3.2.1-2" class="pilcrow">¶</a></p>
-<p id="section-3.2.1-3">Example domain <code>&lt;create&gt;</code> command:<a href="#section-3.2.1-3" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.2.1-4">
+<p id="section-3.2.1-1">
+This extension defines an additional element for EPP <code>&lt;create&gt;</code> commands for domain and host objects.<a href="#section-3.2.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.2.1-2">
+The <code>&lt;create&gt;</code> command MAY contain an <code>&lt;extension&gt;</code> element which MAY contain a <code>&lt;ttl:create&gt;</code> element. This element contains a single <code>&lt;ttl:secs&gt;</code> element.<a href="#section-3.2.1-2" class="pilcrow">¶</a></p>
+<p id="section-3.2.1-3">
+Example domain <code>&lt;create&gt;</code> command:<a href="#section-3.2.1-3" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-3.2.1-4">
 <pre>C: &lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
 C: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
 C:   &lt;command&gt;
@@ -1601,8 +1561,9 @@ C:     &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
 C:   &lt;/command&gt;
 C: &lt;/epp&gt;</pre><a href="#section-3.2.1-4" class="pilcrow">¶</a>
 </div>
-<p id="section-3.2.1-5">Example host <code>&lt;create&gt;</code> command:<a href="#section-3.2.1-5" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.2.1-6">
+<p id="section-3.2.1-5">
+Example host <code>&lt;create&gt;</code> command:<a href="#section-3.2.1-5" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-3.2.1-6">
 <pre>C:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
 C: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
 C:   &lt;command&gt;
@@ -1631,15 +1592,13 @@ C: &lt;/epp&gt;
           <h4 id="name-epp-update-command">
 <a href="#section-3.2.2" class="section-number selfRef">3.2.2. </a><a href="#name-epp-update-command" class="section-name selfRef">EPP &lt;update&gt; command</a>
           </h4>
-<p id="section-3.2.2-1">This extension defines additional elements for EPP <code>&lt;update&gt;</code> commands for domain
- and host objects.<a href="#section-3.2.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.2.2-2">The <code>&lt;update&gt;</code> command
- <span class="bcp14">MAY</span> contain an <code>&lt;extension&gt;</code>
- element which <span class="bcp14">MAY</span> contain a <code>&lt;ttl:update&gt;</code>
- element, which contains a <code>&lt;ttl:secs&gt;</code> element showing the
-          desired TTL for the object.<a href="#section-3.2.2-2" class="pilcrow">¶</a></p>
-<p id="section-3.2.2-3">Example domain <code>&lt;update&gt;</code> command:<a href="#section-3.2.2-3" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.2.2-4">
+<p id="section-3.2.2-1">
+This extension defines an additional element for EPP <code>&lt;update&gt;</code> commands for domain and host objects.<a href="#section-3.2.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2.2-2">
+The <code>&lt;update&gt;</code> command MAY contain an <code>&lt;extension&gt;</code> element which MAY contain a <code>&lt;ttl:update&gt;</code> element. This element contains a single <code>&lt;ttl:secs&gt;</code> element.<a href="#section-3.2.2-2" class="pilcrow">¶</a></p>
+<p id="section-3.2.2-3">
+Example domain <code>&lt;update&gt;</code> command:<a href="#section-3.2.2-3" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-3.2.2-4">
 <pre>
 C: &lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
 C: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
@@ -1661,8 +1620,9 @@ C:     &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
 C:   &lt;/command&gt;
 C: &lt;/epp&gt;</pre><a href="#section-3.2.2-4" class="pilcrow">¶</a>
 </div>
-<p id="section-3.2.2-5">Example host <code>&lt;update&gt;</code> command:<a href="#section-3.2.2-5" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.2.2-6">
+<p id="section-3.2.2-5">
+Example host <code>&lt;update&gt;</code> command:<a href="#section-3.2.2-5" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-3.2.2-6">
 <pre>C:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
 C: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
 C:   &lt;command&gt;
@@ -1699,58 +1659,44 @@ C: &lt;/epp&gt;</pre><a href="#section-3.2.2-6" class="pilcrow">¶</a>
       <h2 id="name-server-processing-of-ttl-va">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-server-processing-of-ttl-va" class="section-name selfRef">Server processing of TTL values</a>
       </h2>
-<p id="section-4-1">If an EPP server receives a command containing a TTL that is outside the
- server's permitted range (see <a href="#operational-considerations" class="xref">Operational considerations</a> and <a href="#security-considerations" class="xref">Security considerations</a>
- below), it <span class="bcp14">MUST</span> reject the command with a <code>2004</code>
- "Parameter value range error" response.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-1">
+If an EPP server receives a command containing a TTL that is outside the server's permitted range (see <a href="#operational-considerations" class="xref">Operational considerations</a> and <a href="#security-considerations" class="xref">Security considerations</a> below), it <span class="bcp14">MUST</span> reject the command with a <code>2004</code> "Parameter value range error" response.<a href="#section-4-1" class="pilcrow">¶</a></p>
 <section id="section-4.1">
         <h3 id="name-use-of-ttl-values-in-delega">
 <a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-use-of-ttl-values-in-delega" class="section-name selfRef">Use of TTL values in delegation records</a>
         </h3>
-<p id="section-4.1-1">EPP servers which implement this extension <span class="bcp14">SHOULD</span> use the values provided
- by EPP clients for the TTL values of <code>NS</code>, <code>A</code>, <code>AAAA</code> and <code>DS</code> records published in the DNS for the corresponding
- delegation.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.1-1">
+EPP servers which implement this extension <span class="bcp14">SHOULD</span> use the values provided by EPP clients for the TTL values of <code>NS</code>, <code>A</code>, <code>AAAA</code> and <code>DS</code> records published in the DNS for the corresponding delegation.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
 </section>
 <section id="section-4.2">
         <h3 id="name-relationship-between-host-o">
 <a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-relationship-between-host-o" class="section-name selfRef">Relationship between host object and domain object TTL values</a>
         </h3>
-<p id="section-4.2-1">The extension in this document allows TTL values to be configured for both
- domain and host objects. In domain name registries, these object types have
- a hierarchical relationship, in that a host object may be subordinate to a
- domain object: for example, the host object <code>ns1.example.com</code>
- is subordinate to the domain object <code>example.com</code>.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
-<p id="section-4.2-2">When publishing <code>A</code> and <code>AAAA</code>
- for host objects, TTL values for host objects <span class="bcp14">SHOULD</span> take
- precedence over the TTL of the superordinate domain object. However, if no
- TTL value is configured for a subordinate host object, but a TTL value is
- configured for the superordinate domain object, then the domain object's TTL
- value <span class="bcp14">SHOULD</span> be used for the host object instead of the default
- TTL value.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+<p id="section-4.2-1">
+The extension in this document allows TTL values to be configured for both domain and host objects.
+In domain name registries, these object types have a hierarchical relationship, in that a host object may be subordinate to a domain object: for example, the host object <code>ns1.example.com</code> is subordinate to the domain object <code>example.com</code>.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2-2">
+When publishing <code>A</code> and <code>AAAA</code> for host objects, TTL values for host objects <span class="bcp14">SHOULD</span> take precedence over the TTL of the superordinate domain object.
+However, if no TTL value is specified for a subordinate host object, but a TTL value is specified for the superordinate domain object, then the domain object's TTL value <span class="bcp14">SHOULD</span> be used for the host object instead of the default TTL value.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
 </section>
 <section id="section-4.3">
         <h3 id="name-use-of-ttl-values-for-idn-v">
 <a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-use-of-ttl-values-for-idn-v" class="section-name selfRef">Use of TTL values for IDN variants</a>
         </h3>
-<p id="section-4.3-1">If a domain name has variants (<span>[<a href="#RFC6927" class="xref">RFC6927</a>]</span>) that are linked
- to that domain, then any <code>NS</code> or <code>DNAME</code> records published for those variants <span class="bcp14">MUST</span> use the
- same TTL as that used for the primary domain.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.3-1">
+If a domain name has variants (<span>[<a href="#RFC6927" class="xref">RFC6927</a>]</span>) that are linked to that domain, then any <code>NS</code> or <code>DNAME</code> records published for those variants <span class="bcp14">MUST</span> use the same TTL as that used for the primary domain.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
 </section>
 </section>
 <section id="section-5">
       <h2 id="name-out-of-band-changes-to-ttl-">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-out-of-band-changes-to-ttl-" class="section-name selfRef">Out-of-band changes to TTL values</a>
       </h2>
-<p id="section-5-1">EPP server operators <span class="bcp14">MAY</span>, in order to address operational or security issues,
- make changes to TTL values out-of-band (that is, not in response to an
- <code>&lt;update&gt;</code> command received from the sponsoring
- client).<a href="#section-5-1" class="pilcrow">¶</a></p>
-<p id="section-5-2">Additionally, server operators <span class="bcp14">MAY</span> implement an automatic reset of TTL values,
- so that they may be changed for a finite period before and after a planned
- change, and then revert to a standard value.<a href="#section-5-2" class="pilcrow">¶</a></p>
-<p id="section-5-3">In the event of changes to TTL values taking place out-of-band, EPP server
- operators <span class="bcp14">SHOULD</span> notify the sponsoring client using the EPP Change Poll
- extension (<span>[<a href="#RFC8590" class="xref">RFC8590</a>]</span>).<a href="#section-5-3" class="pilcrow">¶</a></p>
+<p id="section-5-1">
+EPP server operators <span class="bcp14">MAY</span>, in order to address operational or security issues, make changes to TTL values out-of-band (that is, not in response to an <code>&lt;update&gt;</code> command received from the sponsoring client).<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-2">
+Additionally, server operators <span class="bcp14">MAY</span> implement an automatic reset of TTL values, so that they may be changed for a finite period before and after a planned change, and then revert to a standard value.<a href="#section-5-2" class="pilcrow">¶</a></p>
+<p id="section-5-3">
+If a TTL value is changed out-of-band, EPP server operators <span class="bcp14">SHOULD</span> notify the sponsoring client using the EPP Change Poll extension (<span>[<a href="#RFC8590" class="xref">RFC8590</a>]</span>).<a href="#section-5-3" class="pilcrow">¶</a></p>
 </section>
 <div id="operational-considerations">
 <section id="section-6">
@@ -1761,29 +1707,20 @@ C: &lt;/epp&gt;</pre><a href="#section-3.2.2-6" class="pilcrow">¶</a>
         <h3 id="name-operational-impact-of-ttl-v">
 <a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-operational-impact-of-ttl-v" class="section-name selfRef">Operational impact of TTL values</a>
         </h3>
-<p id="section-6.1-1">Domain registry operators must strike a balance between, on the one hand,
- the desire of registrants for changes to their domains to be visible in the
- DNS quickly, and on the other, the increased DNS query traffic that short TTLs
- can bring. Historically, registry operators have used a global TTL value which
- was applied to all delegations within their zones, which could then be tuned to
- an optimum value.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
-<p id="section-6.1-2">Domain registry operators <span class="bcp14">SHOULD</span> implement limits on the
- maximum and minimum accepted TTL values that are narrower than the values
- permitted in the XML schema in the <a href="#formal-specification" class="xref">Formal specification</a> (which were chosen to allow any TTL permitted in DNS
- records), in order to prevent scenarios where an excessively high or low
- TTL causes operational issues on either side of the zone cut.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
+<p id="section-6.1-1">
+Domain registry operators must strike a balance between, on the one hand, the desire of registrants for changes to their domains to be visible in the DNS quickly, and on the other, the increased DNS query traffic that short TTLs can bring.
+Historically, registry operators have used a global TTL value which was applied to all delegations within their zones, which could then be tuned to an optimum value.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1-2">
+Domain registry operators <span class="bcp14">SHOULD</span> implement limits on the maximum and minimum accepted TTL values that are narrower than the values permitted in the XML schema in the <a href="#formal-specification" class="xref">Formal specification</a> (which were chosen to allow any TTL permitted in DNS records), in order to prevent scenarios where an excessively high or low TTL causes operational issues on either side of the zone cut.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
 </section>
 <section id="section-6.2">
         <h3 id="name-when-the-ttl-should-be-chan">
 <a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-when-the-ttl-should-be-chan" class="section-name selfRef">When the TTL should be changed</a>
         </h3>
-<p id="section-6.2-1">A common operational mistake is changing of DNS record TTLs during or
- after the planned change to the records themselves. This arises due to a
- misunderstanding about how TTLs work.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
-<p id="section-6.2-2">Client implementations of this specification <span class="bcp14">SHOULD</span> ensure
- that the user understands that changes to a TTL are only effective in
- shortening transition periods if implemented a period of time -- at
- least equal to the current TTL -- <em>before</em> the planned change.<a href="#section-6.2-2" class="pilcrow">¶</a></p>
+<p id="section-6.2-1">
+A common operational mistake is changing of DNS record TTLs during or after the planned change to the records themselves. This arises due to a misunderstanding about how TTLs work.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+<p id="section-6.2-2">
+Client implementations of this specification <span class="bcp14">SHOULD</span> ensure that the user understands that changes to a TTL are only effective in shortening transition periods if implemented a period of time -- at least equal to the current TTL -- <em>before</em> the planned change.<a href="#section-6.2-2" class="pilcrow">¶</a></p>
 </section>
 </section>
 </div>
@@ -1792,12 +1729,10 @@ C: &lt;/epp&gt;</pre><a href="#section-3.2.2-6" class="pilcrow">¶</a>
       <h2 id="name-security-considerations">
 <a href="#section-7" class="section-number selfRef">7. </a><a href="#name-security-considerations" class="section-name selfRef">Security considerations</a>
       </h2>
-<p id="section-7-1">Many malicious actors use a technique called "fast flux DNS" to rapidly
- change the DNS configuration for a zone in order to evade takedown and law
- enforcement activity.<a href="#section-7-1" class="pilcrow">¶</a></p>
-<p id="section-7-2">Registry operators <span class="bcp14">SHOULD</span> take this into consideration when
- setting the lower limit on TTL values, since a short TTL on delegations has
- the potential to enhance the effectiveness of fast flux techniques on evasion.<a href="#section-7-2" class="pilcrow">¶</a></p>
+<p id="section-7-1">
+Many malicious actors use a technique called "fast flux DNS" (<span>[<a href="#SAC-025" class="xref">SAC-025</a>]</span>) to rapidly change the DNS configuration for a zone in order to evade takedown and law enforcement activity.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-2">
+Registry operators <span class="bcp14">SHOULD</span> take this into consideration when setting the lower limit on TTL values, since a short TTL on delegations has the potential to enhance the effectiveness of fast flux techniques on evasion.<a href="#section-7-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="IANA">
@@ -1809,10 +1744,10 @@ C: &lt;/epp&gt;</pre><a href="#section-3.2.2-6" class="pilcrow">¶</a>
         <h3 id="name-xml-namespace">
 <a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-xml-namespace" class="section-name selfRef">XML namespace</a>
         </h3>
-<p id="section-8.1-1">This document uses URNs to describe XML namespaces and XML schemas
- conforming to a registry mechanism described in <span>[<a href="#RFC3688" class="xref">RFC3688</a>]</span>. The
- following URI assignment has been made by IANA:<a href="#section-8.1-1" class="pilcrow">¶</a></p>
-<p id="section-8.1-2">Registration for the TTL namespace:<a href="#section-8.1-2" class="pilcrow">¶</a></p>
+<p id="section-8.1-1">
+This document uses URNs to describe XML namespaces and XML schemas conforming to a registry mechanism described in <span>[<a href="#RFC3688" class="xref">RFC3688</a>]</span>. The following URI assignment has been made by IANA:<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.1-2">
+Registration for the TTL namespace:<a href="#section-8.1-2" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-8.1-3.1">
             <strong>URI:</strong> <code>urn:ietf:params:xml:ns:ttl-1.0</code><a href="#section-8.1-3.1" class="pilcrow">¶</a>
@@ -1824,7 +1759,8 @@ C: &lt;/epp&gt;</pre><a href="#section-3.2.2-6" class="pilcrow">¶</a>
             <strong>XML:</strong> None. Namespace URIs do not represent an XML specification<a href="#section-8.1-3.3" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-8.1-4">Registration for the TTL XML schema:<a href="#section-8.1-4" class="pilcrow">¶</a></p>
+<p id="section-8.1-4">
+Registration for the TTL XML schema:<a href="#section-8.1-4" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-8.1-5.1">
             <strong>URI:</strong> <code>urn:ietf:params:xml:ns:ttl-1.0</code><a href="#section-8.1-5.1" class="pilcrow">¶</a>
@@ -1833,8 +1769,7 @@ C: &lt;/epp&gt;</pre><a href="#section-3.2.2-6" class="pilcrow">¶</a>
             <strong>Registrant Contact:</strong> See the author of this document<a href="#section-8.1-5.2" class="pilcrow">¶</a>
 </li>
           <li class="normal ulEmpty" id="section-8.1-5.3">
-            <strong>XML:</strong> See the "<a href="#formal-specification" class="xref">Formal specification</a>"
- section of this document<a href="#section-8.1-5.3" class="pilcrow">¶</a>
+            <strong>XML:</strong> See the "<a href="#formal-specification" class="xref">Formal specification</a>" section of this document<a href="#section-8.1-5.3" class="pilcrow">¶</a>
 </li>
         </ul>
 </section>
@@ -1842,14 +1777,12 @@ C: &lt;/epp&gt;</pre><a href="#section-3.2.2-6" class="pilcrow">¶</a>
         <h3 id="name-epp-extension-registry">
 <a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-epp-extension-registry" class="section-name selfRef">EPP extension registry</a>
         </h3>
-<p id="section-8.2-1">The EPP extension described in this document has been registered by the IANA
- in the Extensions for the "Extensible Provisioning Protocol (EPP)" registry
- described in <span>[<a href="#RFC7451" class="xref">RFC7451</a>]</span>. The details of the registration are
- as follows:<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+<p id="section-8.2-1">
+The EPP extension described in this document has been registered by the IANA in the Extensions for the "Extensible Provisioning Protocol (EPP)" registry described in <span>[<a href="#RFC7451" class="xref">RFC7451</a>]</span>.
+The details of the registration are as follows:<a href="#section-8.2-1" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-8.2-2.1">
-            <strong>Name of Extension:</strong> Extensible Provisioning Protocol (EPP) Mapping
- for DNS Time-To-Live (TTL) values<a href="#section-8.2-2.1" class="pilcrow">¶</a>
+            <strong>Name of Extension:</strong> Extensible Provisioning Protocol (EPP) Mapping for DNS Time-To-Live (TTL) values<a href="#section-8.2-2.1" class="pilcrow">¶</a>
 </li>
           <li class="normal ulEmpty" id="section-8.2-2.2">
             <strong>Document Status:</strong> Experimental<a href="#section-8.2-2.2" class="pilcrow">¶</a>
@@ -1881,7 +1814,7 @@ C: &lt;/epp&gt;</pre><a href="#section-3.2.2-6" class="pilcrow">¶</a>
       <h2 id="name-formal-specification">
 <a href="#section-9" class="section-number selfRef">9. </a><a href="#name-formal-specification" class="section-name selfRef">Formal specification</a>
       </h2>
-<div class="alignLeft art-text artwork" id="section-9-1">
+<div class="artwork art-text alignLeft" id="section-9-1">
 <pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;schema xmlns:ttl="urn:ietf:params:xml:ns:ttl-1.0"&gt;
   &lt;annotation&gt;
@@ -1894,17 +1827,16 @@ C: &lt;/epp&gt;</pre><a href="#section-3.2.2-6" class="pilcrow">¶</a>
   &lt;/annotation&gt;
 
   &lt;!-- Child elements found in EPP commands --&gt;
-  &lt;element name="create" type="ttl:ttlType"/&gt;
-  &lt;element name="update" type="ttl:ttlType"/&gt;
+  &lt;element name="create" type="ttl:secs"/&gt;
+  &lt;element name="update" type="ttl:secs"/&gt;
 
   &lt;!-- Child elements found in EPP responses --&gt;
-  &lt;element name="infData" type="ttl:ttlType"/&gt;
+  &lt;element name="infData" type="ttl:secs"/&gt;
 
-  &lt;complexType name="ttlType"&gt;
-    &lt;choice&gt;
+  &lt;complexType name="secs"&gt;
+    &lt;sequence&gt;
       &lt;element name="secs" type="ttl:nonNegativeInteger"/&gt;
-      &lt;element name="secs"/&gt;
-    &lt;/choice&gt;
+    &lt;/sequence&gt;
   &lt;/complexType&gt;
 
   &lt;simpleType name="nonNegativeInteger"&gt;
@@ -1913,8 +1845,7 @@ C: &lt;/epp&gt;</pre><a href="#section-3.2.2-6" class="pilcrow">¶</a>
       &lt;maxInclusive value="4294967295"/&gt;
     &lt;/restriction&gt;
   &lt;/simpleType&gt;
-
-  &lt;/schema&gt;</pre><a href="#section-9-1" class="pilcrow">¶</a>
+&lt;/schema&gt;</pre><a href="#section-9-1" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
@@ -1963,14 +1894,18 @@ C: &lt;/epp&gt;</pre><a href="#section-3.2.2-6" class="pilcrow">¶</a>
         </h3>
 <dl class="references">
 <dt id="RFC6927">[RFC6927]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Levine, J.</span> and <span class="refAuthor">P. Hoffman</span>, <span class="refTitle">"Variants in Second-Level Names Registered in Top-Level Domains"</span>, <span class="seriesInfo">RFC 6927</span>, <span class="seriesInfo">DOI 10.17487/RFC6927</span>, <time datetime="2013-05" class="refDate">May 2013</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6927">https://www.rfc-editor.org/info/rfc6927</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="SAC-025">[SAC-025]</dt>
+      <dd>
+<span class="refAuthor">ICANN Security and Stability Advisory Committee (SSAC)</span>, <span class="refTitle">"SSAC Advisory on Fast Flux Hosting and DNS"</span>, <span class="seriesInfo">SAC 25</span>, <time datetime="2008-01" class="refDate">January 2008</time>, <span>&lt;<a href="https://www.icann.org/en/system/files/files/sac-025-en.pdf">https://www.icann.org/en/system/files/files/sac-025-en.pdf</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
 </section>
 <div id="authors-addresses">
-<section id="appendix-A">
+<section id="section-appendix.a">
       <h2 id="name-authors-address">
 <a href="#name-authors-address" class="section-name selfRef">Author's Address</a>
       </h2>

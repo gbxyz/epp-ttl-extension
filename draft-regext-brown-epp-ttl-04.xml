@@ -39,7 +39,7 @@
 </address>
 </author>
 
-<date month="February" year="2023" day="3"/>
+<date month="February" year="2023" day="22"/>
 <area>Applications</area>
 <workgroup>Registration Protocols Extensions (regext)</workgroup>
 
@@ -59,7 +59,7 @@ These records include, at minimum, one or more <spanx style="verb">NS</spanx> re
 
 <t>
 Typically, the Time-To-Live value (TTL, see Section 5 of <xref target="RFC8499" />) of these records is determined by the registry operator.
-However, in some circumstances it may be] desirable to allow the sponsoring client of a domain name to change the TTL used for that domain: for example, to reduce the amount of time required to complete a change of DNS servers, DNSSEC deployment or key rollover, or to allow for fast rollback of such changes.
+However, in some circumstances it may be desirable to allow the sponsoring client of a domain name to change the TTL used for that domain: for example, to reduce the amount of time required to complete a change of DNS servers, DNSSEC deployment or key rollover, or to allow for fast rollback of such changes.
 </t>
 
 <t>
@@ -91,7 +91,7 @@ These namespaces and schema definitions are used to identify both the base proto
 </t>
 
 <t>
-The XML namespace prefixes used in examples (such as the string <spanx style="verb">ttl</spanx> in <spanx style="verb">xmlns:ttl</spanx>) are solely for illustrative purposes.
+The XML namespace prefixes used in examples (such as the string <spanx style="verb">ttl</spanx> in <spanx style="verb">ttl:secs</spanx>) are solely for illustrative purposes.
 A conforming implementation <bcp14>MUST NOT</bcp14> require the use of these or any other specific namespace prefixes.
 </t>
 </section>
@@ -99,18 +99,30 @@ A conforming implementation <bcp14>MUST NOT</bcp14> require the use of these or 
 
 <section title="Extension elements">
 <t>
-This specification defines a new element, <spanx style="verb">&lt;ttl:secs&gt;</spanx>, that is included in <spanx style="verb">&lt;info&gt;</spanx>, <spanx style="verb">&lt;create&gt;</spanx> and <spanx style="verb">&lt;update&gt;</spanx> commands.
+This specification defines a new element, <spanx style="verb">&lt;ttl:secs&gt;</spanx>, that is included in <spanx style="verb">&lt;info&gt;</spanx> responses, and <spanx style="verb">&lt;create&gt;</spanx> and <spanx style="verb">&lt;update&gt;</spanx> commands.
 </t>
 <t>
-The <spanx style="verb">&lt;ttl:secs&gt;</spanx> element contains a 32-bit unsigned integer indicating the TTL (expressed in seconds) which will be applied to the delegation records for the associated domain name or host object.
+The <spanx style="verb">&lt;ttl:secs&gt;</spanx> element takes two forms: the first contains a 32-bit unsigned integer indicating the TTL (expressed in seconds) which will be applied to the DNS records for the associated domain name or host object.
 </t>
 
 <t>
 Example:
 </t>
 <figure>
-<artwork>&lt;secs xmlns="urn:ietf:params:xml:ns:ttl-1.0"&gt;3600&lt;/secs&gt;</artwork>
+<artwork>&lt;ttl:secs&gt;3600&lt;/secs&gt;</artwork>
 </figure>
+
+<t>
+The second form, which contains no content, indicates that (a) in <spanx style="verb">&lt;info&gt;</spanx> responses, no specific value has been set for the object, or (b) in <spanx style="verb">&lt;create&gt;</spanx> and <spanx style="verb">&lt;update&gt;</spanx> commands, that the client wishes to remove a previously set value, in favour of the default value. Note that this does no mean that no TTL is published in DNS records (since this is not possible), rather, that the server-determined default TTL is (or should be) used for that object.
+</t>
+
+<t>
+Example:
+</t>
+<figure>
+<artwork>&lt;ttl:secs/&gt;</artwork>
+</figure>
+
 </section>
 
 <section title="EPP command mapping">
@@ -372,7 +384,7 @@ If an EPP server receives a command containing a TTL that is outside the server'
 
 <section title="Use of TTL values in delegation records">
 <t>
-EPP servers which implement this extension <bcp14>SHOULD</bcp14> use the values provided by EPP clients for the TTL values of <spanx style="verb">NS</spanx>, <spanx style="verb">A</spanx>, <spanx style="verb">AAAA</spanx> and <spanx style="verb">DS</spanx> records published in the DNS for the corresponding delegation.
+EPP servers which implement this extension <bcp14>SHOULD</bcp14> use the values provided by EPP clients for the TTL values of <spanx style="verb">NS</spanx> and <spanx style="verb">DS</spanx> records published in the DNS for domain objects, and <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> records published in the DNS for host objects.
 </t>
 </section>
 
@@ -390,7 +402,7 @@ However, if no TTL value is specified for a subordinate host object, but a TTL v
 
 <section title="Use of TTL values for IDN variants">
 <t>
-If a domain name has variants (<xref target="RFC6927"/>) that are linked to that domain, then any <spanx style="verb">NS</spanx> or <spanx style="verb">DNAME</spanx> records published for those variants <bcp14>MUST</bcp14> use the same TTL as that used for the primary domain.
+If a domain name has variants (<xref target="RFC6927"/>) that are linked to that domain, then any <spanx style="verb">NS</spanx> or <spanx style="verb">DNAME</spanx> records published for those variants <bcp14>SHOULD</bcp14> use the same TTL as that used for the primary domain.
 </t>
 </section>
 </section>
@@ -517,37 +529,42 @@ The details of the registration are as follows:
 
 <section anchor="formal-specification" title="Formal specification">
 <figure>
-<artwork>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;schema xmlns:ttl="urn:ietf:params:xml:ns:ttl-1.0"&gt;
+<artwork>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;schema
+  targetNamespace=&quot;urn:ietf:params:xml:ns:ttl-1.0&quot;
+  xmlns:ttl=&quot;urn:ietf:params:xml:ns:ttl-1.0&quot;
+  xmlns=&quot;http://www.w3.org/2001/XMLSchema&quot;
+  elementFormDefault=&quot;qualified&quot;&gt;
   &lt;annotation&gt;
     &lt;documentation&gt;
-      Extensible Provisioning Protocol v1.0 domain name
-      extension schema for Time-To-Live (TTL) modification
-      in all DNS responses for a domain name including
-      delegation (NS) records and any address (A) records.
+      Extensible Provisioning Protocol v1.0 extension schema for
+      Time-To-Live (TTL) values for domain and host objects.
     &lt;/documentation&gt;
   &lt;/annotation&gt;
 
-  &lt;!-- Child elements found in EPP commands --&gt;
-  &lt;element name="create" type="ttl:secs"/&gt;
-  &lt;element name="update" type="ttl:secs"/&gt;
+  &lt;element name=&quot;create&quot;  type=&quot;ttl:seconds&quot;/&gt;
+  &lt;element name=&quot;update&quot;  type=&quot;ttl:seconds&quot;/&gt;
+  &lt;element name=&quot;infData&quot; type=&quot;ttl:seconds&quot;/&gt;
 
-  &lt;!-- Child elements found in EPP responses --&gt;
-  &lt;element name="infData" type="ttl:secs"/&gt;
-
-  &lt;complexType name="secs"&gt;
-    &lt;sequence&gt;
-      &lt;element name="secs" type="ttl:nonNegativeInteger"/&gt;
-    &lt;/sequence&gt;
+  &lt;complexType name=&quot;seconds&quot;&gt;
+    &lt;choice&gt;
+      &lt;element name=&quot;secs&quot; type=&quot;ttl:nonNegativeInteger&quot;/&gt;
+      &lt;element name=&quot;secs&quot;/&gt;
+    &lt;/choice&gt;
   &lt;/complexType&gt;
 
-  &lt;simpleType name="nonNegativeInteger"&gt;
-    &lt;restriction base="nonNegativeInteger"&gt;
-      &lt;minInclusive value="1"/&gt;
-      &lt;maxInclusive value="4294967295"/&gt;
+  &lt;simpleType name=&quot;nonNegativeInteger&quot;&gt;
+    &lt;restriction base=&quot;nonNegativeInteger&quot;&gt;
+      &lt;minInclusive value=&quot;1&quot;/&gt;
+      &lt;maxInclusive value=&quot;4294967295&quot;/&gt;
     &lt;/restriction&gt;
   &lt;/simpleType&gt;
-&lt;/schema&gt;</artwork>
+
+  &lt;complexType name=&quot;null&quot;&gt;
+    &lt;sequence/&gt;
+  &lt;/complexType&gt;
+&lt;/schema&gt;
+</artwork>
 </figure>
 </section>
 </middle>

@@ -19,7 +19,7 @@
 <?rfc subcompact="no" ?>
 <?rfc comments="yes" ?>
 <?rfc inline="yes" ?>
-<rfc category="std" docName="draft-regext-brown-epp-ttl-06" ipr="trust200902" submissionType="IETF" consensus="true">
+<rfc category="std" docName="draft-ietf-regext-epp-ttl-01" ipr="trust200902" submissionType="IETF" consensus="true">
 
 <front>
 <title abbrev="TTL mapping for EPP">Extensible Provisioning Protocol (EPP) mapping for DNS Time-To-Live (TTL) values</title>
@@ -39,7 +39,7 @@
 </address>
 </author>
 
-<date month="March" year="2023" day="10"/>
+<date year="2023" month="May" day="16"/>
 <area>Applications</area>
 <workgroup>Registration Protocols Extensions (regext)</workgroup>
 
@@ -48,6 +48,11 @@
 This document describes an extension to the Extensible Provisioning Protocol (EPP) that allows EPP clients to manage the Time-To-Live (TTL) value for domain name delegation records.
 </t>
 </abstract>
+
+<note title="Discussion Venues" removeInRFC="true"><t>
+The source for this draft, and an issue tracker, may can be found at <eref target="https://github.com/gbxyz/epp-ttl-extension"/>.
+</t></note>
+
 </front>
 
 <middle>
@@ -382,13 +387,15 @@ C: &lt;/epp&gt;</artwork>
 If an EPP server receives a command containing a TTL that is outside the server's permitted range (see <xref target="operational-considerations" format="title"/> and <xref target="security-considerations" format="title"/> below), it <bcp14>MUST</bcp14> reject the command with a <spanx style="verb">2004</spanx> "Parameter value range error" response.
 </t>
 
-<section title="Use of TTL values in delegation records">
+<section title="Use of TTL values in delegation records" anchor="using_ttl_values">
 <t>
 EPP servers which implement this extension <bcp14>SHOULD</bcp14> use the values provided by EPP clients for the TTL values of <spanx style="verb">NS</spanx> and <spanx style="verb">DS</spanx> records published in the DNS for domain objects, and <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> records published in the DNS for host objects.
 </t>
+
 <t>
-EPP servers that use the "host attribute" model of a domain object (described in section 1.1 of RFC5731), when publishing <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> records derived from host attributes, SHOULD use the TTL of the domain object for those records.</t>
+EPP servers that use the "host attribute" model (described in section 1.1 of <xref target="RFC5731"/>) <bcp14>SHOULD</bcp14> use the TTL of the domain object when publishing <spanx style="verb">NS</spanx>, <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> records derived from host attributes.
 </t>
+
 </section>
 
 <section title="Relationship between host object and domain object TTL values">
@@ -399,7 +406,7 @@ In domain name registries, these object types have a hierarchical relationship, 
 
 <t>
 When publishing <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> for host objects, TTL values for host objects <bcp14>SHOULD</bcp14> take precedence over the TTL of the superordinate domain object.
-However, if no TTL value is specified for a subordinate host object, but a TTL value is specified for the superordinate domain object, then the domain object's TTL value <bcp14>SHOULD</bcp14> be used for the host object instead of the default TTL value.
+However, if no TTL value is specified for a subordinate host object, but a TTL value <em>is</em> specified for the superordinate domain object, then the domain object's TTL value <bcp14>SHOULD</bcp14> be used for the host object instead of the default TTL value.
 </t>
 </section>
 
@@ -571,13 +578,25 @@ The details of the registration are as follows:
 </figure>
 </section>
 
-<section title="Acknowledgements">
+<section title="Acknowledgements" anchor="acknowledgements">
 <list>
 <t>
 The author(s) thank Hugo Salgado of NIC Chile for suggested wording around the behaviour of EPP servers that use the host attribute model.
 </t>
 </list>
 </section>
+
+<section title="Change Log" anchor="change_log" removeInRFC="true">
+
+<section title="Change from 00 to 01"><ol>
+  <li>Namespace changes from <spanx style="verb">urn:ietf:params:xml:ns:ttl-1.0</spanx> to <spanx style="verb">urn:ietf:params:xml:ns:epp:ttl-1.0</spanx>.</li>
+  <li>Added discussion on EPP servers which use the host attribute model in <xref target="using_ttl_values"/>.</li>
+  <li>Added <xref target="acknowledgements">Acknowledgements</xref>.</li>
+  <li>Added <xref target="change_log">Change Log</xref>.</li>
+</ol></section>
+
+</section>
+
 </middle>
 
 <back>

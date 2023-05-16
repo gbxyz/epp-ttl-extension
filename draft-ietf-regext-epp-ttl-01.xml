@@ -49,7 +49,7 @@ This document describes an extension to the Extensible Provisioning Protocol (EP
 </t>
 </abstract>
 
-<note title="Discussion Venues" removeInRFC="true"><t>
+<note title="About this draft" removeInRFC="true"><t>
 The source for this draft, and an issue tracker, may can be found at <eref target="https://github.com/gbxyz/epp-ttl-extension"/>.
 </t></note>
 

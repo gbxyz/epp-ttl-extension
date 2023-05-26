@@ -463,7 +463,7 @@ Historically, registry operators have used a global TTL value which was applied 
 </t>
 
 <t>
-Domain registry operators <bcp14>SHOULD</bcp14> implement limits on the maximum and minimum accepted TTL values that are narrower than the values permitted in the XML schema in the <xref target="formal-specification" format="title"/> (which were chosen to allow any TTL permitted in DNS records), in order to prevent scenarios where an excessively high or low TTL causes operational issues on either side of the zone cut.
+Domain registry operators <bcp14>SHOULD</bcp14> implement limits on the maximum and minimum accepted TTL values that are narrower than the values permitted in the XML schema in the <xref target="formal-syntax" format="title"/> (which were chosen to allow any TTL permitted in DNS records), in order to prevent scenarios where an excessively high or low TTL causes operational issues on either side of the zone cut.
 </t>
 
 </section>
@@ -515,13 +515,13 @@ Registration for the TTL XML schema:
 </t>
 <list>
 <t>
-<strong>URI:</strong> <spanx style="verb">urn:ietf:params:xml:ns:epp:ttl-1.0</spanx>
+<strong>URI:</strong> <spanx style="verb">urn:ietf:params:xml:schema:epp:ttl-1.0</spanx>
 </t>
 <t>
 <strong>Registrant Contact:</strong> See the author of this document
 </t>
 <t>
-<strong>XML:</strong> See the "<xref target="formal-specification" format="title"/>" section of this document
+<strong>XML:</strong> See the "<xref target="formal-syntax" format="title"/>" section of this document
 </t>
 </list>
 </section>
@@ -561,7 +561,12 @@ The details of the registration are as follows:
 </section>
 </section>
 
-<section anchor="formal-specification" title="Formal specification">
+<section anchor="formal-syntax" title="Formal syntax">
+
+<t>
+The formal syntax presented here is a complete schema representation of the extension suitable for automated validation of EPP XML instances.
+</t>
+
 <figure>
 <artwork>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;schema
@@ -589,8 +594,8 @@ The details of the registration are as follows:
 
   &lt;simpleType name=&quot;nonNegativeInteger&quot;&gt;
     &lt;restriction base=&quot;nonNegativeInteger&quot;&gt;
-      &lt;minInclusive value=&quot;1&quot;/&gt;
-      &lt;maxInclusive value=&quot;4294967295&quot;/&gt;
+      &lt;minInclusive value=&quot;0&quot;/&gt;
+      &lt;maxInclusive value=&quot;2147483647&quot;/&gt;
     &lt;/restriction&gt;
   &lt;/simpleType&gt;
 
@@ -602,22 +607,29 @@ The details of the registration are as follows:
 </figure>
 </section>
 
-<section title="Acknowledgements" anchor="acknowledgements">
-<list>
-<t>
-The author(s) thank Hugo Salgado of NIC Chile for suggested wording around the behaviour of EPP servers that use the host attribute model.
-</t>
-</list>
-</section>
-
 <section title="Change Log" anchor="change_log" removeInRFC="true">
 
 <section title="Change from 00 to 01"><ol>
-  <li>Moved text on how the server should handle impermissible TTL values from the top of Section 4 to Sections 3.2.1 and 3.2.2 (thanks Rick Wilhelm).</li>
-  <li>Namespace changes from <spanx style="verb">urn:ietf:params:xml:ns:ttl-1.0</spanx> to <spanx style="verb">urn:ietf:params:xml:ns:epp:ttl-1.0</spanx>.</li>
-  <li>Added discussion on EPP servers which use the host attribute model in <xref target="using_ttl_values"/>.</li>
-  <li>Added <xref target="acknowledgements">Acknowledgements</xref>.</li>
-  <li>Added <xref target="change_log">Change Log</xref>.</li>
+<li>
+Fix minimum/maximum TTL value and schema namespace (thanks Patrick Mevzek).
+</li>
+
+<li>
+Moved text on how the server should handle impermissible TTL values from the top of Section 4 to Sections 3.2.1 and 3.2.2 (thanks Rick Wilhelm).
+</li>
+
+<li>
+Namespace changed from <spanx style="verb">urn:ietf:params:xml:ns:ttl-1.0</spanx> to <spanx style="verb">urn:ietf:params:xml:ns:epp:ttl-1.0</spanx>.
+</li>
+
+<li>
+Added discussion on EPP servers which use the host attribute model in <xref target="using_ttl_values"/> (thanks Hugo Salgado).
+</li>
+
+<li>
+Added a <xref target="change_log">Change Log</xref>.
+</li>
+
 </ol></section>
 
 </section>

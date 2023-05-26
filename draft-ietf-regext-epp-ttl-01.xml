@@ -71,6 +71,7 @@ However, in some circumstances it may be desirable to allow the sponsoring clien
 
 <t>
 This document describes an EPP extension to the domain name and host object mappings (described in <xref target="RFC5731"/> and <xref target="RFC5732"/>, respectively) which allows the sponsor of a domain name or host object to change the TTL associated with that object.
+It also describes how EPP servers should handle TTLs specified by EPP clients, and how both parties co-ordinate to manage TTL values in response to changes in operational or security requirements.
 </t>
 
 <section title="Conventions used in this document">

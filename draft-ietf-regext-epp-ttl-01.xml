@@ -56,7 +56,9 @@ The source for this draft, and an issue tracker, may can be found at <eref targe
 </front>
 
 <middle>
+
 <section title="Introduction">
+
 <t>
 The principal output of any domain name provisioning system is a DNS zone file, which contains the delegation record(s) for names registered within a zone (such as a top-level domain).
 These records include, at minimum, one or more <spanx style="verb">NS</spanx> records, but may also include <spanx style="verb">A</spanx> and/or <spanx style="verb">AAAA</spanx> glue records, <spanx style="verb">DS</spanx> records, and <spanx style="verb">DNAME</spanx> records for IDN variants (<xref target="RFC6927"/>).
@@ -72,6 +74,7 @@ This document describes an EPP extension to the domain name and host object mapp
 </t>
 
 <section title="Conventions used in this document">
+
 <t>
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <xref target="RFC2119"/>.
 </t>
@@ -99,13 +102,16 @@ These namespaces and schema definitions are used to identify both the base proto
 The XML namespace prefixes used in examples (such as the string <spanx style="verb">ttl</spanx> in <spanx style="verb">ttl:secs</spanx>) are solely for illustrative purposes.
 A conforming implementation <bcp14>MUST NOT</bcp14> require the use of these or any other specific namespace prefixes.
 </t>
+
 </section>
 </section>
 
 <section title="Extension elements">
+
 <t>
 This specification defines a new element, <spanx style="verb">&lt;ttl:secs&gt;</spanx>, that is included in <spanx style="verb">&lt;info&gt;</spanx> responses, and <spanx style="verb">&lt;create&gt;</spanx> and <spanx style="verb">&lt;update&gt;</spanx> commands.
 </t>
+
 <t>
 The <spanx style="verb">&lt;ttl:secs&gt;</spanx> element takes two forms: the first contains a 32-bit unsigned integer indicating the TTL (expressed in seconds) which will be applied to the DNS records for the associated domain name or host object.
 </t>
@@ -113,6 +119,7 @@ The <spanx style="verb">&lt;ttl:secs&gt;</spanx> element takes two forms: the fi
 <t>
 Example:
 </t>
+
 <figure>
 <artwork>&lt;ttl:secs&gt;3600&lt;/secs&gt;</artwork>
 </figure>
@@ -124,6 +131,7 @@ The second form, which contains no content, indicates that (a) in <spanx style="
 <t>
 Example:
 </t>
+
 <figure>
 <artwork>&lt;ttl:secs/&gt;</artwork>
 </figure>
@@ -133,18 +141,20 @@ Example:
 <section title="EPP command mapping">
 <section title="EPP query commands">
 <section title="EPP &lt;info&gt; command">
+
 <t>
 This extension defines an additional element for EPP <spanx style="verb">&lt;info&gt;</spanx> responses for domain and host objects.
 </t>
 
 <t>
-The <spanx style="verb">&lt;info&gt;</spanx> response MAY contain an <spanx style="verb">&lt;extension&gt;</spanx> element, which MAY contain a <spanx style="verb">&lt;ttl:infData&gt;</spanx> element.
+The <spanx style="verb">&lt;info&gt;</spanx> response <bcp14>MAY</bcp14> contain an <spanx style="verb">&lt;extension&gt;</spanx> element, which <bcp14>MAY</bcp14> contain a <spanx style="verb">&lt;ttl:infData&gt;</spanx> element.
 This element contains a single <spanx style="verb">&lt;ttl:secs&gt;</spanx> element.
 </t>
 
 <t>
 Example domain <spanx style="verb">&lt;info&gt;</spanx> response:
 </t>
+
 <figure>
 <artwork>
 S: &lt;?xml version="1.0" encoding="utf-8" standalone="no"?&gt;
@@ -195,6 +205,7 @@ S: &lt;/epp&gt;</artwork>
 <t>
 Example host <spanx style="verb">&lt;info&gt;</spanx> response:
 </t>
+
 <figure>
 <artwork>S:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
 S: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
@@ -233,22 +244,25 @@ S:     &lt;/trID&gt;
 S:   &lt;/response&gt;
 S: &lt;/epp&gt;</artwork>
 </figure>
+
 </section>
 </section>
 
 <section title="EPP transform commands">
 <section title="EPP &lt;create&gt; command">
+
 <t>
 This extension defines an additional element for EPP <spanx style="verb">&lt;create&gt;</spanx> commands for domain and host objects.
 </t>
 
 <t>
-The <spanx style="verb">&lt;create&gt;</spanx> command MAY contain an <spanx style="verb">&lt;extension&gt;</spanx> element which MAY contain a <spanx style="verb">&lt;ttl:create&gt;</spanx> element. This element contains a single <spanx style="verb">&lt;ttl:secs&gt;</spanx> element.
+The <spanx style="verb">&lt;create&gt;</spanx> command <bcp14>MAY</bcp14> contain an <spanx style="verb">&lt;extension&gt;</spanx> element which <bcp14>MAY</bcp14> contain a <spanx style="verb">&lt;ttl:create&gt;</spanx> element. This element contains a single <spanx style="verb">&lt;ttl:secs&gt;</spanx> element.
 </t>
 
 <t>
 Example domain <spanx style="verb">&lt;create&gt;</spanx> command:
 </t>
+
 <figure>
 <artwork>C: &lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
 C: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
@@ -284,6 +298,7 @@ C: &lt;/epp&gt;</artwork>
 <t>
 Example host <spanx style="verb">&lt;create&gt;</spanx> command:
 </t>
+
 <figure>
 <artwork>C:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
 C: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
@@ -308,6 +323,11 @@ C:   &lt;/command&gt;
 C: &lt;/epp&gt;
 </artwork>
 </figure>
+
+<t>
+If an EPP server receives a <spanx style="verb">&lt;create&gt;</spanx> command containing a TTL that is outside the server's permitted range, it <bcp14>MUST</bcp14> reject the command with a <spanx style="verb">2306</spanx> "Parameter value policy error" response.
+</t>
+
 </section>
 
 <section title="EPP &lt;update&gt; command">
@@ -316,12 +336,13 @@ This extension defines an additional element for EPP <spanx style="verb">&lt;upd
 </t>
 
 <t>
-The <spanx style="verb">&lt;update&gt;</spanx> command MAY contain an <spanx style="verb">&lt;extension&gt;</spanx> element which MAY contain a <spanx style="verb">&lt;ttl:update&gt;</spanx> element. This element contains a single <spanx style="verb">&lt;ttl:secs&gt;</spanx> element.
+The <spanx style="verb">&lt;update&gt;</spanx> command <bcp14>MAY</bcp14> contain an <spanx style="verb">&lt;extension&gt;</spanx> element which <bcp14>MAY</bcp14> contain a <spanx style="verb">&lt;ttl:update&gt;</spanx> element. This element contains a single <spanx style="verb">&lt;ttl:secs&gt;</spanx> element.
 </t>
 
 <t>
 Example domain <spanx style="verb">&lt;update&gt;</spanx> command:
 </t>
+
 <figure>
 <artwork>
 C: &lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
@@ -348,6 +369,7 @@ C: &lt;/epp&gt;</artwork>
 <t>
 Example host <spanx style="verb">&lt;update&gt;</spanx> command:
 </t>
+
 <figure>
 <artwork>C:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
 C: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
@@ -378,14 +400,16 @@ C:     &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
 C:   &lt;/command&gt;
 C: &lt;/epp&gt;</artwork>
 </figure>
+
+<t>
+If an EPP server receives an <spanx style="verb">&lt;update&gt;</spanx> command containing a TTL that is outside the server's permitted range, it <bcp14>MUST</bcp14> reject the command with a <spanx style="verb">2306</spanx> "Parameter value policy error" response.
+</t>
+
 </section>
 </section>
 </section>
 
 <section title="Server processing of TTL values">
-<t>
-If an EPP server receives a command containing a TTL that is outside the server's permitted range (see <xref target="operational-considerations" format="title"/> and <xref target="security-considerations" format="title"/> below), it <bcp14>MUST</bcp14> reject the command with a <spanx style="verb">2004</spanx> "Parameter value range error" response.
-</t>
 
 <section title="Use of TTL values in delegation records" anchor="using_ttl_values">
 <t>
@@ -427,7 +451,7 @@ Additionally, server operators <bcp14>MAY</bcp14> implement an automatic reset o
 </t>
 
 <t>
-If a TTL value is changed out-of-band, EPP server operators <bcp14>SHOULD</bcp14> notify the sponsoring client using the EPP Change Poll extension (<xref target="RFC8590"/>).
+If a TTL value is changed out-of-band, EPP server operators <bcp14>MAY</bcp14> notify the sponsoring client using the EPP Change Poll extension (<xref target="RFC8590"/>).
 </t>
 </section>
 
@@ -589,6 +613,7 @@ The author(s) thank Hugo Salgado of NIC Chile for suggested wording around the b
 <section title="Change Log" anchor="change_log" removeInRFC="true">
 
 <section title="Change from 00 to 01"><ol>
+  <li>Moved text on how the server should handle impermissible TTL values from the top of Section 4 to Sections 3.2.1 and 3.2.2 (thanks Rick Wilhelm).</li>
   <li>Namespace changes from <spanx style="verb">urn:ietf:params:xml:ns:ttl-1.0</spanx> to <spanx style="verb">urn:ietf:params:xml:ns:epp:ttl-1.0</spanx>.</li>
   <li>Added discussion on EPP servers which use the host attribute model in <xref target="using_ttl_values"/>.</li>
   <li>Added <xref target="acknowledgements">Acknowledgements</xref>.</li>

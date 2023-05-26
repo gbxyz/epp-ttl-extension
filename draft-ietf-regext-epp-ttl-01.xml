@@ -442,7 +442,7 @@ If a domain name has variants (<xref target="RFC6927"/>) that are linked to that
 </section>
 </section>
 
-<section title="Out-of-band changes to TTL values">
+<section anchor="oob-changes" title="Out-of-band changes to TTL values">
 <t>
 EPP server operators <bcp14>MAY</bcp14>, in order to address operational or security issues, make changes to TTL values out-of-band (that is, not in response to an <spanx style="verb">&lt;update&gt;</spanx> command received from the sponsoring client).
 </t>
@@ -452,7 +452,7 @@ Additionally, server operators <bcp14>MAY</bcp14> implement an automatic reset o
 </t>
 
 <t>
-If a TTL value is changed out-of-band, EPP server operators <bcp14>MAY</bcp14> notify the sponsoring client using the EPP Change Poll extension (<xref target="RFC8590"/>).
+If a TTL value is changed out-of-band, EPP server operators <bcp14>MAY</bcp14> notify the sponsoring client using the EPP Change Poll extension (<xref target="RFC8590"/>), which provides a generalised method for EPP servrers to notify clients of changes to objects under their sponsorship.
 </t>
 </section>
 
@@ -467,6 +467,10 @@ Historically, registry operators have used a global TTL value which was applied 
 Domain registry operators <bcp14>SHOULD</bcp14> implement limits on the maximum and minimum accepted TTL values that are narrower than the values permitted in the XML schema in the <xref target="formal-syntax" format="title"/> (which were chosen to allow any TTL permitted in DNS records), in order to prevent scenarios where an excessively high or low TTL causes operational issues on either side of the zone cut.
 </t>
 
+<t>
+<xref target="oob-changes"/> describes how server operators <bcp14>MAY</bcp14> unilaterally change TTL values in order to address operational or security issues, or only permit changes for limited time periods (after which TTLs revert to the default).
+</t>
+
 </section>
 
 <section title="When the TTL should be changed">
@@ -475,14 +479,14 @@ A common operational mistake is changing of DNS record TTLs during or after the 
 </t>
 
 <t>
-Client implementations of this specification <bcp14>SHOULD</bcp14> ensure that the user understands that changes to a TTL are only effective in shortening transition periods if implemented a period of time &mdash; at least equal to the current TTL &mdash; <em>before</em> the planned change.
+Client implementations of this specification <bcp14>SHOULD</bcp14> ensure that the operator understands that changes to a TTL are only effective in shortening transition periods if implemented a period of time &mdash; at least equal to the current TTL &mdash; <em>before</em> the planned change.
 </t>
 </section>
 </section>
 
 <section anchor="security-considerations" title="Security considerations">
 <t>
-Many malicious actors use a technique called "fast flux DNS" (<xref target="SAC-025"/>) to rapidly change the DNS configuration for a zone in order to evade takedown and law enforcement activity.
+Some malicious actors use a technique called "fast flux DNS" (<xref target="SAC-025"/>) to rapidly change the DNS configuration for a zone in order to evade takedown and law enforcement activity.
 </t>
 
 <t>
@@ -611,6 +615,11 @@ The formal syntax presented here is a complete schema representation of the exte
 <section title="Change Log" anchor="change_log" removeInRFC="true">
 
 <section title="Change from 00 to 01"><ol>
+
+<li>
+Add wording to describe how TTL values are jointly managed by both clients and servers.
+</li>
+
 <li>
 Fix minimum/maximum TTL value and schema namespace (thanks Patrick Mevzek).
 </li>

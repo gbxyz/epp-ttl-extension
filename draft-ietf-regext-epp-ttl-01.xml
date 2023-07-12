@@ -114,7 +114,8 @@ This specification defines a new element, <spanx style="verb">&lt;ttl:secs&gt;</
 </t>
 
 <t>
-The <spanx style="verb">&lt;ttl:secs&gt;</spanx> element takes two forms: the first contains a 32-bit unsigned integer indicating the TTL (expressed in seconds) which will be applied to the DNS records for the associated domain name or host object.
+The <spanx style="verb">&lt;ttl:secs&gt;</spanx> element takes two forms.
+The first contains a 32-bit unsigned integer indicating the TTL (expressed in seconds) which will be applied to the DNS records for the associated domain name or host object.
 </t>
 
 <t>
@@ -126,7 +127,8 @@ Example:
 </figure>
 
 <t>
-The second form, which contains no content, indicates that (a) in <spanx style="verb">&lt;info&gt;</spanx> responses, no specific value has been set for the object, or (b) in <spanx style="verb">&lt;create&gt;</spanx> and <spanx style="verb">&lt;update&gt;</spanx> commands, that the client wishes to remove a previously set value, in favour of the default value. Note that this does no mean that no TTL is published in DNS records (since this is not possible), rather, that the server-determined default TTL is (or should be) used for that object.
+The second form, which contains no content, indicates that (a) in <spanx style="verb">&lt;info&gt;</spanx> responses, no specific value has been set for the object, or (b) in <spanx style="verb">&lt;create&gt;</spanx> and <spanx style="verb">&lt;update&gt;</spanx> commands, that the client wishes to remove a previously set value, in favour of the default value.
+Note that this does no mean that no TTL is published in DNS records (since this is not possible), rather, that the server-determined default TTL is (or should be) used for that object.
 </t>
 
 <t>
@@ -257,7 +259,8 @@ This extension defines an additional element for EPP <spanx style="verb">&lt;cre
 </t>
 
 <t>
-The <spanx style="verb">&lt;create&gt;</spanx> command <bcp14>MAY</bcp14> contain an <spanx style="verb">&lt;extension&gt;</spanx> element which <bcp14>MAY</bcp14> contain a <spanx style="verb">&lt;ttl:create&gt;</spanx> element. This element contains a single <spanx style="verb">&lt;ttl:secs&gt;</spanx> element.
+The <spanx style="verb">&lt;create&gt;</spanx> command <bcp14>MAY</bcp14> contain an <spanx style="verb">&lt;extension&gt;</spanx> element which <bcp14>MAY</bcp14> contain a <spanx style="verb">&lt;ttl:create&gt;</spanx> element.
+This element contains a single <spanx style="verb">&lt;ttl:secs&gt;</spanx> element.
 </t>
 
 <t>
@@ -337,7 +340,8 @@ This extension defines an additional element for EPP <spanx style="verb">&lt;upd
 </t>
 
 <t>
-The <spanx style="verb">&lt;update&gt;</spanx> command <bcp14>MAY</bcp14> contain an <spanx style="verb">&lt;extension&gt;</spanx> element which <bcp14>MAY</bcp14> contain a <spanx style="verb">&lt;ttl:update&gt;</spanx> element. This element contains a single <spanx style="verb">&lt;ttl:secs&gt;</spanx> element.
+The <spanx style="verb">&lt;update&gt;</spanx> command <bcp14>MAY</bcp14> contain an <spanx style="verb">&lt;extension&gt;</spanx> element which <bcp14>MAY</bcp14> contain a <spanx style="verb">&lt;ttl:update&gt;</spanx> element.
+This element contains a single <spanx style="verb">&lt;ttl:secs&gt;</spanx> element.
 </t>
 
 <t>
@@ -475,7 +479,8 @@ Domain registry operators <bcp14>SHOULD</bcp14> implement limits on the maximum 
 
 <section title="When the TTL should be changed">
 <t>
-A common operational mistake is changing of DNS record TTLs during or after the planned change to the records themselves. This arises due to a misunderstanding about how TTLs work.
+A common operational mistake is changing of DNS record TTLs during or after the planned change to the records themselves.
+This arises due to a misunderstanding about how TTLs work.
 </t>
 
 <t>
@@ -497,7 +502,8 @@ Registry operators <bcp14>SHOULD</bcp14> take this into consideration when setti
 <section anchor="IANA" title="IANA considerations">
 <section title="XML namespace">
 <t>
-This document uses URNs to describe XML namespaces and XML schemas conforming to a registry mechanism described in <xref target="RFC3688"/>. The following URI assignment has been made by IANA:
+This document uses URNs to describe XML namespaces and XML schemas conforming to a registry mechanism described in <xref target="RFC3688"/>.
+The following URI assignment has been made by IANA:
 </t>
 
 <t>
@@ -603,10 +609,6 @@ The formal syntax presented here is a complete schema representation of the exte
       &lt;maxInclusive value=&quot;2147483647&quot;/&gt;
     &lt;/restriction&gt;
   &lt;/simpleType&gt;
-
-  &lt;complexType name=&quot;null&quot;&gt;
-    &lt;sequence/&gt;
-  &lt;/complexType&gt;
 &lt;/schema&gt;
 </artwork>
 </figure>

@@ -38,7 +38,7 @@
 </address>
 </author>
 
-<date year="2023" month="May" day="16"/>
+<date year="2023" month="August" day="1"/>
 <area>Applications</area>
 <workgroup>Registration Protocols Extensions (regext)</workgroup>
 
@@ -149,7 +149,7 @@ This extension defines an additional element for EPP <spanx style="verb">&lt;inf
 </t>
 
 <t>
-The <spanx style="verb">&lt;info&gt;</spanx> response <bcp14>MAY</bcp14> contain an <spanx style="verb">&lt;extension&gt;</spanx> element, which <bcp14>MAY</bcp14> contain a <spanx style="verb">&lt;ttl:infData&gt;</spanx> element.
+When a server receives a domain or host <spanx style="verb">&lt;info&gt;</spanx> command from a client which included the extension namespace in the <spanx style="verb">&lt;svcExtension&gt;</spanx> element of the <spanx style="verb">&lt;login&gt;</spanx> command, the response <bcp14>MUST</bcp14> contain an <spanx style="verb">&lt;extension&gt;</spanx> element, which <bcp14>MUST</bcp14> contain a <spanx style="verb">&lt;ttl:infData&gt;</spanx> element.
 This element contains a single <spanx style="verb">&lt;ttl:secs&gt;</spanx> element.
 </t>
 
@@ -434,13 +434,13 @@ In domain name registries, these object types have a hierarchical relationship, 
 
 <t>
 When publishing <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> for host objects, TTL values for host objects <bcp14>SHOULD</bcp14> take precedence over the TTL of the superordinate domain object.
-However, if no TTL value is specified for a subordinate host object, but a TTL value <em>is</em> specified for the superordinate domain object, then the domain object's TTL value <bcp14>SHOULD</bcp14> be used for the host object instead of the default TTL value.
+However, if no TTL value is specified for a subordinate host object, but a TTL value <em>is</em> specified for the superordinate domain object, then the domain object's TTL value <bcp14>MAY</bcp14> be used for the host object instead of the default TTL value.
 </t>
 </section>
 
 <section title="Use of TTL values for IDN variants">
 <t>
-If a domain name has variants (<xref target="RFC6927"/>) that are linked to that domain, then any <spanx style="verb">NS</spanx> or <spanx style="verb">DNAME</spanx> records published for those variants <bcp14>SHOULD</bcp14> use the same TTL as that used for the primary domain.
+If a domain name has variants (<xref target="RFC6927"/>) that are linked to that domain, then any <spanx style="verb">NS</spanx> or <spanx style="verb">DNAME</spanx> records published for those variants <bcp14>MAY</bcp14> use the same TTL as that used for the primary domain.
 </t>
 </section>
 </section>
@@ -483,7 +483,7 @@ This arises due to a misunderstanding about how TTLs work.
 </t>
 
 <t>
-Client implementations of this specification <bcp14>SHOULD</bcp14> ensure that the operator understands that changes to a TTL are only effective in shortening transition periods if implemented a period of time &mdash; at least equal to the current TTL &mdash; <em>before</em> the planned change.
+Client implementations of this specification <bcp14>SHOULD</bcp14> ensure that the user understands that changes to a TTL are only effective in shortening transition periods if implemented a period of time &mdash; at least equal to the current TTL &mdash; <em>before</em> the planned change.
 </t>
 </section>
 </section>

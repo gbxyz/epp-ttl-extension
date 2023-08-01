@@ -618,6 +618,10 @@ The formal syntax presented here is a complete schema representation of the exte
 <section title="Change from 00 to 01"><ol>
 
 <li>
+Incorporate feedback from Jim Gould.
+</li>
+
+<li>
 Add wording to describe how TTL values are jointly managed by both clients and servers.
 </li>
 

@@ -600,6 +600,10 @@ The formal syntax presented here is a complete schema representation of the exte
 <section title="Change from 01 to 02"><ol>
 
 <li>
+Renamed the <spanx style="verb">ttl:seconds</spanx> XSD type to <spanx style="verb">ttl:container</spanx>, and the <spanx style="verb">ttl:nonNegativeInteger</spanx> type to <spanx style="verb">ttl:ttlType</spanx>, to permit multiple TTL values.
+</li>
+
+<li>
 Converted XML instances from artwork to source code.
 </li>
 

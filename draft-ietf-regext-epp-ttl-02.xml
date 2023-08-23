@@ -19,7 +19,7 @@
 <?rfc subcompact="no" ?>
 <?rfc comments="yes" ?>
 <?rfc inline="yes" ?>
-<rfc category="std" docName="draft-ietf-regext-epp-ttl-02" ipr="trust200902" submissionType="IETF" consensus="true">
+<rfc category="std" docName="draft-ietf-regext-epp-ttl-02" ipr="trust200902" submissionType="IETF" consensus="true" xmlns:xi="http://www.w3.org/2001/XInclude">
 
 <front>
 <title abbrev="TTL mapping for EPP">Extensible Provisioning Protocol (EPP) mapping for DNS Time-To-Live (TTL) values</title>
@@ -64,7 +64,7 @@ These records include, at minimum, one or more <spanx style="verb">NS</spanx> re
 </t>
 
 <t>
-Typically, the Time-To-Live value (TTL, see Section 5 of <xref target="RFC8499" />) of these records is determined by the registry operator.
+Typically, the Time-To-Live value (TTL, see Section 5 of <xref target="RFC8499"/>) of these records is determined by the registry operator.
 However, in some circumstances it may be desirable to allow the sponsoring client of a domain name to change the TTL used for that domain: for example, to reduce the amount of time required to complete a change of DNS servers, DNSSEC deployment or key rollover, or to allow for fast rollback of such changes.
 </t>
 
@@ -153,91 +153,13 @@ This element contains a single <spanx style="verb">&lt;ttl:secs&gt;</spanx> elem
 Example domain <spanx style="verb">&lt;info&gt;</spanx> response:
 </t>
 
-<sourcecode>
-S: &lt;?xml version="1.0" encoding="utf-8" standalone="no"?&gt;
-S: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
-S:   &lt;response&gt;
-S:     &lt;result code="1000"&gt;
-S:       &lt;msg&gt;Command completed successfully&lt;/msg&gt;
-S:     &lt;/result&gt;
-S:     &lt;resData&gt;
-S:       &lt;domain:infData
-S:         xmlns:domain="urn:ietf:params:xml:ns:domain-1.0"&gt;
-S:         &lt;domain:name&gt;example.com&lt;/domain:name&gt;
-S:         &lt;domain:roid&gt;EXAMPLE1-REP&lt;/domain:roid&gt;
-S:         &lt;domain:status s="ok" /&gt;
-S:         &lt;domain:registrant&gt;jd1234&lt;/domain:registrant&gt;
-S:         &lt;domain:contact type="admin"&gt;sh8013&lt;/domain:contact&gt;
-S:         &lt;domain:contact type="tech"&gt;sh8013&lt;/domain:contact&gt;
-S:         &lt;domain:ns&gt;
-S:           &lt;domain:hostObj&gt;ns1.example.com&lt;/domain:hostObj&gt;
-S:           &lt;domain:hostObj&gt;ns1.example.net&lt;/domain:hostObj&gt;
-S:         &lt;/domain:ns&gt;
-S:         &lt;domain:clID&gt;ClientX&lt;/domain:clID&gt;
-S:         &lt;domain:crID&gt;ClientY&lt;/domain:crID&gt;
-S:         &lt;domain:crDate&gt;1999-04-03T22:00:00.0Z&lt;/domain:crDate&gt;
-S:         &lt;domain:upID&gt;ClientX&lt;/domain:upID&gt;
-S:         &lt;domain:upDate&gt;1999-12-03T09:00:00.0Z&lt;/domain:upDate&gt;
-S:         &lt;domain:exDate&gt;2005-04-03T22:00:00.0Z&lt;/domain:exDate&gt;
-S:         &lt;domain:trDate&gt;2000-04-08T09:00:00.0Z&lt;/domain:trDate&gt;
-S:         &lt;domain:authInfo&gt;
-S:           &lt;domain:pw&gt;2fooBAR&lt;/domain:pw&gt;
-S:         &lt;/domain:authInfo&gt;
-S:       &lt;/domain:infData&gt;
-S:     &lt;/resData&gt;
-S:     &lt;extension&gt;
-S:       &lt;ttl:infData
-S:         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0"&gt;
-S:         &lt;ttl:secs&gt;3600&lt;/ttl:secs&gt;
-S:       &lt;/ttl:infData&gt;
-S:     &lt;/extension&gt;
-S:     &lt;trID&gt;
-S:       &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
-S:       &lt;svTRID&gt;54322-XYZ&lt;/svTRID&gt;
-S:     &lt;/trID&gt;
-S:   &lt;/response&gt;
-S: &lt;/epp&gt;</sourcecode>
+<sourcecode><xi:include parse="text" href="examples/domain-info-response.xml.txt"/></sourcecode>
 
 <t>
 Example host <spanx style="verb">&lt;info&gt;</spanx> response:
 </t>
 
-<sourcecode>S:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
-S: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
-S:   &lt;response&gt;
-S:     &lt;result code="1000"&gt;
-S:       &lt;msg&gt;Command completed successfully&lt;/msg&gt;
-S:     &lt;/result&gt;
-S:     &lt;resData&gt;
-S:       &lt;host:infData
-S:        xmlns:host="urn:ietf:params:xml:ns:host-1.0"&gt;
-S:         &lt;host:name&gt;ns1.example.com&lt;/host:name&gt;
-S:         &lt;host:roid&gt;NS1_EXAMPLE1-REP&lt;/host:roid&gt;
-S:         &lt;host:status s="linked"/&gt;
-S:         &lt;host:status s="clientUpdateProhibited"/&gt;
-S:         &lt;host:addr ip="v4"&gt;192.0.2.2&lt;/host:addr&gt;
-S:         &lt;host:addr ip="v4"&gt;192.0.2.29&lt;/host:addr&gt;
-S:         &lt;host:addr ip="v6"&gt;1080::8:800:200C:417A&lt;/host:addr&gt;
-S:         &lt;host:clID&gt;ClientY&lt;/host:clID&gt;
-S:         &lt;host:crID&gt;ClientX&lt;/host:crID&gt;
-S:         &lt;host:crDate&gt;1999-04-03T22:00:00.0Z&lt;/host:crDate&gt;
-S:         &lt;host:upID&gt;ClientX&lt;/host:upID&gt;
-S:         &lt;host:upDate&gt;1999-12-03T09:00:00.0Z&lt;/host:upDate&gt;
-S:         &lt;host:trDate&gt;2000-04-08T09:00:00.0Z&lt;/host:trDate&gt;
-S:       &lt;/host:infData&gt;
-S:     &lt;/resData&gt;
-S:      &lt;extension&gt;
-S:        &lt;ttl:infData
-S:          xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0"&gt;
-S:          &lt;ttl:secs&gt;3600&lt;/ttl:secs&gt;
-S:        &lt;/ttl:infData&gt;
-S:      &lt;/extension&gt;
-S:     &lt;trID&gt;
-S:       &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
-S:       &lt;svTRID&gt;54322-XYZ&lt;/svTRID&gt;
-S:     &lt;/trID&gt;
-S:   &lt;/response&gt;
-S: &lt;/epp&gt;</sourcecode>
+<sourcecode><xi:include parse="text" href="examples/host-info-response.xml.txt"/></sourcecode>
 
 </section>
 </section>
@@ -258,62 +180,13 @@ This element contains a single <spanx style="verb">&lt;ttl:secs&gt;</spanx> elem
 Example domain <spanx style="verb">&lt;create&gt;</spanx> command:
 </t>
 
-<sourcecode>C: &lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
-C: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
-C:   &lt;command&gt;
-C:     &lt;create&gt;
-C:       &lt;domain:create
-C:        xmlns:domain="urn:ietf:params:xml:ns:domain-1.0"&gt;
-C:         &lt;domain:name&gt;example.com&lt;/domain:name&gt;
-C:         &lt;domain:period unit="y"&gt;2&lt;/domain:period&gt;
-C:         &lt;domain:ns&gt;
-C:           &lt;domain:hostObj&gt;ns1.example.net&lt;/domain:hostObj&gt;
-C:           &lt;domain:hostObj&gt;ns2.example.net&lt;/domain:hostObj&gt;
-C:         &lt;/domain:ns&gt;
-C:         &lt;domain:registrant&gt;jd1234&lt;/domain:registrant&gt;
-C:         &lt;domain:contact type="admin"&gt;sh8013&lt;/domain:contact&gt;
-C:         &lt;domain:contact type="tech"&gt;sh8013&lt;/domain:contact&gt;
-C:         &lt;domain:authInfo&gt;
-C:           &lt;domain:pw&gt;2fooBAR&lt;/domain:pw&gt;
-C:         &lt;/domain:authInfo&gt;
-C:       &lt;/domain:create&gt;
-C:     &lt;/create&gt;
-C:     &lt;extension&gt;
-C:       &lt;ttl:create
-C:         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0"&gt;
-C:         &lt;ttl:secs&gt;3600&lt;/ttl:secs&gt;
-C:       &lt;/ttl:create&gt;
-C:     &lt;/extension&gt;
-C:     &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
-C:   &lt;/command&gt;
-C: &lt;/epp&gt;</sourcecode>
+<sourcecode><xi:include parse="text" href="examples/domain-create-command.xml.txt"/></sourcecode>
 
 <t>
 Example host <spanx style="verb">&lt;create&gt;</spanx> command:
 </t>
 
-<sourcecode>C:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
-C: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
-C:   &lt;command&gt;
-C:     &lt;create&gt;
-C:       &lt;host:create
-C:        xmlns:host="urn:ietf:params:xml:ns:host-1.0"&gt;
-C:         &lt;host:name&gt;ns1.example.com&lt;/host:name&gt;
-C:         &lt;host:addr ip="v4"&gt;192.0.2.2&lt;/host:addr&gt;
-C:         &lt;host:addr ip="v4"&gt;192.0.2.29&lt;/host:addr&gt;
-C:         &lt;host:addr ip="v6"&gt;1080::8:800:200C:417A&lt;/host:addr&gt;
-C:       &lt;/host:create&gt;
-C:     &lt;/create&gt;
-C:     &lt;extension&gt;
-C:       &lt;ttl:create
-C:         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0"&gt;
-C:         &lt;ttl:secs&gt;3600&lt;/ttl:secs&gt;
-C:       &lt;/ttl:create&gt;
-C:     &lt;/extension&gt;
-C:     &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
-C:   &lt;/command&gt;
-C: &lt;/epp&gt;
-</sourcecode>
+<sourcecode><xi:include parse="text" href="examples/host-create-command.xml.txt"/></sourcecode>
 
 <t>
 If an EPP server receives a <spanx style="verb">&lt;create&gt;</spanx> command containing a TTL that is outside the server's permitted range, it <bcp14>MUST</bcp14> reject the command with a <spanx style="verb">2306</spanx> "Parameter value policy error" response.
@@ -335,59 +208,13 @@ This element contains a single <spanx style="verb">&lt;ttl:secs&gt;</spanx> elem
 Example domain <spanx style="verb">&lt;update&gt;</spanx> command:
 </t>
 
-<sourcecode>
-C: &lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
-C: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
-C:      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
-C:   &lt;command&gt;
-C:     &lt;update&gt;
-C:       &lt;domain:update
-C:        xmlns:domain="urn:ietf:params:xml:ns:domain-1.0"&gt;
-C:         &lt;domain:name&gt;example.com&lt;/domain:name&gt;
-C:       &lt;/domain:update&gt;
-C:     &lt;/update&gt;
-C:     &lt;extension&gt;
-C:        &lt;ttl:update&gt;
-C:          xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0"&gt;
-C:          &lt;ttl:secs&gt;3600&lt;/ttl:secs&gt;
-C:        &lt;/ttl:update&gt;
-C:      &lt;/extension&gt;
-C:     &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
-C:   &lt;/command&gt;
-C: &lt;/epp&gt;</sourcecode>
+<sourcecode><xi:include parse="text" href="examples/domain-update-command.xml.txt"/></sourcecode>
 
 <t>
 Example host <spanx style="verb">&lt;update&gt;</spanx> command:
 </t>
 
-<sourcecode>C:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
-C: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
-C:   &lt;command&gt;
-C:     &lt;update&gt;
-C:       &lt;host:update
-C:        xmlns:host="urn:ietf:params:xml:ns:host-1.0"&gt;
-C:         &lt;host:name&gt;ns1.example.com&lt;/host:name&gt;
-C:         &lt;host:add&gt;
-C:           &lt;host:addr ip="v4"&gt;192.0.2.22&lt;/host:addr&gt;
-C:           &lt;host:status s="clientUpdateProhibited"/&gt;
-C:         &lt;/host:add&gt;
-C:         &lt;host:rem&gt;
-C:           &lt;host:addr ip="v6"&gt;1080::8:800:200C:417A&lt;/host:addr&gt;
-C:         &lt;/host:rem&gt;
-C:         &lt;host:chg&gt;
-C:           &lt;host:name&gt;ns2.example.com&lt;/host:name&gt;
-C:         &lt;/host:chg&gt;
-C:       &lt;/host:update&gt;
-C:     &lt;/update&gt;
-C:     &lt;extension&gt;
-C:        &lt;ttl:update&gt;
-C:          xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0"&gt;
-C:          &lt;ttl:secs&gt;3600&lt;/ttl:secs&gt;
-C:        &lt;/ttl:update&gt;
-C:      &lt;/extension&gt;
-C:     &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
-C:   &lt;/command&gt;
-C: &lt;/epp&gt;</sourcecode>
+<sourcecode><xi:include parse="text" href="examples/host-update-command.xml.txt"/></sourcecode>
 
 <t>
 If an EPP server receives an <spanx style="verb">&lt;update&gt;</spanx> command containing a TTL that is outside the server's permitted range, it <bcp14>MUST</bcp14> reject the command with a <spanx style="verb">2306</spanx> "Parameter value policy error" response.
@@ -467,7 +294,7 @@ This arises due to a misunderstanding about how TTLs work.
 </t>
 
 <t>
-Client implementations of this specification <bcp14>SHOULD</bcp14> ensure that the user understands that changes to a TTL are only effective in shortening transition periods if implemented a period of time &mdash; at least equal to the current TTL &mdash; <em>before</em> the planned change.
+Client implementations of this specification <bcp14>SHOULD</bcp14> ensure that the user understands that changes to a TTL are only effective in shortening transition periods if implemented a period of time &#8212; at least equal to the current TTL &#8212; <em>before</em> the planned change.
 </t>
 </section>
 </section>
@@ -561,38 +388,7 @@ The details of the registration are as follows:
 The formal syntax presented here is a complete schema representation of the extension suitable for automated validation of EPP XML instances.
 </t>
 
-<sourcecode>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;schema
-  targetNamespace=&quot;urn:ietf:params:xml:ns:epp:ttl-1.0&quot;
-  xmlns:ttl=&quot;urn:ietf:params:xml:ns:epp:ttl-1.0&quot;
-  xmlns=&quot;http://www.w3.org/2001/XMLSchema&quot;
-  elementFormDefault=&quot;qualified&quot;&gt;
-  &lt;annotation&gt;
-    &lt;documentation&gt;
-      Extensible Provisioning Protocol v1.0 extension schema for
-      Time-To-Live (TTL) values for domain and host objects.
-    &lt;/documentation&gt;
-  &lt;/annotation&gt;
-
-  &lt;element name=&quot;create&quot;  type=&quot;ttl:container&quot;/&gt;
-  &lt;element name=&quot;update&quot;  type=&quot;ttl:container&quot;/&gt;
-  &lt;element name=&quot;infData&quot; type=&quot;ttl:container&quot;/&gt;
-
-  &lt;complexType name=&quot;container&quot;&gt;
-    &lt;choice&gt;
-      &lt;element name=&quot;secs&quot; type=&quot;ttl:ttlType&quot;/&gt;
-      &lt;element name=&quot;secs&quot;/&gt;
-    &lt;/choice&gt;
-  &lt;/complexType&gt;
-
-  &lt;simpleType name=&quot;ttlType&quot;&gt;
-    &lt;restriction base=&quot;nonNegativeInteger&quot;&gt;
-      &lt;minInclusive value=&quot;0&quot;/&gt;
-      &lt;maxInclusive value=&quot;2147483647&quot;/&gt;
-    &lt;/restriction&gt;
-  &lt;/simpleType&gt;
-&lt;/schema&gt;
-</sourcecode>
+<sourcecode><xi:include parse="text" href="ttl-1.0.xsd"/></sourcecode>
 </section>
 
 <section title="Change Log" anchor="change_log" removeInRFC="true">

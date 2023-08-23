@@ -121,9 +121,7 @@ The first contains a 32-bit unsigned integer indicating the TTL (expressed in se
 Example:
 </t>
 
-<figure>
-<artwork>&lt;ttl:secs&gt;3600&lt;/secs&gt;</artwork>
-</figure>
+<sourcecode>&lt;ttl:secs&gt;3600&lt;/secs&gt;</sourcecode>
 
 <t>
 The second form, which contains no content, indicates that (a) in <spanx style="verb">&lt;info&gt;</spanx> responses, no specific value has been set for the object, or (b) in <spanx style="verb">&lt;create&gt;</spanx> and <spanx style="verb">&lt;update&gt;</spanx> commands, that the client wishes to remove a previously set value, in favour of the default value.
@@ -134,9 +132,7 @@ Note that this does no mean that no TTL is published in DNS records (since this 
 Example:
 </t>
 
-<figure>
-<artwork>&lt;ttl:secs/&gt;</artwork>
-</figure>
+<sourcecode>&lt;ttl:secs/&gt;</sourcecode>
 
 </section>
 
@@ -157,8 +153,7 @@ This element contains a single <spanx style="verb">&lt;ttl:secs&gt;</spanx> elem
 Example domain <spanx style="verb">&lt;info&gt;</spanx> response:
 </t>
 
-<figure>
-<artwork>
+<sourcecode>
 S: &lt;?xml version="1.0" encoding="utf-8" standalone="no"?&gt;
 S: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
 S:   &lt;response&gt;
@@ -201,15 +196,13 @@ S:       &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
 S:       &lt;svTRID&gt;54322-XYZ&lt;/svTRID&gt;
 S:     &lt;/trID&gt;
 S:   &lt;/response&gt;
-S: &lt;/epp&gt;</artwork>
-</figure>
+S: &lt;/epp&gt;</sourcecode>
 
 <t>
 Example host <spanx style="verb">&lt;info&gt;</spanx> response:
 </t>
 
-<figure>
-<artwork>S:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
+<sourcecode>S:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
 S: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
 S:   &lt;response&gt;
 S:     &lt;result code="1000"&gt;
@@ -244,8 +237,7 @@ S:       &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
 S:       &lt;svTRID&gt;54322-XYZ&lt;/svTRID&gt;
 S:     &lt;/trID&gt;
 S:   &lt;/response&gt;
-S: &lt;/epp&gt;</artwork>
-</figure>
+S: &lt;/epp&gt;</sourcecode>
 
 </section>
 </section>
@@ -266,8 +258,7 @@ This element contains a single <spanx style="verb">&lt;ttl:secs&gt;</spanx> elem
 Example domain <spanx style="verb">&lt;create&gt;</spanx> command:
 </t>
 
-<figure>
-<artwork>C: &lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
+<sourcecode>C: &lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
 C: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
 C:   &lt;command&gt;
 C:     &lt;create&gt;
@@ -295,15 +286,13 @@ C:       &lt;/ttl:create&gt;
 C:     &lt;/extension&gt;
 C:     &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
 C:   &lt;/command&gt;
-C: &lt;/epp&gt;</artwork>
-</figure>
+C: &lt;/epp&gt;</sourcecode>
 
 <t>
 Example host <spanx style="verb">&lt;create&gt;</spanx> command:
 </t>
 
-<figure>
-<artwork>C:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
+<sourcecode>C:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
 C: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
 C:   &lt;command&gt;
 C:     &lt;create&gt;
@@ -324,8 +313,7 @@ C:     &lt;/extension&gt;
 C:     &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
 C:   &lt;/command&gt;
 C: &lt;/epp&gt;
-</artwork>
-</figure>
+</sourcecode>
 
 <t>
 If an EPP server receives a <spanx style="verb">&lt;create&gt;</spanx> command containing a TTL that is outside the server's permitted range, it <bcp14>MUST</bcp14> reject the command with a <spanx style="verb">2306</spanx> "Parameter value policy error" response.
@@ -347,8 +335,7 @@ This element contains a single <spanx style="verb">&lt;ttl:secs&gt;</spanx> elem
 Example domain <spanx style="verb">&lt;update&gt;</spanx> command:
 </t>
 
-<figure>
-<artwork>
+<sourcecode>
 C: &lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
 C: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
 C:      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
@@ -367,15 +354,13 @@ C:        &lt;/ttl:update&gt;
 C:      &lt;/extension&gt;
 C:     &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
 C:   &lt;/command&gt;
-C: &lt;/epp&gt;</artwork>
-</figure>
+C: &lt;/epp&gt;</sourcecode>
 
 <t>
 Example host <spanx style="verb">&lt;update&gt;</spanx> command:
 </t>
 
-<figure>
-<artwork>C:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
+<sourcecode>C:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
 C: &lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
 C:   &lt;command&gt;
 C:     &lt;update&gt;
@@ -402,8 +387,7 @@ C:        &lt;/ttl:update&gt;
 C:      &lt;/extension&gt;
 C:     &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
 C:   &lt;/command&gt;
-C: &lt;/epp&gt;</artwork>
-</figure>
+C: &lt;/epp&gt;</sourcecode>
 
 <t>
 If an EPP server receives an <spanx style="verb">&lt;update&gt;</spanx> command containing a TTL that is outside the server's permitted range, it <bcp14>MUST</bcp14> reject the command with a <spanx style="verb">2306</spanx> "Parameter value policy error" response.
@@ -577,8 +561,7 @@ The details of the registration are as follows:
 The formal syntax presented here is a complete schema representation of the extension suitable for automated validation of EPP XML instances.
 </t>
 
-<figure>
-<artwork>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+<sourcecode>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;schema
   targetNamespace=&quot;urn:ietf:params:xml:ns:epp:ttl-1.0&quot;
   xmlns:ttl=&quot;urn:ietf:params:xml:ns:epp:ttl-1.0&quot;
@@ -609,11 +592,18 @@ The formal syntax presented here is a complete schema representation of the exte
     &lt;/restriction&gt;
   &lt;/simpleType&gt;
 &lt;/schema&gt;
-</artwork>
-</figure>
+</sourcecode>
 </section>
 
 <section title="Change Log" anchor="change_log" removeInRFC="true">
+
+<section title="Change from 01 to 02"><ol>
+
+<li>
+Converted XML instances from artwork to source code.
+</li>
+
+</ol></section>
 
 <section title="Change from 00 to 01"><ol>
 

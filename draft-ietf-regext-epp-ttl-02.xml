@@ -574,18 +574,18 @@ The formal syntax presented here is a complete schema representation of the exte
     &lt;/documentation&gt;
   &lt;/annotation&gt;
 
-  &lt;element name=&quot;create&quot;  type=&quot;ttl:seconds&quot;/&gt;
-  &lt;element name=&quot;update&quot;  type=&quot;ttl:seconds&quot;/&gt;
-  &lt;element name=&quot;infData&quot; type=&quot;ttl:seconds&quot;/&gt;
+  &lt;element name=&quot;create&quot;  type=&quot;ttl:container&quot;/&gt;
+  &lt;element name=&quot;update&quot;  type=&quot;ttl:container&quot;/&gt;
+  &lt;element name=&quot;infData&quot; type=&quot;ttl:container&quot;/&gt;
 
-  &lt;complexType name=&quot;seconds&quot;&gt;
+  &lt;complexType name=&quot;container&quot;&gt;
     &lt;choice&gt;
-      &lt;element name=&quot;secs&quot; type=&quot;ttl:nonNegativeInteger&quot;/&gt;
+      &lt;element name=&quot;secs&quot; type=&quot;ttl:ttlType&quot;/&gt;
       &lt;element name=&quot;secs&quot;/&gt;
     &lt;/choice&gt;
   &lt;/complexType&gt;
 
-  &lt;simpleType name=&quot;nonNegativeInteger&quot;&gt;
+  &lt;simpleType name=&quot;ttlType&quot;&gt;
     &lt;restriction base=&quot;nonNegativeInteger&quot;&gt;
       &lt;minInclusive value=&quot;0&quot;/&gt;
       &lt;maxInclusive value=&quot;2147483647&quot;/&gt;

@@ -19,7 +19,7 @@
 <?rfc subcompact="no" ?>
 <?rfc comments="yes" ?>
 <?rfc inline="yes" ?>
-<rfc category="std" docName="draft-ietf-regext-epp-ttl-02" ipr="trust200902" submissionType="IETF" consensus="true" xmlns:xi="http://www.w3.org/2001/XInclude">
+<rfc category="std" docName="" ipr="trust200902" submissionType="IETF" consensus="true" xmlns:xi="http://www.w3.org/2001/XInclude">
 
 <front>
 <title abbrev="TTL mapping for EPP">Extensible Provisioning Protocol (EPP) mapping for DNS Time-To-Live (TTL) values</title>

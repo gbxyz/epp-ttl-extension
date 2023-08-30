@@ -17,16 +17,35 @@
   <element name="infData" type="ttl:container"/>
 
   <complexType name="container">
-    <choice>
-      <element name="secs" type="ttl:ttlType"/>
-      <element name="secs"/>
-    </choice>
+    <sequence>
+      <element name="secs" type="ttl:ttlType"
+        minOccurs="1" maxOccurs="4"/>
+    </sequence>
   </complexType>
 
-  <simpleType name="ttlType">
+  <simpleType name="ttlValue">
     <restriction base="nonNegativeInteger">
       <minInclusive value="0"/>
       <maxInclusive value="2147483647"/>
     </restriction>
   </simpleType>
+
+  <simpleType name="rrType">
+    <restriction base="string">
+      <enumeration value="NS"/>
+      <enumeration value="DS"/>
+      <enumeration value="A"/>
+      <enumeration value="AAAA"/>
+    </restriction>
+  </simpleType>
+
+  <complexType name="ttlType">
+    <simpleContent>
+      <extension base="ttl:ttlValue">
+        <attribute name="rrType"
+          type="ttl:rrType"
+          use="optional"/>
+      </extension>
+    </simpleContent>
+  </complexType>
 </schema>

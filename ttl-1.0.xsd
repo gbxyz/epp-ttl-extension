@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema
+  xmlns="http://www.w3.org/2001/XMLSchema"
   targetNamespace="urn:ietf:params:xml:ns:epp:ttl-1.0"
   xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0"
-  xmlns="http://www.w3.org/2001/XMLSchema"
   elementFormDefault="qualified">
   <annotation>
     <documentation>
-      Extensible Provisioning Protocol v1.0 extension schema for
-      Time-To-Live (TTL) values for domain and host objects.
+      Extensible Provisioning Protocol v1.0 extension
+      schema for Time-To-Live (TTL) values for domain
+      and host objects.
     </documentation>
   </annotation>
 
-  <element name="create"  type="ttl:container"/>
-  <element name="update"  type="ttl:container"/>
+  <element name="create" type="ttl:container"/>
+  <element name="update" type="ttl:container"/>
   <element name="infData" type="ttl:container"/>
 
   <complexType name="container">

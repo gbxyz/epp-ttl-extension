@@ -8,7 +8,7 @@ all:
 
 test:
 	@echo "Testing example XML files..."
-	@find examples -name '*.xml' -exec xmllint --noout --schema xsd/epp.xsd {} \;
+	@find examples -name '*.xml' \( -exec xmllint --noout --schema xsd/epp.xsd {} \; -or -quit \)
 
 build:
 	@echo "Compiling XML file..."

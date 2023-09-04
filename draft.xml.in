@@ -25,16 +25,16 @@
 <title abbrev="TTL mapping for EPP">Extensible Provisioning Protocol (EPP) mapping for DNS Time-To-Live (TTL) values</title>
 
 <author fullname="Gavin Brown" initials="G" surname="Brown">
-<organization>CentralNic Group plc</organization>
+<organization>ICANN</organization>
 <address>
 <postal>
-<street>44 Gutter Lane</street>
-<city>London</city>
-<code>EC2V 6BR</code>
-<country>GB</country>
+<street>12025 Waterfront Drive, Suite 300</street>
+<city>Los Angeles, CA</city>
+<code>90292</code>
+<country>US</country>
 </postal>
-<email>gavin.brown@centralnic.com</email>
-<uri>https://www.centralnic.com</uri>
+<email>gavin.brown@icann.org</email>
+<uri>https://www.icann.org/</uri>
 </address>
 </author>
 

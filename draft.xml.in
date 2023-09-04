@@ -29,7 +29,8 @@
 <address>
 <postal>
 <street>12025 Waterfront Drive, Suite 300</street>
-<city>Los Angeles, CA</city>
+<city>Los Angeles</city>
+<region>CA</region>
 <code>90292</code>
 <country>US</country>
 </postal>

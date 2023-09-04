@@ -1,5 +1,6 @@
 VERSION = 03
-DOC = draft-ietf-regext-epp-ttl-$(VERSION)
+DOC = "draft-ietf-regext-epp-ttl-$(VERSION)"
+XML = "$(DOC).xml"
 
 all:
 	@make test
@@ -15,14 +16,14 @@ build:
 	@find examples -name '*.xml' -exec cp -f {} {}.txt \;
 	@find examples -name '*-command.xml.txt' -exec sed -i "" "s/^/C:/g" {} \;
 	@find examples -name '*-response.xml.txt' -exec sed -i "" "s/^/S:/g" {} \;
-	@xmllint --xinclude "draft.xml.in" > "$(DOC).xml"
+	@xmllint --xinclude "draft.xml.in" > "$(XML)"
 
 	@rm -f examples/*.txt
 
-	@xmlstarlet edit --inplace --update '//rfc/@docName' --value "$(DOC)" "$(DOC).xml"
-	@xmlstarlet edit --inplace --update '//date/@year' --value $(shell gdate +%Y) "$(DOC).xml"
-	@xmlstarlet edit --inplace --update '//date/@month' --value $(shell gdate +%B) "$(DOC).xml"
-	@xmlstarlet edit --inplace --update '//date/@day' --value $(shell gdate +%d) "$(DOC).xml"
+	@xmlstarlet edit --inplace --update '//rfc/@docName' --value "$(DOC)"           "$(XML)"
+	@xmlstarlet edit --inplace --update '//date/@year'   --value $(shell gdate +%Y) "$(XML)"
+	@xmlstarlet edit --inplace --update '//date/@month'  --value $(shell gdate +%B) "$(XML)"
+	@xmlstarlet edit --inplace --update '//date/@day'    --value $(shell gdate +%d) "$(XML)"
 
 	@echo "Generating HTML file..."
-	@xml2rfc --html "$(DOC).xml"
+	@xml2rfc --html "$(XML)"

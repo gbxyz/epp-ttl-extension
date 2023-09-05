@@ -1,4 +1,4 @@
-VERSION = 03
+VERSION = 02
 DOC = "draft-ietf-regext-epp-ttl-$(VERSION)"
 XML = "$(DOC).xml"
 
@@ -27,3 +27,6 @@ build:
 
 	@echo "Generating HTML file..."
 	@xml2rfc --html "$(XML)"
+
+	@echo "Generating plaintext file..."
+	@xml2rfc "$(XML)"

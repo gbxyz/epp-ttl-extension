@@ -20,7 +20,10 @@
     <extension>
       <ttl:update
         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
-        <ttl:secs>3600</ttl:secs>
+        <ttl:ttls>
+          <ttl:A>3600</ttl:A>
+          <ttl:AAAA>3600</ttl:AAAA>
+        </ttl:ttls>
       </ttl:update>
     </extension>
     <clTRID>ABC-12345</clTRID>

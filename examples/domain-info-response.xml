@@ -32,7 +32,12 @@
     <extension>
       <ttl:infData
         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
-        <ttl:secs>3600</ttl:secs>
+        <ttl:ttls>
+          <ttl:NS/>
+          <ttl:DS>3600</ttl:DS>
+          <ttl:A>86400</ttl:A>
+          <ttl:AAAA>86400</ttl:AAAA>
+        </ttl:ttls>
       </ttl:infData>
     </extension>
     <trID>

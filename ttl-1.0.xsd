@@ -17,11 +17,25 @@
   <element name="infData" type="ttl:container"/>
 
   <complexType name="container">
+    <choice>
+      <element name="ttls" type="ttl:ttlSetType"/>
+      <element name="ttl" type="ttl:ttlOrNull"/>
+    </choice>
+  </complexType>
+
+  <complexType name="ttlSetType">
     <sequence>
-      <element name="secs" type="ttl:ttlType"
-        minOccurs="1" maxOccurs="4"/>
+      <element name="NS" type="ttl:ttlOrNull" minOccurs="0"/>
+      <element name="DS" type="ttl:ttlOrNull" minOccurs="0"/>
+      <element name="DNAME" type="ttl:ttlOrNull" minOccurs="0"/>
+      <element name="A" type="ttl:ttlOrNull" minOccurs="0"/>
+      <element name="AAAA" type="ttl:ttlOrNull" minOccurs="0"/>
     </sequence>
   </complexType>
+
+  <simpleType name="ttlOrNull">
+    <union memberTypes="token ttl:ttlValue" />
+  </simpleType>
 
   <simpleType name="ttlValue">
     <restriction base="nonNegativeInteger">
@@ -29,23 +43,4 @@
       <maxInclusive value="2147483647"/>
     </restriction>
   </simpleType>
-
-  <simpleType name="rrType">
-    <restriction base="string">
-      <enumeration value="NS"/>
-      <enumeration value="DS"/>
-      <enumeration value="A"/>
-      <enumeration value="AAAA"/>
-    </restriction>
-  </simpleType>
-
-  <complexType name="ttlType">
-    <simpleContent>
-      <extension base="ttl:ttlValue">
-        <attribute name="rrType"
-          type="ttl:rrType"
-          use="optional"/>
-      </extension>
-    </simpleContent>
-  </complexType>
 </schema>

@@ -21,7 +21,7 @@
     <extension>
       <ttl:create
         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
-        <ttl:secs>3600</ttl:secs>
+        <ttl:ttl>3600</ttl:ttl>
       </ttl:create>
     </extension>
     <clTRID>ABC-12345</clTRID>

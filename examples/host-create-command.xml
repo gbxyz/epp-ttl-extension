@@ -2,8 +2,7 @@
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
   <command>
     <create>
-      <host:create
-        xmlns:host="urn:ietf:params:xml:ns:host-1.0">
+      <host:create xmlns:host="urn:ietf:params:xml:ns:host-1.0">
         <host:name>ns1.example.com</host:name>
         <host:addr ip="v4">192.0.2.2</host:addr>
         <host:addr ip="v4">192.0.2.29</host:addr>
@@ -13,7 +12,8 @@
     <extension>
       <ttl:create
         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
-        <ttl:ttl>3600</ttl:ttl>
+        <ttl:ttl for="A"/>
+        <ttl:ttl for="AAAA">86400</ttl:ttl>
       </ttl:create>
     </extension>
     <clTRID>ABC-12345</clTRID>

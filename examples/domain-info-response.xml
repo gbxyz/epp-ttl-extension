@@ -5,14 +5,11 @@
       <msg>Command completed successfully</msg>
     </result>
     <resData>
-      <domain:infData
-        xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+      <domain:infData xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
         <domain:name>example.com</domain:name>
         <domain:roid>EXAMPLE1-REP</domain:roid>
         <domain:status s="ok"/>
         <domain:registrant>jd1234</domain:registrant>
-        <domain:contact type="admin">sh8013</domain:contact>
-        <domain:contact type="tech">sh8013</domain:contact>
         <domain:ns>
           <domain:hostObj>ns1.example.com</domain:hostObj>
           <domain:hostObj>ns1.example.net</domain:hostObj>
@@ -23,21 +20,12 @@
         <domain:upID>ClientX</domain:upID>
         <domain:upDate>1999-12-03T09:00:00.0Z</domain:upDate>
         <domain:exDate>2005-04-03T22:00:00.0Z</domain:exDate>
-        <domain:trDate>2000-04-08T09:00:00.0Z</domain:trDate>
-        <domain:authInfo>
-          <domain:pw>2fooBAR</domain:pw>
-        </domain:authInfo>
       </domain:infData>
     </resData>
     <extension>
-      <ttl:infData
-        xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
-        <ttl:ttls>
-          <ttl:NS/>
-          <ttl:DS>3600</ttl:DS>
-          <ttl:A>86400</ttl:A>
-          <ttl:AAAA>86400</ttl:AAAA>
-        </ttl:ttls>
+      <ttl:infData xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
+        <ttl:ttl for="NS">172800</ttl:ttl>
+        <ttl:ttl for="DS">300</ttl:ttl>
       </ttl:infData>
     </extension>
     <trID>

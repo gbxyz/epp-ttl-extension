@@ -12,35 +12,60 @@
     </documentation>
   </annotation>
 
+  <!--
+    extension elements can appear in <create> and <update> commands,
+    and <info> responses
+  -->
   <element name="create" type="ttl:container"/>
   <element name="update" type="ttl:container"/>
   <element name="infData" type="ttl:container"/>
 
   <complexType name="container">
-    <choice>
-      <element name="ttls" type="ttl:ttlSetType"/>
-      <element name="ttl" type="ttl:ttlOrNull"/>
-    </choice>
-  </complexType>
-
-  <complexType name="ttlSetType">
     <sequence>
-      <element name="NS" type="ttl:ttlOrNull" minOccurs="0"/>
-      <element name="DS" type="ttl:ttlOrNull" minOccurs="0"/>
-      <element name="DNAME" type="ttl:ttlOrNull" minOccurs="0"/>
-      <element name="A" type="ttl:ttlOrNull" minOccurs="0"/>
-      <element name="AAAA" type="ttl:ttlOrNull" minOccurs="0"/>
+      <element name="ttl" type="ttl:ttlType"
+        minOccurs="1" maxOccurs="5"/>
     </sequence>
   </complexType>
 
+  <complexType name="ttlType">
+    <simpleContent>
+      <extension base="ttl:ttlOrNull">
+        <attribute name="for" type="ttl:rrType" use="required"/>
+      </extension>
+    </simpleContent>
+  </complexType>
+
+  <!--
+    union type allowing the element to either contain nothing or a TTL
+    value
+  -->
   <simpleType name="ttlOrNull">
-    <union memberTypes="token ttl:ttlValue" />
+    <union memberTypes="ttl:emptyValue ttl:ttlValue" />
   </simpleType>
 
+  <!-- empty value type -->
+  <simpleType name="emptyValue">
+    <restriction base="token">
+      <length value="0"/>
+    </restriction>
+  </simpleType>
+
+  <!-- TTL value type -->
   <simpleType name="ttlValue">
     <restriction base="nonNegativeInteger">
       <minInclusive value="0"/>
       <maxInclusive value="2147483647"/>
+    </restriction>
+  </simpleType>
+
+  <!-- list of permitted RR types -->
+  <simpleType name="rrType">
+    <restriction base="string">
+      <enumeration value="NS"/>
+      <enumeration value="DS"/>
+      <enumeration value="DNAME"/>
+      <enumeration value="A"/>
+      <enumeration value="AAAA"/>
     </restriction>
   </simpleType>
 </schema>

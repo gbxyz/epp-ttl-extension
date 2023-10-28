@@ -5,8 +5,7 @@
       <msg>Command completed successfully</msg>
     </result>
     <resData>
-      <host:infData
-        xmlns:host="urn:ietf:params:xml:ns:host-1.0">
+      <host:infData xmlns:host="urn:ietf:params:xml:ns:host-1.0">
         <host:name>ns1.example.com</host:name>
         <host:roid>NS1_EXAMPLE1-REP</host:roid>
         <host:status s="linked"/>
@@ -25,10 +24,8 @@
     <extension>
       <ttl:infData
         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
-        <ttl:ttls>
-          <ttl:A>86400</ttl:A>
-          <ttl:AAAA>86400</ttl:AAAA>
-        </ttl:ttls>
+        <ttl:ttl for="A">86400</ttl:ttl>
+        <ttl:ttl for="AAAA">3600</ttl:ttl>
       </ttl:infData>
     </extension>
     <trID>

@@ -2,15 +2,13 @@
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
   <command>
     <update>
-      <domain:update
-        xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+      <domain:update xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
         <domain:name>example.com</domain:name>
       </domain:update>
     </update>
     <extension>
-      <ttl:update
-        xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
-        <ttl:ttl/>
+      <ttl:update xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
+        <ttl:ttl for="NS"/>
       </ttl:update>
     </extension>
     <clTRID>ABC-12345</clTRID>

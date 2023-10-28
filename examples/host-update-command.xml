@@ -2,8 +2,7 @@
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
   <command>
     <update>
-      <host:update
-        xmlns:host="urn:ietf:params:xml:ns:host-1.0">
+      <host:update xmlns:host="urn:ietf:params:xml:ns:host-1.0">
         <host:name>ns1.example.com</host:name>
         <host:add>
           <host:addr ip="v4">192.0.2.22</host:addr>
@@ -18,12 +17,9 @@
       </host:update>
     </update>
     <extension>
-      <ttl:update
-        xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
-        <ttl:ttls>
-          <ttl:A>3600</ttl:A>
-          <ttl:AAAA>3600</ttl:AAAA>
-        </ttl:ttls>
+      <ttl:update xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
+        <ttl:ttl for="A">86400</ttl:ttl>
+        <ttl:ttl for="AAAA">3600</ttl:ttl>
       </ttl:update>
     </extension>
     <clTRID>ABC-12345</clTRID>

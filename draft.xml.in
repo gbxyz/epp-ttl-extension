@@ -79,11 +79,11 @@ These records include, at minimum, one or more <spanx style="verb">NS</spanx> re
 
 <t>
 Typically, the Time-To-Live value (TTL, see Section 5 of <xref target="RFC8499"/>) of these records is determined by the registry operator.
-However, in some circumstances it may be desirable to allow the sponsoring client of a domain name to change the TTL used for that domain: for example, to reduce the amount of time required to complete a change of DNS servers, DNSSEC deployment or key rollover, or to allow for fast rollback of such changes.
+However, in some circumstances it may be desirable to allow the sponsoring client of a domain name to change the TTL values used for that domain's delegation: for example, to reduce the amount of time required to complete a change of DNS servers, DNSSEC deployment or key rollover, or to allow for fast rollback of such changes.
 </t>
 
 <t>
-This document describes an EPP extension to the domain name and host object mappings (described in <xref target="RFC5731"/> and <xref target="RFC5732"/>, respectively) which allows the sponsor of a domain name or host object to change the TTL associated with that object.
+This document describes an EPP extension to the domain name and host object mappings (described in <xref target="RFC5731"/> and <xref target="RFC5732"/>, respectively) which allows the sponsor of a domain name or host object to change the TTL values of the resource record(s) associated with that object.
 It also describes how EPP servers should handle TTLs specified by EPP clients, and how both parties co-ordinate to manage TTL values in response to changes in operational or security requirements.
 </t>
 
@@ -113,152 +113,122 @@ These namespaces and schema definitions are used to identify both the base proto
 </t>
 
 <t>
-The XML namespace prefixes used in examples (such as the string <spanx style="verb">ttl</spanx> in <spanx style="verb">ttl:secs</spanx>) are solely for illustrative purposes.
+The XML namespace prefixes used in examples (such as the string <spanx style="verb">ttl</spanx> in <spanx style="verb">ttl:create</spanx>) are solely for illustrative purposes.
 A conforming implementation <bcp14>MUST NOT</bcp14> require the use of these or any other specific namespace prefixes.
 </t>
 
 </section>
-</section>
 
-<section title="Extension elements">
+<section title="Extension elements" anchor="extension-elements">
 
 <t>
 This extension adds additional elements to the EPP domain and host mappings.
-Two modes are supported: a global TTL mode, where a single value is specified for all DNS records associated with the object, and an explicit mode, where specific TTL values are provided for each DNS record type.
-These modes are described further below.
 </t>
 
 <t>
-EPP servers <bcp14>MUST</bcp14> support at least one of these modes.
-If an EPP server received a command which uses an unsupported mode, it <bcp14>MUST</bcp14> respond with a <spanx style="verb">2102</spanx> "unimplemented option" error.
-</t>
-
-<section title="Global TTL value">
-
-<t>
-A global TTL value is represented using the <spanx style="verb">&lt;ttl:ttl&gt;</spanx> element. EPP clients and servers  use this element in EPP commands and responses to indicate the TTL value for all DNS records associated with an object.
+The <spanx style="verb">&lt;ttl:ttl&gt;</spanx> element is used to define TTL values for the DNS resource records associated with domain and host objects.
 </t>
 
 <t>
-The <spanx style="verb">&lt;ttl:ttl&gt;</spanx> element <bcp14>MAY</bcp14> contain an unsigned integer value indicating the TTL in seconds, or <bcp14>MAY</bcp14> be empty, in which case the server's default value will be applied.
-</t>
-
-<t>Example global TTL value:</t>
-
-<sourcecode>&lt;ttl:ttl&gt;3600&lt;/ttl:ttl&gt;</sourcecode>
-
-<t>Example global TTL default value:</t>
-
-<sourcecode>&lt;ttl:ttl/&gt;</sourcecode>
-
-</section>
-
-<section title="Explicit TTL values">
-
-<t>
-The explicit model allows distinct TTL values to be defined for each DNS record type associated with an object.
+It has a single <bcp14>REQUIRED</bcp14> attribute, <spanx style="verb">for</spanx>, which specifies the DNS record type to which the TTL value pertains.
 </t>
 
 <t>
-Explicit TTL values are represented using the <spanx style="verb">&lt;ttl:ttls&gt;</spanx> element. Depending on the object type, this element will have different child elements.
-</t>
-
-<section title="Domain objects">
-
-<t>
-For domain objects, the <spanx style="verb">&lt;ttl:ttls&gt;</spanx> element contains the following child elements:
+The XML schema found in <xref target="formal-syntax"/> of this document restricts the content of <spanx style="verb">&lt;ttl:ttl&gt;</spanx> elements to be either:
 </t>
 
 <ol>
-  
+
 <li>
-A <spanx style="verb">&lt;ttl:NS&gt;</spanx> element, which contains the TTL values for the <spanx style="verb">NS</spanx> records associated with the domain name;
+a non-negative integer, indicating the value of the TTL in seconds, or
 </li>
 
 <li>
-An <bcp14>OPTIONAL</bcp14> <spanx style="verb">&lt;ttl:DS&gt;</spanx> element, which contains the TTL values for the <spanx style="verb">DS</spanx> record(s) associated with the domain name;
-</li>
-
-<li>
-An <bcp14>OPTIONAL</bcp14> <spanx style="verb">&lt;ttl:DNAME&gt;</spanx> element, which contains the TTL values for the <spanx style="verb">DNAME</spanx> record associated with the domain name;
-</li>
-
-<li>
-An <bcp14>OPTIONAL</bcp14> <spanx style="verb">&lt;ttl:A&gt;</spanx> element, which contains the TTL values for the <spanx style="verb">A</spanx> records associated with the domain name;
-</li>
-
-<li>
-An <bcp14>OPTIONAL</bcp14> <spanx style="verb">&lt;ttl:AAAA&gt;</spanx> element, which contains the TTL values for the <spanx style="verb">AAAAA</spanx> records associated with the domain name.
+empty, in which case the server's default TTL for the given record type is to be applied.
 </li>
 
 </ol>
 
-<t>
-The <spanx style="verb">&lt;ttl:NS&gt;</spanx>, <spanx style="verb">&lt;ttl:DS&gt;</spanx>, <spanx style="verb">&lt;ttl:DNAME&gt;</spanx>, <spanx style="verb">&lt;ttl:A&gt;</spanx> and <spanx style="verb">&lt;ttl:AAAA&gt;</spanx> elements all have the same content model as the <spanx style="verb">&lt;ttl:ttl&gt;</spanx> element; that is, they may contain an unsigned integer, or may be empty, signifying the default value.
-</t>
+<section title="Examples">
+
+<section title="Explicit TTL value">
+
+<sourcecode>&lt;ttl:ttl for="NS"&gt;3600&lt;ttl:ttl&gt;</sourcecode>
+
+</section>
+
+<section title="Empty value indicating default TTL">
+
+<sourcecode>&lt;ttl:ttl for="NS"/&gt;</sourcecode>
+
+</section>
+
+</section>
+
+<section title="Domain objects">
 
 <t>
-Example explicit TTL values for a normal domain object:
+TTL values <bcp14>MAY</bcp14> be specified for the following DNS record types for domain objects:
 </t>
 
-<sourcecode>&lt;ttl:ttls&gt;
-  &lt;ttl:NS/&gt;
-  &lt;ttl:DS&gt;3600&lt;/ttl:DS&gt;
-&lt;/ttl:ttls&gt;</sourcecode>
+<ul>
+
+<li>
+<spanx style="verb">NS</spanx>;
+</li>
+
+<li>
+<spanx style="verb">DS</spanx>, if the server supports <xref target="RFC5910"/>;
+</li>
+
+<li>
+<spanx style="verb">DNAME</spanx>; if the server supports IDN variants that are activated using <spanx style="verb">DNAME</spanx> records;
+</li>
+
+<li>
+<spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx>, if the EPP server support the host attribute model.
+</li>
+
+</ul>
 
 <t>
-Example explicit TTL values for a domain object with IDN variants:
+Servers <bcp14>MUST</bcp14> reject domain <spanx style="verb">&lt;create&gt;</spanx> and <spanx style="verb">&lt;update&gt;</spanx> commands which specify TTL values for DNS record types other than those listed above.
 </t>
-
-<sourcecode>&lt;ttl:ttls&gt;
-  &lt;ttl:NS/&gt;
-  &lt;ttl:DNAME/&gt;
-&lt;/ttl:ttls&gt;</sourcecode>
 
 </section>
 
 <section title="Host objects">
 
-<t>For host objects, the <spanx style="verb">&lt;ttl:ttls&gt;</spanx> element <bcp14>MUST</bcp14> contain at least one of the following child elements:
+<t>
+TTL values <bcp14>MAY</bcp14> be specified for the following DNS record types for host objects:
 </t>
 
-<ol>
+<ul>
 
 <li>
-An <spanx style="verb">&lt;ttl:A&gt;</spanx> element, which contains the TTL values for the <spanx style="verb">A</spanx> records associated with the domain name, OR
+<spanx style="verb">A</spanx>, for IPv4 glue records;
 </li>
 
 <li>
-An <spanx style="verb">&lt;ttl:AAAA&gt;</spanx> element, which contains the TTL values for the <spanx style="verb">AAAAA</spanx> records associated with the domain name.
+<spanx style="verb">AAAA</spanx>, for IPv6 glue records.
 </li>
 
-</ol>
+</ul>
 
 <t>
-The <spanx style="verb">&lt;ttl:A&gt;</spanx> and <spanx style="verb">&lt;ttl:AAAA&gt;</spanx> elements all have the same content model as the <spanx style="verb">&lt;ttl:ttl&gt;</spanx> element; that is, they may contain an unsigned integer, or may be empty, signifying the default value.
-</t>
-
-<t>
-Example explicit TTL values for a host object:
-</t>
-
-<sourcecode>&lt;ttl:ttls&gt;
-  &lt;ttl:A&gt;86400&lt;/ttl:A&gt;
-  &lt;ttl:AAAA&gt;86400&lt;/ttl:AAAA&gt;
-&lt;/ttl:ttls&gt;</sourcecode>
-
-</section>
-
-<section title="Unused DNS record types">
-
-<t>
-This explicit TTL model permits the specifying of TTL values for <spanx style="verb">NS</spanx>, <spanx style="verb">DS</spanx>, <spanx style="verb">DNAME</spanx>, for domain objects, and <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> records for domain and host objects.
-However, conformant implementations <bcp14>SHOULD NOT</bcp14> specify TTL values for record types that are not in active use.
-For example, if a domain has no associated <spanx style="verb">DS</spanx> records, then setting a value for the <spanx style="verb">&lt;ttl:DS&gt;</spanx> element makes little sense.
-Similarly, if a host object has no IPv6 addresses, then the value of the <spanx style="verb">&lt;ttl:AAAA&gt;</spanx> element <bcp14>SHOULD NOT</bcp14> be specified.
+Servers <bcp14>MUST</bcp14> reject host <spanx style="verb">&lt;create&gt;</spanx> and <spanx style="verb">&lt;update&gt;</spanx> commands which specify TTL values for DNS record types other than those listed above.
 </t>
 
 </section>
+
+</section>
+
+<section title="Duplication of elements for the same DNS record type">
+
+<t>
+EPP command and response frames <bcp14>MUST NOT</bcp14> contain multiple <spanx style="verb">&lt;ttl:ttl&gt;</spanx> elements with the same <spanx style="verb">for</spanx> attribute value.
+Servers which receive a command frame that contains such elements <bcp14>MUST</bcp14> respond with a 2001 "command use error" response.
+</t>
 
 </section>
 
@@ -267,15 +237,15 @@ Similarly, if a host object has no IPv6 addresses, then the value of the <spanx 
 <section title="EPP command mapping">
 
 <section title="EPP query commands">
-<section title="EPP &lt;info&gt; command">
 
+<section title="EPP &lt;info&gt; command">
 <t>
 This extension defines an additional element for EPP <spanx style="verb">&lt;info&gt;</spanx> responses for domain and host objects.
 </t>
 
 <t>
 When a server receives a domain or host <spanx style="verb">&lt;info&gt;</spanx> command from a client which included the extension namespace in the <spanx style="verb">&lt;svcExtension&gt;</spanx> element of the <spanx style="verb">&lt;login&gt;</spanx> command, the response <bcp14>MUST</bcp14> contain an <spanx style="verb">&lt;extension&gt;</spanx> element, which <bcp14>MUST</bcp14> contain a <spanx style="verb">&lt;ttl:infData&gt;</spanx> element.
-This element <bcp14>MUST</bcp14> contain either a <spanx style="verb">&lt;ttl:ttl&gt;</spanx> element or a <spanx style="verb">&lt;ttl:ttls&gt;</spanx> element.
+This element <bcp14>MUST</bcp14> contain one or more <spanx style="verb">&lt;ttl:ttl&gt;</spanx> records as described in <xref target="extension-elements"/>.
 </t>
 
 <t>
@@ -291,18 +261,19 @@ Example host <spanx style="verb">&lt;info&gt;</spanx> response:
 <sourcecode><xi:include parse="text" href="examples/host-info-response.xml.txt"/></sourcecode>
 
 </section>
+
 </section>
 
 <section title="EPP transform commands">
-<section title="EPP &lt;create&gt; command">
 
+<section title="EPP &lt;create&gt; command">
 <t>
 This extension defines an additional element for EPP <spanx style="verb">&lt;create&gt;</spanx> commands for domain and host objects.
 </t>
 
 <t>
-The <spanx style="verb">&lt;create&gt;</spanx> command <bcp14>MAY</bcp14> contain an <spanx style="verb">&lt;extension&gt;</spanx> element which <bcp14>MAY</bcp14> contain a <spanx style="verb">&lt;ttl:create&gt;</spanx> element.
-This element <bcp14>MUST</bcp14> contain either a <spanx style="verb">&lt;ttl:ttl&gt;</spanx> element or a <spanx style="verb">&lt;ttl:ttls&gt;</spanx> element.
+The <spanx style="verb">&lt;command&gt;</spanx> element of the <spanx style="verb">&lt;create&gt;</spanx> command frame <bcp14>MAY</bcp14> contain an <spanx style="verb">&lt;extension&gt;</spanx> element which <bcp14>MAY</bcp14> contain a <spanx style="verb">&lt;ttl:create&gt;</spanx> element.
+This element <bcp14>MUST</bcp14> contain one or more <spanx style="verb">&lt;ttl:ttl&gt;</spanx> records as described in <xref target="extension-elements"/>.
 </t>
 
 <t>
@@ -329,8 +300,8 @@ This extension defines an additional element for EPP <spanx style="verb">&lt;upd
 </t>
 
 <t>
-The <spanx style="verb">&lt;update&gt;</spanx> command <bcp14>MAY</bcp14> contain an <spanx style="verb">&lt;extension&gt;</spanx> element which <bcp14>MAY</bcp14> contain a <spanx style="verb">&lt;ttl:update&gt;</spanx> element.
-This element <bcp14>MUST</bcp14> contain either a <spanx style="verb">&lt;ttl:ttl&gt;</spanx> element or a <spanx style="verb">&lt;ttl:ttls&gt;</spanx> element.
+The <spanx style="verb">&lt;command&gt;</spanx> element of the <spanx style="verb">&lt;update&gt;</spanx> command frame <bcp14>MAY</bcp14> contain an <spanx style="verb">&lt;extension&gt;</spanx> element which <bcp14>MAY</bcp14> contain a <spanx style="verb">&lt;ttl:update&gt;</spanx> element.
+This element <bcp14>MUST</bcp14> contain one or more <spanx style="verb">&lt;ttl:ttl&gt;</spanx> records as described in <xref target="extension-elements"/>.
 </t>
 
 <t>
@@ -358,26 +329,15 @@ If an EPP server receives an <spanx style="verb">&lt;update&gt;</spanx> command 
 <section title="Server processing of TTL values">
 
 <section title="Use of TTL values in delegation records" anchor="using_ttl_values">
+
 <t>
-EPP servers which implement this extension <bcp14>SHOULD</bcp14> use the values provided by EPP clients for the TTL values of <spanx style="verb">NS</spanx> and <spanx style="verb">DS</spanx> records published in the DNS for domain objects, and <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> records published in the DNS for host objects.
+EPP servers which implement this extension <bcp14>SHOULD</bcp14> use the values provided by EPP clients for the TTL values records published in the DNS for domain and and objects.
 </t>
 
 <t>
-EPP servers that use the "host attribute" model (described in section 1.1 of <xref target="RFC5731"/>) <bcp14>SHOULD</bcp14> use the TTL of the domain object when publishing <spanx style="verb">NS</spanx>, <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> records derived from host attributes.
+EPP servers that use the "host attribute" model (described in section 1.1 of <xref target="RFC5731"/>) <bcp14>SHOULD</bcp14> use any <spanx style="verb">A</spanx> and/or <spanx style="verb">AAAA</spanx> TTL values specified for the domain object when publishing <spanx style="verb">NS</spanx>, <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> records derived from host attributes.
 </t>
 
-</section>
-
-<section title="Relationship between host object and domain object TTL values">
-<t>
-The extension in this document allows TTL values to be configured for both domain and host objects.
-In domain name registries, these object types have a hierarchical relationship, in that a host object may be subordinate to a domain object: for example, the host object <spanx style="verb">ns1.example.com</spanx> is subordinate to the domain object <spanx style="verb">example.com</spanx>.
-</t>
-
-<t>
-When publishing <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> for host objects, TTL values for host objects <bcp14>SHOULD</bcp14> take precedence over the TTL of the superordinate domain object.
-However, if no TTL value is specified for a subordinate host object, but a TTL value <em>is</em> specified for the superordinate domain object, then the domain object's TTL value <bcp14>MAY</bcp14> be used for the host object instead of the default TTL value.
-</t>
 </section>
 
 <section title="Use of TTL values for IDN variants">
@@ -401,7 +361,7 @@ Additionally, server operators <bcp14>MAY</bcp14> implement an automatic reset o
 </t>
 
 <t>
-If a TTL value is changed out-of-band, EPP server operators <bcp14>MAY</bcp14> notify the sponsoring client using the EPP Change Poll extension (<xref target="RFC8590"/>), which provides a generalised method for EPP servrers to notify clients of changes to objects under their sponsorship.
+If a TTL value is changed out-of-band, EPP server operators <bcp14>MAY</bcp14> notify the sponsoring client using the EPP Change Poll extension (<xref target="RFC8590"/>), which provides a generalised method for EPP servers to notify clients of changes to objects under their sponsorship.
 </t>
 
 </section>
@@ -433,7 +393,7 @@ This arises due to a misunderstanding about how TTLs work.
 </t>
 
 <t>
-Client implementations of this specification <bcp14>SHOULD</bcp14> ensure that the user understands that changes to a TTL are only effective in shortening transition periods if implemented a period of time &#8212; at least equal to the current TTL &#8212; <em>before</em> the planned change.
+Client implementations of this specification <bcp14>SHOULD</bcp14> ensure that the user understands that changes to a TTL are only effective in shortening transition periods if implemented a period of time — at least equal to the current TTL — <em>before</em> the planned change.
 </t>
 
 </section>
@@ -563,7 +523,7 @@ The formal syntax presented here is a complete schema representation of the exte
 <section title="Change from 02 to 03"><ol>
 
 <li>
-Rolled back the <spanx style="verb">ttl:NS</spanx>/<spanx style="verb">ttl:DS</spanx>/etc syntax based on feedback.
+Revised syntax that removes the DNS record types from element names and makes them attributes.
 </li>
 
 </ol></section>

@@ -560,6 +560,14 @@ The formal syntax presented here is a complete schema representation of the exte
 
 <section title="Change Log" anchor="change_log" removeInRFC="true">
 
+<section title="Change from 02 to 03"><ol>
+
+<li>
+Rolled back the <spanx style="verb">ttl:NS</spanx>/<spanx style="verb">ttl:DS</spanx>/etc syntax based on feedback.
+</li>
+
+</ol></section>
+
 <section title="Change from 01 to 02"><ol>
 
 <li>

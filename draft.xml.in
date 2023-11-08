@@ -10,7 +10,9 @@
 <!ENTITY RFC8499 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8499.xml">
 <!ENTITY RFC8590 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8590.xml">
 ]>
+
 <?xml-stylesheet type="text/xsl" href="rfc2629.xslt" ?>
+
 <?rfc strict="yes" ?>
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
@@ -20,12 +22,22 @@
 <?rfc subcompact="no" ?>
 <?rfc comments="yes" ?>
 <?rfc inline="yes" ?>
-<rfc category="std" docName="" ipr="trust200902" submissionType="IETF" consensus="true" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+<rfc
+  category="std"
+  docName=""
+  ipr="trust200902"
+  submissionType="IETF"
+  consensus="true"
+  xmlns:xi="http://www.w3.org/2001/XInclude">
 
 <front>
 <title abbrev="TTL mapping for EPP">Extensible Provisioning Protocol (EPP) mapping for DNS Time-To-Live (TTL) values</title>
 
-<author fullname="Gavin Brown" initials="G" surname="Brown">
+<author
+  fullname="Gavin Brown"
+  initials="G"
+  surname="Brown">
 <organization>ICANN</organization>
 <address>
 <postal>
@@ -337,7 +349,9 @@ If an EPP server receives an <spanx style="verb">&lt;update&gt;</spanx> command 
 </t>
 
 </section>
+
 </section>
+
 </section>
 
 <section title="Server processing of TTL values">
@@ -366,13 +380,17 @@ However, if no TTL value is specified for a subordinate host object, but a TTL v
 </section>
 
 <section title="Use of TTL values for IDN variants">
+
 <t>
 If a domain name has variants (<xref target="RFC6927"/>) that are linked to that domain, then any <spanx style="verb">NS</spanx> or <spanx style="verb">DNAME</spanx> records published for those variants <bcp14>MAY</bcp14> use the same TTL as that used for the primary domain.
 </t>
+
 </section>
+
 </section>
 
 <section anchor="oob-changes" title="Out-of-band changes to TTL values">
+
 <t>
 EPP server operators <bcp14>MAY</bcp14>, in order to address operational or security issues, make changes to TTL values out-of-band (that is, not in response to an <spanx style="verb">&lt;update&gt;</spanx> command received from the sponsoring client).
 </t>
@@ -384,10 +402,13 @@ Additionally, server operators <bcp14>MAY</bcp14> implement an automatic reset o
 <t>
 If a TTL value is changed out-of-band, EPP server operators <bcp14>MAY</bcp14> notify the sponsoring client using the EPP Change Poll extension (<xref target="RFC8590"/>), which provides a generalised method for EPP servrers to notify clients of changes to objects under their sponsorship.
 </t>
+
 </section>
 
 <section anchor="operational-considerations" title="Operational considerations">
+
 <section title="Operational impact of TTL values">
+
 <t>
 Domain registry operators must strike a balance between, on the one hand, the desire of registrants for changes to their domains to be visible in the DNS quickly, and on the other, the increased DNS query traffic that short TTLs can bring.
 Historically, registry operators have used a global TTL value which was applied to all delegations within their zones, which could then be tuned to an optimum value.
@@ -404,6 +425,7 @@ Domain registry operators <bcp14>SHOULD</bcp14> implement limits on the maximum 
 </section>
 
 <section title="When the TTL should be changed">
+
 <t>
 A common operational mistake is changing of DNS record TTLs during or after the planned change to the records themselves.
 This arises due to a misunderstanding about how TTLs work.
@@ -412,10 +434,13 @@ This arises due to a misunderstanding about how TTLs work.
 <t>
 Client implementations of this specification <bcp14>SHOULD</bcp14> ensure that the user understands that changes to a TTL are only effective in shortening transition periods if implemented a period of time &#8212; at least equal to the current TTL &#8212; <em>before</em> the planned change.
 </t>
+
 </section>
+
 </section>
 
 <section anchor="security-considerations" title="Security considerations">
+
 <t>
 Some malicious actors use a technique called "fast flux DNS" (<xref target="SAC-025"/>) to rapidly change the DNS configuration for a zone in order to evade takedown and law enforcement activity.
 </t>
@@ -423,10 +448,13 @@ Some malicious actors use a technique called "fast flux DNS" (<xref target="SAC-
 <t>
 Registry operators <bcp14>SHOULD</bcp14> take this into consideration when setting the lower limit on TTL values, since a short TTL on delegations has the potential to enhance the effectiveness of fast flux techniques on evasion.
 </t>
+
 </section>
 
 <section anchor="IANA" title="IANA considerations">
+
 <section title="XML namespace">
+
 <t>
 This document uses URNs to describe XML namespaces and XML schemas conforming to a registry mechanism described in <xref target="RFC3688"/>.
 The following URI assignment has been made by IANA:
@@ -435,67 +463,88 @@ The following URI assignment has been made by IANA:
 <t>
 Registration for the TTL namespace:
 </t>
+
 <list>
 <t>
 <strong>URI:</strong> <spanx style="verb">urn:ietf:params:xml:ns:epp:ttl-1.0</spanx>
 </t>
+
 <t>
 <strong>Registrant Contact:</strong> See the author of this document
 </t>
+
 <t>
 <strong>XML:</strong> None. Namespace URIs do not represent an XML specification
 </t>
-</list>
 
+</list>
 <t>
 Registration for the TTL XML schema:
 </t>
+
 <list>
+
 <t>
 <strong>URI:</strong> <spanx style="verb">urn:ietf:params:xml:schema:epp:ttl-1.0</spanx>
 </t>
+
 <t>
 <strong>Registrant Contact:</strong> See the author of this document
 </t>
+
 <t>
 <strong>XML:</strong> See the "<xref target="formal-syntax" format="title"/>" section of this document
 </t>
+
 </list>
+
 </section>
 
 <section title="EPP extension registry">
+
 <t>
 The EPP extension described in this document has been registered by the IANA in the Extensions for the "Extensible Provisioning Protocol (EPP)" registry described in <xref target="RFC7451"/>.
 The details of the registration are as follows:
 </t>
 
 <list>
+
 <t>
 <strong>Name of Extension:</strong> Extensible Provisioning Protocol (EPP) Mapping for DNS Time-To-Live (TTL) values
 </t>
+
 <t>
 <strong>Document Status:</strong> Standards Track
 </t>
+
 <t>
 <strong>Reference:</strong> URL of this document
 </t>
+
 <t>
 <strong>Registrant Name and Email Address:</strong> See the author of this document
 </t>
+
 <t>
 <strong>TLDs:</strong> Any
 </t>
+
 <t>
 <strong>IPR Disclosure:</strong> None
 </t>
+
 <t>
 <strong>Status:</strong> Active
 </t>
+
 <t>
 <strong>Notes:</strong> None
 </t>
+
 </list>
+
 </section>
+
 </section>
 
 <section anchor="formal-syntax" title="Formal syntax">
@@ -558,6 +607,7 @@ Added a <xref target="change_log">Change Log</xref>.
 </middle>
 
 <back>
+
 <references title="Normative references">
 &RFC2119;
 &RFC3688;
@@ -568,8 +618,11 @@ Added a <xref target="change_log">Change Log</xref>.
 &RFC8499;
 &RFC8590;
 </references>
+
 <references title="Informative references">
+
 &RFC6927;
+
 <reference anchor="SAC-025" target="https://www.icann.org/en/system/files/files/sac-025-en.pdf">
   <front>
     <title>SSAC Advisory on Fast Flux Hosting and DNS</title>
@@ -578,6 +631,9 @@ Added a <xref target="change_log">Change Log</xref>.
   </front>
   <seriesInfo name="SAC" value="25"/>
 </reference>
+
 </references>
+
 </back>
+
 </rfc>

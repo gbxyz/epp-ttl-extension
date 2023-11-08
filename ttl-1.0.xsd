@@ -13,8 +13,8 @@
   </annotation>
 
   <!--
-    extension elements can appear in <create> and <update> commands,
-    and <info> responses
+    extension elements can appear in <create> and
+    <update> commands, and <info> responses
   -->
   <element name="create" type="ttl:container"/>
   <element name="update" type="ttl:container"/>
@@ -30,14 +30,17 @@
   <complexType name="ttlType">
     <simpleContent>
       <extension base="ttl:ttlOrNull">
-        <attribute name="for" type="ttl:rrType" use="required"/>
+        <attribute
+          name="for"
+          type="ttl:rrType"
+          use="required"/>
       </extension>
     </simpleContent>
   </complexType>
 
   <!--
-    union type allowing the element to either contain nothing or a TTL
-    value
+    union type allowing the element to either contain
+    nothing or a TTL value
   -->
   <simpleType name="ttlOrNull">
     <union memberTypes="ttl:emptyValue ttl:ttlValue" />

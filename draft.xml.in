@@ -265,6 +265,7 @@ Similarly, if a host object has no IPv6 addresses, then the value of the <spanx 
 </section>
 
 <section title="EPP command mapping">
+
 <section title="EPP query commands">
 <section title="EPP &lt;info&gt; command">
 
@@ -554,6 +555,7 @@ The formal syntax presented here is a complete schema representation of the exte
 </t>
 
 <sourcecode><xi:include parse="text" href="ttl-1.0.xsd"/></sourcecode>
+
 </section>
 
 <section title="Change Log" anchor="change_log" removeInRFC="true">

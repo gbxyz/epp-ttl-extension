@@ -74,7 +74,7 @@ The source for this draft, and an issue tracker, may can be found at <eref targe
 
 <t>
 The principal output of any domain name provisioning system is a DNS zone file, which contains the delegation record(s) for names registered within a zone (such as a top-level domain).
-These records include, at minimum, one or more <spanx style="verb">NS</spanx> records, but may also include <spanx style="verb">A</spanx> and/or <spanx style="verb">AAAA</spanx> glue records, <spanx style="verb">DS</spanx> records, and <spanx style="verb">DNAME</spanx> records for IDN variants (<xref target="RFC6927"/>).
+These records typically include one or more <spanx style="verb">NS</spanx> records, but may also include <spanx style="verb">DS</spanx> records for domains secured with DNSSEC, and <spanx style="verb">DNAME</spanx> records for IDN variants (<xref target="RFC6927"/>). Where glue is required, <spanx style="verb">A</spanx> and/or <spanx style="verb">AAAA</spanx> records may also be published for nameservers.
 </t>
 
 <t>
@@ -95,7 +95,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 <t>
 In examples, "C:" represents lines sent by a protocol client and "S:" represents lines returned by a protocol server.
-Indentation and white space in examples are provided only to illustrate element relationships and are not REQUIRED features of this protocol.
+Indentation and white space in examples are provided only to illustrate element relationships and are not required features of this protocol.
 </t>
 
 <t>
@@ -290,7 +290,7 @@ Example host <spanx style="verb">&lt;create&gt;</spanx> command:
 <sourcecode><xi:include parse="text" href="examples/host-create-command.xml.txt"/></sourcecode>
 
 <t>
-If an EPP server receives a <spanx style="verb">&lt;create&gt;</spanx> command containing a TTL that is outside the server's permitted range, it <bcp14>MUST</bcp14> reject the command with a <spanx style="verb">2306</spanx> "Parameter value policy error" response.
+If an EPP server receives a <spanx style="verb">&lt;create&gt;</spanx> command containing a TTL value that is outside the server's permitted range, it <bcp14>MUST</bcp14> reject the command with a <spanx style="verb">2306</spanx> "Parameter value policy error" response.
 </t>
 
 </section>
@@ -318,7 +318,7 @@ Example host <spanx style="verb">&lt;update&gt;</spanx> command:
 <sourcecode><xi:include parse="text" href="examples/host-update-command.xml.txt"/></sourcecode>
 
 <t>
-If an EPP server receives an <spanx style="verb">&lt;update&gt;</spanx> command containing a TTL that is outside the server's permitted range, it <bcp14>MUST</bcp14> reject the command with a <spanx style="verb">2306</spanx> "Parameter value policy error" response.
+If an EPP server receives an <spanx style="verb">&lt;update&gt;</spanx> command containing a TTL value that is outside the server's permitted range, it <bcp14>MUST</bcp14> reject the command with a <spanx style="verb">2306</spanx> "Parameter value policy error" response.
 </t>
 
 </section>
@@ -344,7 +344,7 @@ EPP servers that use the "host attribute" model (described in section 1.1 of <xr
 <section title="Use of TTL values for IDN variants">
 
 <t>
-If a domain name has variants (<xref target="RFC6927"/>) that are linked to that domain, then any <spanx style="verb">NS</spanx> or <spanx style="verb">DNAME</spanx> records published for those variants <bcp14>MAY</bcp14> use the same TTL as that used for the primary domain.
+ If a domain name has variants (<xref target="RFC6927"/>) that are not provisioned as separate domain objects, then any <spanx style="verb">NS</spanx> or <spanx style="verb">DNAME</spanx> records published for those variants <bcp14>SHOULD</bcp14> use TTL value(s) specified for the primary domain.
 </t>
 
 </section>
@@ -358,7 +358,7 @@ EPP server operators <bcp14>MAY</bcp14>, in order to address operational or secu
 </t>
 
 <t>
-Additionally, server operators <bcp14>MAY</bcp14> implement an automatic reset of TTL values, so that they may be changed for a finite period before and after a planned change, and then revert to a standard value.
+Server operators <bcp14>MAY</bcp14> also implement automatic reset of TTL values, so that they revert to the default value a certain amount of time after an update has been made.
 </t>
 
 <t>
@@ -394,7 +394,7 @@ This arises due to a misunderstanding about how TTLs work.
 </t>
 
 <t>
-Client implementations of this specification <bcp14>SHOULD</bcp14> ensure that the user understands that changes to a TTL are only effective in shortening transition periods if implemented a period of time — at least equal to the current TTL — <em>before</em> the planned change.
+Implementations of this specification <bcp14>SHOULD</bcp14> ensure that the user understands that changes to a TTL are only effective in shortening transition periods if implemented a period of time — at least equal to the current TTL — <em>before</em> the planned change.
 </t>
 
 </section>
@@ -408,7 +408,7 @@ Some malicious actors use a technique called "fast flux DNS" (<xref target="SAC-
 </t>
 
 <t>
-Registry operators <bcp14>SHOULD</bcp14> take this into consideration when setting the lower limit on TTL values, since a short TTL on delegations has the potential to enhance the effectiveness of fast flux techniques on evasion.
+Registry operators <bcp14>SHOULD</bcp14> take this into consideration when setting the lower limit on TTL values, since a short TTL on delegations may enhance the effectiveness of fast flux techniques on evasion.
 </t>
 
 </section>

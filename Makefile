@@ -12,14 +12,13 @@ test:
 	@find examples -name '*.xml' \( -exec xmllint --noout --schema xsd/epp.xsd {} \; -or -quit \)
 
 build:
-	@echo "Compiling XML file..."
+	@echo "Generating examples..."
 	@find examples -name '*.xml' -exec cp -f {} {}.txt \;
 	@find examples -name '*-command.xml.txt' -exec sed -i "" "s/^/C:/g" {} \;
 	@find examples -name '*-response.xml.txt' -exec sed -i "" "s/^/S:/g" {} \;
+
+	@echo "Compiling XML file..."
 	@xmllint --xinclude "draft.xml.in" > "$(XML)"
-
-	@rm -f examples/*.txt
-
 	@xmlstarlet edit --inplace --update '//rfc/@docName' --value "$(DOC)"           "$(XML)"
 	@xmlstarlet edit --inplace --update '//date/@year'   --value $(shell gdate +%Y) "$(XML)"
 	@xmlstarlet edit --inplace --update '//date/@month'  --value $(shell gdate +%B) "$(XML)"
@@ -30,3 +29,5 @@ build:
 
 	@echo "Generating plaintext file..."
 	@xml2rfc "$(XML)"
+
+	@rm -f examples/*.txt

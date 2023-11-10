@@ -239,6 +239,7 @@ Servers which receive a command frame that contains such elements <bcp14>MUST</b
 <section title="EPP query commands">
 
 <section title="EPP &lt;info&gt; command">
+  
 <t>
 This extension defines an additional element for EPP <spanx style="verb">&lt;info&gt;</spanx> responses for domain and host objects.
 </t>
@@ -518,6 +519,14 @@ The formal syntax presented here is a complete schema representation of the exte
 
 </section>
 
+<section title="Implementation status" removeInRFC="true">
+
+<t>
+None currently reported.
+</t>
+
+</section>
+
 <section title="Change Log" anchor="change_log" removeInRFC="true">
 
 <section title="Change from 02 to 03"><ol>
@@ -573,6 +582,21 @@ Added a <xref target="change_log">Change Log</xref>.
 </ol></section>
 
 </section>
+
+<section title="Acknowledgements">
+
+<t>
+The author wishes to thank the following people for their advice and feedback during the development of this document:
+</t>
+
+<ol>
+<li>James Gould of Verisign;</li>
+<li>Marc Groeneweg of SIDN;</li>
+<li>Ties de Kock of RIPE NCC.</li>
+</ol>
+
+</section>
+
 
 </middle>
 

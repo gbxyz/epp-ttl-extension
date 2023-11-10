@@ -16,14 +16,35 @@
     extension elements can appear in <create> and
     <update> commands, and <info> responses
   -->
-  <element name="create" type="ttl:container"/>
-  <element name="update" type="ttl:container"/>
-  <element name="infData" type="ttl:container"/>
+
+  <element name="create" type="ttl:container">
+    <unique name="uniqueRRTypeForCreate">
+      <selector xpath="ttl:ttl"/>
+      <field xpath="@for"/>
+    </unique>
+  </element>
+
+  <element name="update" type="ttl:container">
+    <unique name="uniqueRRTypeForUpdate">
+      <selector xpath="ttl:ttl"/>
+      <field xpath="@for"/>
+    </unique>
+  </element>
+
+  <element name="infData" type="ttl:container">
+    <unique name="uniqueRRTypeForInfo">
+      <selector xpath="ttl:ttl"/>
+      <field xpath="@for"/>
+    </unique>
+  </element>
 
   <complexType name="container">
     <sequence>
-      <element name="ttl" type="ttl:ttlType"
-        minOccurs="1" maxOccurs="5"/>
+      <element
+        name="ttl"
+        type="ttl:ttlType"
+        minOccurs="1"
+        maxOccurs="5"/>
     </sequence>
   </complexType>
 
@@ -43,7 +64,8 @@
     nothing or a TTL value
   -->
   <simpleType name="ttlOrNull">
-    <union memberTypes="ttl:emptyValue ttl:ttlValue" />
+    <union
+      memberTypes="ttl:emptyValue ttl:ttlValue"/>
   </simpleType>
 
   <!-- empty value type -->
@@ -61,14 +83,10 @@
     </restriction>
   </simpleType>
 
-  <!-- list of permitted RR types -->
+  <!-- resource record mnemonic type -->
   <simpleType name="rrType">
-    <restriction base="string">
-      <enumeration value="NS"/>
-      <enumeration value="DS"/>
-      <enumeration value="DNAME"/>
-      <enumeration value="A"/>
-      <enumeration value="AAAA"/>
+    <restriction base="token">
+      <pattern value="A|[A-Z][A-Z0-9\-]*[A-Z0-9]"/>
     </restriction>
   </simpleType>
 </schema>

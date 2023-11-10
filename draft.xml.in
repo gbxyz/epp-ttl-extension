@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!DOCTYPE rfc [
 <!ENTITY RFC2119 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml">
 <!ENTITY RFC3688 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.3688.xml">
 <!ENTITY RFC5731 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5731.xml">
 <!ENTITY RFC5732 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5732.xml">
 <!ENTITY RFC5910 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5910.xml">
+<!ENTITY RFC6895 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6895.xml">
 <!ENTITY RFC6927 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6927.xml">
 <!ENTITY RFC7451 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7451.xml">
 <!ENTITY RFC8499 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8499.xml">
 <!ENTITY RFC8590 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8590.xml">
+<!ENTITY RFC9364 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.9364.xml">
 ]>
 
 <?xml-stylesheet type="text/xsl" href="rfc2629.xslt" ?>
@@ -74,11 +76,11 @@ The source for this draft, and an issue tracker, may can be found at <eref targe
 
 <t>
 The principal output of any domain name provisioning system is a DNS zone file, which contains the delegation record(s) for names registered within a zone (such as a top-level domain).
-These records typically include one or more <spanx style="verb">NS</spanx> records, but may also include <spanx style="verb">DS</spanx> records for domains secured with DNSSEC, and <spanx style="verb">DNAME</spanx> records for IDN variants (<xref target="RFC6927"/>). Where glue is required, <spanx style="verb">A</spanx> and/or <spanx style="verb">AAAA</spanx> records may also be published for nameservers.
+These records typically include one or more <spanx style="verb">NS</spanx> records, but may also include <spanx style="verb">DS</spanx> records for domains secured with DNSSEC (<xref target="RFC9364"/>), and <spanx style="verb">DNAME</spanx> records for IDN variants (<xref target="RFC6927"/>). Where glue (see <xref section="7" sectionFormat="of" target="RFC8499"/>) is required, <spanx style="verb">A</spanx> and/or <spanx style="verb">AAAA</spanx> records may also be published for nameservers.
 </t>
 
 <t>
-Typically, the Time-To-Live value (TTL, see Section 5 of <xref target="RFC8499"/>) of these records is determined by the registry operator.
+Typically, the Time-To-Live value (TTL, see <xref section="5" sectionFormat="of" target="RFC8499"/>) of these records is determined by the registry operator.
 However, in some circumstances it may be desirable to allow the sponsoring client of a domain name to change the TTL values used for that domain's delegation: for example, to reduce the amount of time required to complete a change of DNS servers, DNSSEC deployment or key rollover, or to allow for fast rollback of such changes.
 </t>
 
@@ -149,6 +151,59 @@ empty, in which case the server's default TTL for the given record type is to be
 
 </ol>
 
+<section title="Supported DNS record types" anchor="supported-dns-record-types">
+
+<t>
+To facilitate forward compatibility with future changes to the DNS protocol, the XML schema found in <xref target="formal-syntax"/> of this document does not enumerate or restrict the DNS record types that can be included in the <spanx style="verb">for</spanx> attribute of <spanx style="verb">&lt;ttl:ttl&gt;</spanx> elements.
+The regular expression which is used to validate the values of the <spanx style="verb">for</spanx> attribute is based on the expression found in <xref sectionFormat="of" section="1.3" target="RFC6895"/>, and is intended to match any existing and future RRTYPE mnemonic registered with the IANA: this eliminates the need to update this document in the event that a new DNS record that exists above a zone cut is specified.
+</t>
+
+<t>
+Nevertheless, EPP servers which implement this extension <bcp14>MUST</bcp14> restrict the DNS record types that are accepted in <spanx style="verb">&lt;create&gt;</spanx> and <spanx style="verb">&lt;update&gt;</spanx> commands, and included in <spanx style="verb">&lt;info&gt;</spanx> responses, allowing only those types that are actually published in the DNS for domain and host objects.
+</t>
+
+<t>
+A server which receives a <spanx style="verb">&lt;create&gt;</spanx> or <spanx style="verb">&lt;update&gt;</spanx> command which includes an invalid DNS record type <bcp14>MUST</bcp14> respond with a 2004 "Parameter value range" error.
+</t>
+
+<t>
+As an illustrative example, a server might allow clients to specify TTL values for the following record types for domain objects:
+</t>
+
+<ol>
+
+<li>
+<spanx style="verb">NS</spanx>;
+</li>
+
+<li>
+<spanx style="verb">DS</spanx> (if the server also implements <xref target="RFC5910"/>);
+</li>
+
+<li>
+<spanx style="verb">DNAME</spanx> (if the registry implements IDN variants using <spanx style="verb">DNAME</spanx> records);
+</li>
+
+<li>
+<spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> (if the server uses the "host attribute" model (described in section 1.1 of <xref target="RFC5731"/>).
+</li>
+
+</ol>
+
+<t>
+A server which implements host objects (<xref target="RFC5732"/>) might allow clients to specify TTL values for <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> records.
+</t>
+
+<t>
+Servers <bcp14>MAY</bcp14> further restrict the supported DNS record types in accordance with their own operational needs: for example, a server <bcp14>MAY</bcp14> allow clients to specify TTL values for <spanx style="verb">DS</spanx> records only.
+</t>
+
+<t>
+A server which receives a <spanx style="verb">&lt;create&gt;</spanx> or <spanx style="verb">&lt;update&gt;</spanx> command which includes a DNS record type it does not support <bcp14>MUST</bcp14> respond with a 2306 "Parameter value policy" error.
+</t>
+
+</section>
+
 <section title="Examples">
 
 <section title="Explicit TTL value">
@@ -164,71 +219,6 @@ empty, in which case the server's default TTL for the given record type is to be
 </section>
 
 </section>
-
-<section title="Domain objects">
-
-<t>
-TTL values <bcp14>MAY</bcp14> be specified for the following DNS record types for domain objects:
-</t>
-
-<ul>
-
-<li>
-<spanx style="verb">NS</spanx>;
-</li>
-
-<li>
-<spanx style="verb">DS</spanx>, if the server supports <xref target="RFC5910"/>;
-</li>
-
-<li>
-<spanx style="verb">DNAME</spanx>; if the server supports IDN variants that are activated using <spanx style="verb">DNAME</spanx> records;
-</li>
-
-<li>
-<spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx>, if the EPP server support the host attribute model.
-</li>
-
-</ul>
-
-<t>
-Servers <bcp14>MUST</bcp14> reject domain <spanx style="verb">&lt;create&gt;</spanx> and <spanx style="verb">&lt;update&gt;</spanx> commands which specify TTL values for DNS record types other than those listed above.
-</t>
-
-</section>
-
-<section title="Host objects">
-
-<t>
-TTL values <bcp14>MAY</bcp14> be specified for the following DNS record types for host objects:
-</t>
-
-<ul>
-
-<li>
-<spanx style="verb">A</spanx>, for IPv4 glue records;
-</li>
-
-<li>
-<spanx style="verb">AAAA</spanx>, for IPv6 glue records.
-</li>
-
-</ul>
-
-<t>
-Servers <bcp14>MUST</bcp14> reject host <spanx style="verb">&lt;create&gt;</spanx> and <spanx style="verb">&lt;update&gt;</spanx> commands which specify TTL values for DNS record types other than those listed above.
-</t>
-
-</section>
-
-</section>
-
-<section title="Duplication of elements for the same DNS record type">
-
-<t>
-EPP command and response frames <bcp14>MUST NOT</bcp14> contain multiple <spanx style="verb">&lt;ttl:ttl&gt;</spanx> elements with the same <spanx style="verb">for</spanx> attribute value.
-Servers which receive a command frame that contains such elements <bcp14>MUST</bcp14> respond with a 2001 "command use error" response.
-</t>
 
 </section>
 
@@ -336,7 +326,7 @@ EPP servers which implement this extension <bcp14>SHOULD</bcp14> use the values 
 </t>
 
 <t>
-EPP servers that use the "host attribute" model (described in section 1.1 of <xref target="RFC5731"/>) <bcp14>SHOULD</bcp14> use any <spanx style="verb">A</spanx> and/or <spanx style="verb">AAAA</spanx> TTL values specified for the domain object when publishing <spanx style="verb">NS</spanx>, <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> records derived from host attributes.
+EPP servers that use the "host attribute" model <bcp14>SHOULD</bcp14> use any <spanx style="verb">A</spanx> and/or <spanx style="verb">AAAA</spanx> TTL values specified for the domain object when publishing <spanx style="verb">NS</spanx>, <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> records derived from host attributes.
 </t>
 
 </section>
@@ -386,7 +376,7 @@ Domain registry operators <bcp14>SHOULD</bcp14> implement limits on the maximum 
 
 </section>
 
-<section title="When the TTL should be changed">
+<section title="When TTL values should be changed">
 
 <t>
 A common operational mistake is changing of DNS record TTLs during or after the planned change to the records themselves.
@@ -522,17 +512,27 @@ The formal syntax presented here is a complete schema representation of the exte
 <section title="Implementation status" removeInRFC="true">
 
 <t>
-None currently reported.
+None currently reported - if you have implemented this extension, please let me know!
 </t>
 
 </section>
 
-<section title="Change Log" anchor="change_log" removeInRFC="true">
+<section title="Change log" anchor="change_log" removeInRFC="true">
 
 <section title="Change from 02 to 03"><ol>
 
 <li>
-Revised syntax that removes the DNS record types from element names and makes them attributes.
+Rolled back the "straw man" syntax from 02.
+<spanx style="verb">ttl:ttl</spanx> now has a <spanx style="verb">for</spanx> attribute which can be any DNS record type.
+<xref target="supported-dns-record-types"/> describes how the set of supported record types may be limited.
+</li>
+
+<li>
+Removed the global/explicit models and just use the explicit model.
+</li>
+
+<li>
+Removed the cascading effect where a TTL set on a domain affects subordinate hosts.
 </li>
 
 </ol></section>
@@ -590,9 +590,12 @@ The author wishes to thank the following people for their advice and feedback du
 </t>
 
 <ol>
-<li>James Gould of Verisign;</li>
-<li>Marc Groeneweg of SIDN;</li>
-<li>Ties de Kock of RIPE NCC.</li>
+<li>Hugo Salgado;</li>
+<li>Patrick Mevzek;</li>
+<li>Rick Wilhelm;</li>
+<li>James Gould;</li>
+<li>Marc Groeneweg;</li>
+<li>Ties de Kock.</li>
 </ol>
 
 </section>
@@ -608,14 +611,15 @@ The author wishes to thank the following people for their advice and feedback du
 &RFC5731;
 &RFC5732;
 &RFC5910;
+&RFC6895;
 &RFC7451;
-&RFC8499;
-&RFC8590;
 </references>
 
 <references title="Informative references">
-
 &RFC6927;
+&RFC8499;
+&RFC8590;
+&RFC9364;
 
 <reference anchor="SAC-025" target="https://www.icann.org/en/system/files/files/sac-025-en.pdf">
   <front>
@@ -625,7 +629,6 @@ The author wishes to thank the following people for their advice and feedback du
   </front>
   <seriesInfo name="SAC" value="25"/>
 </reference>
-
 </references>
 
 </back>

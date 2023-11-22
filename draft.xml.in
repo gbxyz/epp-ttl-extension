@@ -135,6 +135,8 @@ The <spanx style="verb">&lt;ttl:ttl&gt;</spanx> element is used to define TTL va
 It has a single <bcp14>REQUIRED</bcp14> attribute, <spanx style="verb">for</spanx>, which specifies the DNS record type to which the TTL value pertains.
 </t>
 
+<section title="Element values" anchor="element-values">
+
 <t>
 The XML schema found in <xref target="formal-syntax"/> of this document restricts the content of <spanx style="verb">&lt;ttl:ttl&gt;</spanx> elements to be either:
 </t>
@@ -150,6 +152,8 @@ empty, in which case the server's default TTL for the given record type is to be
 </li>
 
 </ol>
+
+</section>
 
 <section title="Supported DNS record types" anchor="supported-dns-record-types">
 
@@ -167,7 +171,7 @@ A server which receives a <spanx style="verb">&lt;create&gt;</spanx> or <spanx s
 </t>
 
 <t>
-As an illustrative example, a server might allow clients to specify TTL values for the following record types for domain objects:
+As an illustrative example, a server <bcp14>MAY</bcp14> allow clients to specify TTL values for the following record types for domain objects:
 </t>
 
 <ol>
@@ -191,7 +195,7 @@ As an illustrative example, a server might allow clients to specify TTL values f
 </ol>
 
 <t>
-A server which implements host objects (<xref target="RFC5732"/>) might allow clients to specify TTL values for <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> records.
+Furthermore, a server which implements host objects (<xref target="RFC5732"/>) <bcp14>MAY</bcp14> allow clients to specify TTL values for <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> records.
 </t>
 
 <t>

@@ -1,8 +1,12 @@
-VERSION = 03
+VERSION = 04
 DOC = "draft-ietf-regext-epp-ttl-$(VERSION)"
 XML = "$(DOC).xml"
 
-all: test xml build clean
+all: lint test xml build
+
+lint:
+	@xmllint --noout draft.xml.in 
+	@xmllint --noout --xinclude draft.xml.in
 
 test:
 	@echo "Testing example XML files..."

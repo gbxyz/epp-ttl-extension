@@ -76,7 +76,8 @@ The source for this draft, and an issue tracker, may can be found at <eref targe
 
 <t>
 The principal output of any domain name provisioning system is a DNS zone file, which contains the delegation record(s) for names registered within a zone (such as a top-level domain).
-These records typically include one or more <spanx style="verb">NS</spanx> records, but may also include <spanx style="verb">DS</spanx> records for domains secured with DNSSEC (<xref target="RFC9364"/>), and <spanx style="verb">DNAME</spanx> records for IDN variants (<xref target="RFC6927"/>). Where glue (see <xref section="7" sectionFormat="of" target="RFC8499"/>) is required, <spanx style="verb">A</spanx> and/or <spanx style="verb">AAAA</spanx> records may also be published for nameservers.
+These records typically include one or more <spanx style="verb">NS</spanx> records, but may also include <spanx style="verb">DS</spanx> records for domains secured with DNSSEC (<xref target="RFC9364"/>), and <spanx style="verb">DNAME</spanx> records for IDN variants (<xref target="RFC6927"/>).
+Where glue (see <xref section="7" sectionFormat="of" target="RFC8499"/>) is required, <spanx style="verb">A</spanx> and/or <spanx style="verb">AAAA</spanx> records may also be published for nameservers.
 </t>
 
 <t>
@@ -132,10 +133,35 @@ The <spanx style="verb">&lt;ttl:ttl&gt;</spanx> element is used to define TTL va
 </t>
 
 <t>
-It has a single <bcp14>REQUIRED</bcp14> attribute, <spanx style="verb">for</spanx>, which specifies the DNS record type to which the TTL value pertains.
+The <spanx style="verb">&lt;ttl:ttl&gt;</spanx> element may have the following attributes, depending on whether it appears in a command or response frame:
 </t>
 
-<section title="Element values" anchor="element-values">
+<ol>
+
+<li>
+"<spanx style="verb">for</spanx>", which is <bcp14>REQUIRED</bcp14> in both commands and responses, and which specifies the DNS record type to which the TTL value pertains. This attribute <bcp14>MUST</bcp14> have one of the following values: "<spanx style="verb">NS</spanx>", "<spanx style="verb">DS</spanx>", "<spanx style="verb">DNAME</spanx>", "<spanx style="verb">A</spanx>", "<spanx style="verb">AAAA</spanx>" or "<spanx style="verb">custom</spanx>";
+</li>
+
+<li>
+If the value of the "<spanx style="verb">for</spanx>" attribute is "<spanx style="verb">custom</spanx>", then the <spanx style="verb">&lt;ttl:ttl&gt;</spanx> element <bcp14>MUST</bcp14> also have a "<spanx style="verb">custom</spanx>" attribute containing a DNS record type conforming with the regular expression in <xref sectionFormat="of" section="1.3" target="RFC6895"/>.
+Additionally, the record type <bcp14>MUST</bcp14> be registered with IANA.
+</li>
+
+<li>
+"<spanx style="verb">min</spanx>", which <bcp14>MUST NOT</bcp14> be present in commands frames but <bcp14>MUST</bcp14> be present in response frames, and which is used by the server to indicate the lowest value that may be set;
+</li>
+
+<li>
+"<spanx style="verb">default</spanx>", which <bcp14>MUST NOT</bcp14> be present in commands frames but <bcp14>MUST</bcp14> be present in response frames, and which is used by the server to indicate the default value;
+</li>
+
+<li>
+"<spanx style="verb">max</spanx>", which <bcp14>MUST NOT</bcp14> be present in commands frames but <bcp14>MUST</bcp14> be present in response frames, and which is used by the server to indicate the highest value that may be set;
+</li>
+
+</ol>
+
+<section title="Element content" anchor="element-content">
 
 <t>
 The XML schema found in <xref target="formal-syntax"/> of this document restricts the content of <spanx style="verb">&lt;ttl:ttl&gt;</spanx> elements to be either:
@@ -158,8 +184,11 @@ empty, in which case the server's default TTL for the given record type is to be
 <section title="Supported DNS record types" anchor="supported-dns-record-types">
 
 <t>
-To facilitate forward compatibility with future changes to the DNS protocol, the XML schema found in <xref target="formal-syntax"/> of this document does not enumerate or restrict the DNS record types that can be included in the <spanx style="verb">for</spanx> attribute of <spanx style="verb">&lt;ttl:ttl&gt;</spanx> elements.
-The regular expression which is used to validate the values of the <spanx style="verb">for</spanx> attribute is based on the expression found in <xref sectionFormat="of" section="1.3" target="RFC6895"/>, and is intended to match any existing and future RRTYPE mnemonic registered with the IANA: this eliminates the need to update this document in the event that a new DNS record that exists above a zone cut is specified.
+To facilitate forward compatibility with future changes to the DNS protocol, this document does not enumerate or restrict the DNS record types that can be included in the "<spanx style="verb">for</spanx>" and "<spanx style="verb">custom</spanx>" attributes of <spanx style="verb">&lt;ttl:ttl&gt;</spanx> elements.
+</t>
+
+<t>
+The regular expression which is used to validate the values of the "<spanx style="verb">custom</spanx>" attribute is based on the expression found in <xref sectionFormat="of" section="1.3" target="RFC6895"/>, and is intended to match any existing and future RRTYPE mnemonic registered with the IANA: this eliminates the need to update this document in the event that a new DNS record that exists above a zone cut is specified.
 </t>
 
 <t>
@@ -185,26 +214,23 @@ As an illustrative example, a server <bcp14>MAY</bcp14> allow clients to specify
 </li>
 
 <li>
-<spanx style="verb">DNAME</spanx> (if the registry implements IDN variants using <spanx style="verb">DNAME</spanx> records);
-</li>
-
-<li>
-<spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> (if the server uses the "host attribute" model (described in section 1.1 of <xref target="RFC5731"/>).
+<spanx style="verb">DNAME</spanx> (if the registry implements IDN variants using <spanx style="verb">DNAME</spanx> records).
 </li>
 
 </ol>
 
+<section title="Glue records">
+
 <t>
-Furthermore, a server which implements host objects (<xref target="RFC5732"/>) <bcp14>MAY</bcp14> allow clients to specify TTL values for <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> records.
+Servers which implements host objects (<xref target="RFC5732"/>) <bcp14>MAY</bcp14> allow clients to specify TTL values for <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> records for host objects.
+These servers <bcp14>MUST</bcp14> reject commands which attempt to set TTL values for these record types for domain objects.
 </t>
 
 <t>
-Servers <bcp14>MAY</bcp14> further restrict the supported DNS record types in accordance with their own operational needs: for example, a server <bcp14>MAY</bcp14> allow clients to specify TTL values for <spanx style="verb">DS</spanx> records only.
+EPP servers which uses the "host attribute" model (described in <xref sectionFormat="of" section="1.1" target="RFC5731"/>) <bcp14>MAY</bcp14> allow clients to specify TTL values for <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> records for domain objects using a 2004 "Parameter value range" error.
 </t>
 
-<t>
-A server which receives a <spanx style="verb">&lt;create&gt;</spanx> or <spanx style="verb">&lt;update&gt;</spanx> command which includes a DNS record type it does not support <bcp14>MUST</bcp14> respond with a 2306 "Parameter value policy" error.
-</t>
+</section>
 
 </section>
 
@@ -219,6 +245,14 @@ A server which receives a <spanx style="verb">&lt;create&gt;</spanx> or <spanx s
 <section title="Empty value indicating default TTL">
 
 <sourcecode>&lt;ttl:ttl for="NS"/&gt;</sourcecode>
+
+</section>
+
+<section title="Custom record type">
+
+<sourcecode>&lt;ttl:ttl
+  for="custom"
+  custom="DELEG"&gt;3600&lt;ttl:ttl&gt;</sourcecode>
 
 </section>
 
@@ -323,6 +357,18 @@ If an EPP server receives an <spanx style="verb">&lt;update&gt;</spanx> command 
 
 <section title="Server processing of TTL values">
 
+<section title="Permitted record types">
+<t>
+Servers <bcp14>MAY</bcp14> restrict the supported DNS record types in accordance with their own operational needs.
+For example, a server <bcp14>MAY</bcp14> allow clients to specify TTL values for <spanx style="verb">DS</spanx> records only.
+</t>
+
+<t>
+A server which receives a <spanx style="verb">&lt;create&gt;</spanx> or <spanx style="verb">&lt;update&gt;</spanx> command which includes a restricted record type <bcp14>MUST</bcp14> respond with a 2306 "Parameter value policy" error.
+</t>
+
+</section>
+
 <section title="Use of TTL values in delegation records" anchor="using_ttl_values">
 
 <t>
@@ -331,14 +377,6 @@ EPP servers which implement this extension <bcp14>SHOULD</bcp14> use the values 
 
 <t>
 EPP servers that use the "host attribute" model <bcp14>SHOULD</bcp14> use any <spanx style="verb">A</spanx> and/or <spanx style="verb">AAAA</spanx> TTL values specified for the domain object when publishing <spanx style="verb">NS</spanx>, <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> records derived from host attributes.
-</t>
-
-</section>
-
-<section title="Use of TTL values for IDN variants">
-
-<t>
- If a domain name has variants (<xref target="RFC6927"/>) that are not provisioned as separate domain objects, then any <spanx style="verb">NS</spanx> or <spanx style="verb">DNAME</spanx> records published for those variants <bcp14>SHOULD</bcp14> use TTL value(s) specified for the primary domain.
 </t>
 
 </section>
@@ -522,6 +560,22 @@ None currently reported - if you have implemented this extension, please let me 
 </section>
 
 <section title="Change log" anchor="change_log" removeInRFC="true">
+
+<section title="Change from 03 to 04"><ol>
+
+<li>
+Changed the <spanx style="verb">for</spanx> attribute to be an enumeration and added the <spanx style="verb">custom</spanx> attribute.
+</li>
+
+<li>
+Added the <spanx style="verb">min</spanx>, <spanx style="verb">default</spanx> and <spanx style="verb">max</spanx> attributes.
+</li>
+
+<li>
+Apply feedback from Jim Gould.
+</li>
+
+</ol></section>
 
 <section title="Change from 02 to 03"><ol>
 

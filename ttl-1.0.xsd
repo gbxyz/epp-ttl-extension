@@ -17,43 +17,83 @@
     <update> commands, and <info> responses
   -->
 
-  <element name="create" type="ttl:container">
+  <element name="create" type="ttl:commandContainer">
     <unique name="uniqueRRTypeForCreate">
       <selector xpath="ttl:ttl"/>
       <field xpath="@for"/>
     </unique>
   </element>
 
-  <element name="update" type="ttl:container">
+  <element name="update" type="ttl:commandContainer">
     <unique name="uniqueRRTypeForUpdate">
       <selector xpath="ttl:ttl"/>
       <field xpath="@for"/>
     </unique>
   </element>
 
-  <element name="infData" type="ttl:container">
+  <element name="infData" type="ttl:responseContainer">
     <unique name="uniqueRRTypeForInfo">
       <selector xpath="ttl:ttl"/>
       <field xpath="@for"/>
     </unique>
   </element>
 
-  <complexType name="container">
+  <complexType name="commandContainer">
     <sequence>
       <element
         name="ttl"
-        type="ttl:ttlType"
+        type="ttl:commandTTLType"
         minOccurs="1"
-        maxOccurs="5"/>
+        maxOccurs="unbounded"/>
     </sequence>
   </complexType>
 
-  <complexType name="ttlType">
+  <complexType name="responseContainer">
+    <sequence>
+      <element
+        name="ttl"
+        type="ttl:responseTTLType"
+        minOccurs="1"
+        maxOccurs="unbounded"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="commandTTLType">
     <simpleContent>
       <extension base="ttl:ttlOrNull">
         <attribute
           name="for"
           type="ttl:rrType"
+          use="required"/>
+      </extension>
+    </simpleContent>
+  </complexType>
+
+  <complexType name="responseTTLType">
+    <simpleContent>
+      <extension base="ttl:ttlOrNull">
+        <attribute
+          name="for"
+          type="ttl:rrType"
+          use="required"/>
+
+        <attribute
+          name="custom"
+          type="ttl:customRRType"/>
+
+        <attribute
+          name="min"
+          type="ttl:ttlValue"
+          use="required"/>
+
+        <attribute
+          name="default"
+          type="ttl:ttlValue"
+          use="required"/>
+
+        <attribute
+          name="max"
+          type="ttl:ttlValue"
           use="required"/>
       </extension>
     </simpleContent>
@@ -85,6 +125,18 @@
 
   <!-- resource record mnemonic type -->
   <simpleType name="rrType">
+    <restriction base="token">
+      <enumeration value="NS" />
+      <enumeration value="DS" />
+      <enumeration value="DNAME" />
+      <enumeration value="A" />
+      <enumeration value="AAAA" />
+      <enumeration value="custom" />
+    </restriction>
+  </simpleType>
+
+  <!-- custom resource record type -->
+  <simpleType name="customRRType">
     <restriction base="token">
       <pattern value="A|[A-Z][A-Z0-9\-]*[A-Z0-9]"/>
     </restriction>

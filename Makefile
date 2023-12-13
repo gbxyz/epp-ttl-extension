@@ -2,29 +2,32 @@ VERSION = 04
 DOC = "draft-ietf-regext-epp-ttl-$(VERSION)"
 XML = "$(DOC).xml"
 
-all: lint test xml build
+all: html
 
 lint:
+	@echo "Running lint check..."
+
 	@xmllint --noout draft.xml.in 
-	@xmllint --noout --xinclude draft.xml.in
 
-test:
+test: lint
 	@echo "Testing example XML files..."
-	@find examples -name '*.xml' \( -exec xmllint --noout --schema xsd/epp.xsd {} \; -or -quit \)
 
-xml:
-	@find examples -name '*.xml' -exec cp -f {} {}.txt \;
+	@find examples -name '*.xml' -print \( -exec xmllint --noout --schema xsd/epp.xsd {} \; -or -quit \)
+
+xml: test
+	@echo "Compiling XML file..."
+
+	@find examples -name '*.xml' -exec cp -fv {} {}.txt \;
 	@find examples -name '*-command.xml.txt' -exec sed -i "" "s/^/C:/g" {} \;
 	@find examples -name '*-response.xml.txt' -exec sed -i "" "s/^/S:/g" {} \;
 
-	@echo "Compiling XML file..."
 	@xmllint --xinclude "draft.xml.in" > "$(XML)"
 	@xmlstarlet edit --inplace --update '//rfc/@docName' 	--value "$(DOC)"           "$(XML)"
 	@xmlstarlet edit --inplace --update '//rfc/date/@year'  --value $(shell gdate +%Y) "$(XML)"
 	@xmlstarlet edit --inplace --update '//rfc/date/@month' --value $(shell gdate +%B) "$(XML)"
 	@xmlstarlet edit --inplace --update '//rfc/date/@day'   --value $(shell gdate +%d) "$(XML)"
 
-build:
+html: xml
 	@echo "Generating HTML file..."
 	@xml2rfc --html "$(XML)"
 
@@ -32,5 +35,6 @@ build:
 	@xml2rfc "$(XML)"
 
 clean:
-	@rm -f examples/*.txt
-	@rm -f *txt *html
+	@echo "Cleaning up..."
+	@rm -fv examples/*.txt
+	@rm -fv *txt *html

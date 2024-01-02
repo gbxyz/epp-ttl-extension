@@ -223,11 +223,11 @@ As an illustrative example, a server <bcp14>MAY</bcp14> allow clients to specify
 
 <t>
 Servers which implements host objects (<xref target="RFC5732"/>) <bcp14>MAY</bcp14> allow clients to specify TTL values for <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> records for host objects.
-These servers <bcp14>MUST</bcp14> reject commands which attempt to set TTL values for these record types for domain objects.
+These servers <bcp14>MUST</bcp14> reject commands which attempt to set TTL values for these record types for domain objects using a 2004 "Parameter value range" error.
 </t>
 
 <t>
-EPP servers which uses the "host attribute" model (described in <xref sectionFormat="of" section="1.1" target="RFC5731"/>) <bcp14>MAY</bcp14> allow clients to specify TTL values for <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> records for domain objects using a 2004 "Parameter value range" error.
+EPP servers which use the "host attribute" model (described in <xref sectionFormat="of" section="1.1" target="RFC5731"/>) <bcp14>MAY</bcp14> allow clients to specify TTL values for <spanx style="verb">A</spanx> and <spanx style="verb">AAAA</spanx> records for domain objects.
 </t>
 
 </section>

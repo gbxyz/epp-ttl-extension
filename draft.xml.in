@@ -34,24 +34,23 @@
   xmlns:xi="http://www.w3.org/2001/XInclude">
 
 <front>
-<title abbrev="TTL mapping for EPP">Extensible Provisioning Protocol (EPP) mapping for DNS Time-To-Live (TTL) values</title>
+<title abbrev="TTL mapping for EPP">
+Extensible Provisioning Protocol (EPP) mapping for DNS Time-To-Live (TTL) values
+</title>
 
-<author
-  fullname="Gavin Brown"
-  initials="G"
-  surname="Brown">
-<organization>ICANN</organization>
-<address>
-<postal>
-<street>12025 Waterfront Drive, Suite 300</street>
-<city>Los Angeles</city>
-<region>CA</region>
-<code>90292</code>
-<country>US</country>
-</postal>
-<email>gavin.brown@icann.org</email>
-<uri>https://www.icann.org/</uri>
-</address>
+<author fullname="Gavin Brown">
+  <organization>ICANN</organization>
+  <address>
+    <postal>
+      <street>12025 Waterfront Drive, Suite 300</street>
+      <city>Los Angeles</city>
+      <region>CA</region>
+      <code>90292</code>
+      <country>US</country>
+    </postal>
+    <email>gavin.brown@icann.org</email>
+    <uri>https://www.icann.org/</uri>
+  </address>
 </author>
 
 <date/>

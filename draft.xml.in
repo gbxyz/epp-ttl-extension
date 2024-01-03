@@ -242,9 +242,29 @@ EPP servers which use the "host attribute" model (described in <xref sectionForm
 
 </section>
 
+<section title="Explicit TTL value (&lt;info&gt; response)">
+
+<sourcecode>&lt;ttl:ttl
+  for="NS"
+  min="60"
+  default="86400"
+  max="172800"&gt;3600&lt;ttl:ttl&gt;</sourcecode>
+
+</section>
+
 <section title="Empty value indicating default TTL">
 
 <sourcecode>&lt;ttl:ttl for="NS"/&gt;</sourcecode>
+
+</section>
+
+<section title="Empty value indicating default TTL (&lt;info&gt; response)">
+
+<sourcecode>&lt;ttl:ttl
+  for="NS"
+  min="60"
+  default="86400"
+  max="172800"/&gt;</sourcecode>
 
 </section>
 

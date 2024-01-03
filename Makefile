@@ -31,9 +31,6 @@ html: xml
 	@echo "Generating HTML file..."
 	@xml2rfc --html "$(XML)"
 
-	@echo "Generating plaintext file..."
-	@xml2rfc "$(XML)"
-
 clean:
 	@echo "Cleaning up..."
 	@rm -fv examples/*.txt

@@ -11,6 +11,9 @@
       <ttl:update
         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
         <ttl:ttl for="NS"/>
+        <ttl:ttl for="custom"
+          custom="DELEG"/>
+        <ttl:ttl for="DS">86400</ttl:ttl>
       </ttl:update>
     </extension>
     <clTRID>ABC-12345</clTRID>

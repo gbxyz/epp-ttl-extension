@@ -294,7 +294,7 @@ This extension defines an additional element for EPP <spanx style="verb">&lt;inf
 
 <t>
 When a server receives a domain or host <spanx style="verb">&lt;info&gt;</spanx> command from a client which included the extension namespace in the <spanx style="verb">&lt;svcExtension&gt;</spanx> element of the <spanx style="verb">&lt;login&gt;</spanx> command, the response <bcp14>MUST</bcp14> contain an <spanx style="verb">&lt;extension&gt;</spanx> element, which <bcp14>MUST</bcp14> contain a <spanx style="verb">&lt;ttl:infData&gt;</spanx> element.
-This element <bcp14>MUST</bcp14> contain one or more <spanx style="verb">&lt;ttl:ttl&gt;</spanx> records as described in <xref target="extension-elements"/>.
+This element <bcp14>MUST</bcp14> contain a <spanx style="verb">&lt;ttl:ttl&gt;</spanx> record for all DNS record types that are applicable to the object in question.
 </t>
 
 <t>

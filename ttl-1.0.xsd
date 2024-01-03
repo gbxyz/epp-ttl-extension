@@ -65,6 +65,10 @@
           name="for"
           type="ttl:rrType"
           use="required"/>
+
+        <attribute
+          name="custom"
+          type="ttl:customRRType"/>
       </extension>
     </simpleContent>
   </complexType>

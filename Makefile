@@ -22,10 +22,6 @@ xml: test
 	@find examples -name '*-response.xml.txt' -exec sed -i "" "s/^/S:/g" {} \;
 
 	@xmllint --xinclude "draft.xml.in" > "$(XML)"
-	@xmlstarlet edit --inplace --update '//rfc/@docName' 	--value "$(DOC)"           "$(XML)"
-	@xmlstarlet edit --inplace --update '//rfc/date/@year'  --value $(shell gdate +%Y) "$(XML)"
-	@xmlstarlet edit --inplace --update '//rfc/date/@month' --value $(shell gdate +%B) "$(XML)"
-	@xmlstarlet edit --inplace --update '//rfc/date/@day'   --value $(shell gdate +%d) "$(XML)"
 
 html: xml
 	@echo "Generating HTML file..."

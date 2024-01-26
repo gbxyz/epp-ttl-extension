@@ -31,6 +31,12 @@
     </unique>
   </element>
 
+  <element name="info">
+    <complexType>
+      <attribute name="policy" type="boolean" required="true"/>
+    </complexType>
+  </element>
+
   <element name="infData" type="ttl:responseContainer">
     <unique name="uniqueRRTypeForInfo">
       <selector xpath="ttl:ttl"/>

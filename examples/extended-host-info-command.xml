@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+  <command>
+    <info>
+      <host:info
+       xmlns:host="urn:ietf:params:xml:ns:host-1.0">
+        <host:name>ns1.example.com</host:name>
+      </host:info>
+    </info>
+    <extension>
+      <ttl:info
+        xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0"
+        policy="true"/>
+    </extension>
+  </command>
+</epp>

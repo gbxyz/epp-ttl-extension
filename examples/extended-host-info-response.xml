@@ -20,8 +20,14 @@
     <extension>
       <ttl:infData
         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
-        <ttl:ttl for="A"/>
-        <ttl:ttl for="AAAA">86400</ttl:ttl>
+        <ttl:ttl for="A"
+          min="3600"
+          default="86400"
+          max="172800"/>
+        <ttl:ttl for="AAAA"
+          min="3600"
+          default="86400"
+          max="172800">86400</ttl:ttl>
       </ttl:infData>
     </extension>
     <trID>

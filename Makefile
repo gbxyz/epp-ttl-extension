@@ -22,6 +22,7 @@ xml: test
 	@find examples -name '*-response.xml.txt' -exec sed -i "" "s/^/S:/g" {} \;
 
 	@xmllint --xinclude "draft.xml.in" > "$(XML)"
+	@xmlstarlet edit --inplace --update '//rfc/@docName' --value "$(DOC)" "$(XML)"
 
 html: xml
 	@echo "Generating HTML file..."

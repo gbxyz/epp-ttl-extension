@@ -632,15 +632,66 @@ The formal syntax presented here is a complete schema representation of the exte
 
 </section>
 
-<section title="Implementation status" removeInRFC="true">
+<section anchor="implementation-status" title="Implementation status" removeInRFC="true">
+
+<section title="Verisign EPP SDK">
+<t>
+<strong>Organization:</strong> Verisign Inc.
+</t>
 
 <t>
-None currently reported - if you have implemented this extension, please let me know!
+<strong>Name:</strong> Verisign EPP SDK
+</t>
+
+<t>
+<strong>Description:</strong> The Verisign EPP SDK includes both a full client implementation and a full server stub implementation of draft-ietf-regext-epp-eai.
+</t>
+
+<t>
+<strong>Level of maturity:</strong> Development
+</t>
+
+<t>
+<strong>Coverage:</strong> All aspects of the protocol are implemented.
+</t>
+
+<t>
+<strong>Licensing:</strong> GNU Lesser General Public License
+</t>
+
+<t>
+<strong>Contact:</strong> jgould@verisign.com
+</t>
+
+<t>
+<strong>URL:</strong> https://www.verisign.com/en_US/channel-resources/domain-registry-products/epp-sdks
 </t>
 
 </section>
 
+</section>
+
 <section title="Change log" anchor="change_log" removeInRFC="true">
+
+<section title="Change from 04 to 05"><ol>
+
+<li>
+Add the the Verisign EPP SDK to <xref target="implementation-status"/>.
+</li>
+
+<li>
+Add the <tt>&lt;ttl:info&gt;</tt> element and document how it affects server  <tt>&lt;info&gt;</tt> responses.
+</li>
+
+<li>
+Updated examples to exercise more of the schema.
+</li>
+
+<li>
+Minor schema issue fixed.
+</li>
+
+</ol></section>
 
 <section title="Change from 03 to 04"><ol>
 

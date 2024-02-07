@@ -675,6 +675,12 @@ The formal syntax presented here is a complete schema representation of the exte
 
 <section title="Change from 04 to 05"><ol>
 
+<li>removed the erroneous <tt>required="true"</tt> attribute from the <tt>min</tt>, <tt>default</tt> and <tt>max</tt> attributes of the <tt>responseTTLType</tt> type.
+
+</ol></section>
+
+<section title="Change from 04 to 05"><ol>
+
 <li>
 Add the the Verisign EPP SDK to <xref target="implementation-status"/>.
 </li>

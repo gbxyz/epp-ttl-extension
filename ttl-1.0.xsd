@@ -93,18 +93,15 @@
 
         <attribute
           name="min"
-          type="ttl:ttlValue"
-          use="required"/>
+          type="ttl:ttlValue"/>
 
         <attribute
           name="default"
-          type="ttl:ttlValue"
-          use="required"/>
+          type="ttl:ttlValue"/>
 
         <attribute
           name="max"
-          type="ttl:ttlValue"
-          use="required"/>
+          type="ttl:ttlValue"/>
       </extension>
     </simpleContent>
   </complexType>

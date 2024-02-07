@@ -144,7 +144,7 @@ The <tt>&lt;ttl:ttl&gt;</tt> element may have the following attributes, dependin
 </li>
 
 <li>
-If the value of the "<tt>for</tt>" attribute is "<tt>custom</tt>", then the <tt>&lt;ttl:ttl&gt;</tt> element <bcp14>MUST</bcp14> also have a "<tt>custom</tt>" attribute containing a DNS record type conforming with the regular expression in <xref sectionFormat="of" section="1.3" target="RFC6895"/>.
+If the value of the "<tt>for</tt>" attribute is "<tt>custom</tt>", then the <tt>&lt;ttl:ttl&gt;</tt> element <bcp14>MUST</bcp14> also have a "<tt>custom</tt>" attribute containing a DNS record type conforming with the regular expression in <xref sectionFormat="of" section="3.1" target="RFC6895"/>.
 Additionally, the record type <bcp14>MUST</bcp14> be registered with IANA.
 </li>
 
@@ -675,7 +675,13 @@ The formal syntax presented here is a complete schema representation of the exte
 
 <section title="Change from 04 to 05"><ol>
 
-<li>removed the erroneous <tt>required="true"</tt> attribute from the <tt>min</tt>, <tt>default</tt> and <tt>max</tt> attributes of the <tt>responseTTLType</tt> type.
+<li>
+removed the erroneous <tt>required="true"</tt> attribute from the <tt>min</tt>, <tt>default</tt> and <tt>max</tt> attributes of the <tt>responseTTLType</tt> type (thanks JG).
+</li>
+
+<li>
+fixed the reference to RFC 6895 (thanks HS).
+</li>
 
 </ol></section>
 

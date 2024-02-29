@@ -12,8 +12,14 @@
     </documentation>
   </annotation>
 
+  <element name="info">
+    <complexType>
+      <attribute name="policy" type="boolean" default="false"/>
+    </complexType>
+  </element>
+
   <!--
-    extension elements can appear in <create> and
+    <ttl> elements can appear in <create> and
     <update> commands, and <info> responses
   -->
 
@@ -29,12 +35,6 @@
       <selector xpath="ttl:ttl"/>
       <field xpath="@for"/>
     </unique>
-  </element>
-
-  <element name="info">
-    <complexType>
-      <attribute name="policy" type="boolean" required="true"/>
-    </complexType>
   </element>
 
   <element name="infData" type="ttl:responseContainer">

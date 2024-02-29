@@ -286,17 +286,15 @@ EPP servers which use the "host attribute" model (described in <xref sectionForm
 <section anchor="info-element" title="The &lt;ttl:info&gt; element">
 
 <t>
-The &lt;ttl:info&gt; element is used to by clients to request that the server include additional information in &lt;ttl:info&gt; responses for domain and host objects.
+The <tt>&lt;ttl:info&gt;</tt> element is used to by clients to request that the server include additional information in <tt>&lt;info&gt;</tt> responses for domain and host objects.
 </t>
 
 <t>
-It has a single attribute, <tt>policy</tt>, which takes a boolean value and which <bcp14>MUST</bcp14> be set.
+It has a single <bcp14>OPTIONAL</bcp14> attribute, <tt>policy</tt>, which takes a boolean value with a default value of <tt>false</tt>.
 </t>
 
 <t>
-If a server receives an &lt;info&gt; command for a domain or host object which includes a &lt;ttl:info&gt; element with a <tt>policy</tt> attribute that is true,
-then the response <bcp14>MUST</bcp14> include &lt;ttl:ttl&gt; records for all supported DNS record types,
-irrespective of whether those record types are actually in use by the object in question, such &lt;ttl:ttl&gt; records <bcp14>MUST</bcp14> have the <tt>min</tt>, <tt>default</tt> and <tt>max</tt> attributes.
+The semantics of this element are described in <xref target="info-command"/>.
 </t>
 
 <section title="Example">
@@ -320,22 +318,31 @@ This extension defines an additional element for EPP <tt>&lt;info&gt;</tt> comma
 </t>
 
 <t>
-When a server receives a domain or host <tt>&lt;info&gt;</tt> command from a client which included the extension namespace in the <tt>&lt;svcExtension&gt;</tt> element of the <tt>&lt;login&gt;</tt> command,
-the response <bcp14>MUST</bcp14> contain an <tt>&lt;extension&gt;</tt> element,
-which <bcp14>MUST</bcp14> contain a <tt>&lt;ttl:infData&gt;</tt> element.
+If a server receives an <tt>&lt;info&gt;</tt> command for a domain or host object which includes a <tt>&lt;ttl:info&gt;</tt> element without a <tt>policy</tt> attribute,
+or with a <tt>policy</tt> attribute that is <tt>0</tt> or <tt>false</tt>,
+then the response <bcp14>MUST</bcp14> contain an <tt>&lt;extension&gt;</tt> element,
+which <bcp14>MUST</bcp14> contain a <tt>&lt;ttl:infData&gt;</tt> element,
+which <bcp14>MUST</bcp14> contain <tt>&lt;ttl&gt;</tt> records for all DNS record types that have non-default TTL values.
+These elements <bcp14>SHOULD NOT</bcp14> have the <tt>min</tt>, <tt>default</tt> and <tt>max</tt> attributes.
 </t>
 
 <t>
-If the command contained a <tt>&lt;ttl:info&gt;</tt> element with a <tt>policy</tt> attribute with a true value,
-then the <tt>&lt;ttl:infData&gt;</tt> element <bcp14>MUST</bcp14> contain a <tt>&lt;ttl:ttl&gt;</tt> element for each supported DNS record type,
-and those elements <bcp14>MUST</bcp14> have the <tt>min</tt>, <tt>default</tt> and <tt>max</tt> attributes, as described in <xref target="info-element"/>.
-
-Otherwise, the response <bcp14>MUST</bcp14> contain a <tt>&lt;ttl:ttl&gt;</tt> element for each DNS record type that is applicable to the object in question.
-Those elements <bcp14>SHOULD NOT</bcp14> have the <tt>min</tt>, <tt>default</tt> and <tt>max</tt> attributes.
+If a server receives an &lt;info&gt; command for a domain or host object which includes a &lt;ttl:info&gt; element with a <tt>policy</tt> attribute that is present and is <tt>1</tt> or <tt>true</tt>,
+then the response <bcp14>MUST</bcp14> contain an <tt>&lt;extension&gt;</tt> element,
+which <bcp14>MUST</bcp14> contain a <tt>&lt;ttl:infData&gt;</tt> element,
+which <bcp14>MUST</bcp14> include <tt>&lt;ttl:ttl&gt;</tt> records for all supported DNS record types,
+irrespective of whether those record types are actually in use by the object in question.
+These elements <bcp14>MUST</bcp14> have the <tt>min</tt>, <tt>default</tt> and <tt>max</tt> attributes.
 </t>
 
 <t>
-Example unextended domain <tt>&lt;info&gt;</tt> response:
+Example domain <tt>&lt;info&gt;</tt> command with a &lt;ttl:info&gt; element with a <tt>policy</tt> attribute that is <tt>false</tt>:
+</t>
+
+<sourcecode><xi:include parse="text" href="examples/domain-info-command.xml.txt"/></sourcecode>
+
+<t>
+Example domain <tt>&lt;info&gt;</tt> response to a command with a &lt;ttl:info&gt; element with a <tt>policy</tt> attribute that is <tt>false</tt>:
 </t>
 
 <sourcecode><xi:include parse="text" href="examples/domain-info-response.xml.txt"/></sourcecode>
@@ -353,7 +360,13 @@ Example domain <tt>&lt;info&gt;</tt> response providing the server policies:
 <sourcecode><xi:include parse="text" href="examples/domain-info-response-extended.xml.txt"/></sourcecode>
 
 <t>
-Example unextended host <tt>&lt;info&gt;</tt> response:
+Example host <tt>&lt;info&gt;</tt> command with a &lt;ttl:info&gt; element with a <tt>policy</tt> attribute that is <tt>false</tt>:
+</t>
+
+<sourcecode><xi:include parse="text" href="examples/host-info-command.xml.txt"/></sourcecode>
+
+<t>
+Example domain <tt>&lt;info&gt;</tt> response to a command with a &lt;ttl:info&gt; element with a <tt>policy</tt> attribute that is <tt>false</tt>:
 </t>
 
 <sourcecode><xi:include parse="text" href="examples/host-info-response.xml.txt"/></sourcecode>
@@ -644,7 +657,7 @@ The formal syntax presented here is a complete schema representation of the exte
 </t>
 
 <t>
-<strong>Description:</strong> The Verisign EPP SDK includes both a full client implementation and a full server stub implementation of draft-ietf-regext-epp-eai.
+<strong>Description:</strong> The Verisign EPP SDK includes both a full client implementation and a full server stub implementation of this specification.
 </t>
 
 <t>
@@ -669,9 +682,49 @@ The formal syntax presented here is a complete schema representation of the exte
 
 </section>
 
+<section title="Pepper EPP Client">
+
+<t>
+<strong>Name:</strong> Pepper EPP Client
+</t>
+
+<t>
+<strong>Description:</strong> The Pepper EPP client will fully implement this specification.
+</t>
+
+<t>
+<strong>Level of maturity:</strong> Development
+</t>
+
+<t>
+<strong>Coverage:</strong> All aspects of the protocol will be implemented.
+</t>
+
+<t>
+<strong>Licensing:</strong> Perl Artistic License
+</t>
+
+<t>
+<strong>Contact:</strong> The author of this document.
+</t>
+
+<t>
+<strong>URL:</strong> https://github.com/gbxyz/pepper
+</t>
+
+</section>
+
 </section>
 
 <section title="Change log" anchor="change_log" removeInRFC="true">
+
+<section title="Change from 05 to 06"><ol>
+
+<li>
+Changed how <tt>&lt;info&gt;</tt> commands work so that a <tt>&lt;ttl:info&gt;</tt> element is required in order for <tt>&lt;ttl&gt;</tt> elements to be included in the response. Thanks to Jim Gould for this feedback.
+</li>
+
+</ol></section>
 
 <section title="Change from 04 to 05"><ol>
 
@@ -830,6 +883,7 @@ The author wishes to thank the following people for their advice and feedback du
   </front>
   <seriesInfo name="SAC" value="25"/>
 </reference>
+
 </references>
 
 </back>

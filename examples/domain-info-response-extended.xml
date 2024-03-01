@@ -31,15 +31,6 @@
           min="60"
           default="86400"
           max="172800">300</ttl:ttl>
-        <ttl:ttl for="custom"
-          custom="DELEG"
-          min="3600"
-          default="86400"
-          max="172800">300</ttl:ttl>
-        <ttl:ttl for="DNAME"
-          min="3600"
-          default="86400"
-          max="172800"/>
       </ttl:infData>
       <secDNS:infData
         xmlns:secDNS="urn:ietf:params:xml:ns:secDNS-1.1">

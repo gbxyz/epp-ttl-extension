@@ -25,8 +25,6 @@
         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
         <ttl:ttl for="NS">172800</ttl:ttl>
         <ttl:ttl for="DS">300</ttl:ttl>
-          <ttl:ttl for="custom"
-            custom="DELEG">300</ttl:ttl>
       </ttl:infData>
       <secDNS:infData
         xmlns:secDNS="urn:ietf:params:xml:ns:secDNS-1.1">

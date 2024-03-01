@@ -223,7 +223,7 @@ As an illustrative example, a server <bcp14>MAY</bcp14> allow clients to specify
 <section title="Glue records">
 
 <t>
-Servers which implements host objects (<xref target="RFC5732"/>) <bcp14>MAY</bcp14> allow clients to specify TTL values for <tt>A</tt> and <tt>AAAA</tt> records for host objects.
+Servers which implement host objects (<xref target="RFC5732"/>) <bcp14>MAY</bcp14> allow clients to specify TTL values for <tt>A</tt> and <tt>AAAA</tt> records for host objects.
 These servers <bcp14>MUST</bcp14> reject commands which attempt to set TTL values for these record types for domain objects using a 2004 "Parameter value range" error.
 </t>
 
@@ -243,7 +243,7 @@ EPP servers which use the "host attribute" model (described in <xref sectionForm
 
 </section>
 
-<section title="Explicit TTL value (&lt;info&gt; response)">
+<section title="Explicit TTL value (&lt;info&gt; policy mode)">
 
 <sourcecode>&lt;ttl:ttl
   for="NS"
@@ -253,23 +253,13 @@ EPP servers which use the "host attribute" model (described in <xref sectionForm
 
 </section>
 
-<section title="Empty value indicating default TTL (&lt;create&gt; or &lt;update&gt; command)">
+<section title="Empty value indicating default TTL (&lt;create&gt; or &lt;update&gt; command, &lt;info&gt; default mode)">
 
 <sourcecode>&lt;ttl:ttl for="NS"/&gt;</sourcecode>
 
 </section>
 
-<section title="Empty value indicating default TTL (&lt;info&gt; response)">
-
-<sourcecode>&lt;ttl:ttl
-  for="NS"
-  min="60"
-  default="86400"
-  max="172800"/&gt;</sourcecode>
-
-</section>
-
-<section title="Custom record type (&lt;create&gt; or &lt;update&gt; command)">
+<section title="Custom record type (&lt;create&gt; or &lt;update&gt; command, &lt;info&gt; default mode)">
 
 <sourcecode>&lt;ttl:ttl
   for="custom"
@@ -318,6 +308,14 @@ This extension defines an additional element for EPP <tt>&lt;info&gt;</tt> comma
 </t>
 
 <t>
+The EPP <tt>&lt;info&gt;</tt> command is extended to support two different "modes".
+The first "default" mode requests the inclusion of all non-default TTL values in the response.
+The second "policy" mode requests the inclusion of TTL information for all supported DNS record types in the response, along with the minimum, default and maximum values for those records.
+</t>
+
+<section title="Default mode">
+
+<t>
 If a server receives an <tt>&lt;info&gt;</tt> command for a domain or host object which includes a <tt>&lt;ttl:info&gt;</tt> element without a <tt>policy</tt> attribute,
 or with a <tt>policy</tt> attribute that is <tt>0</tt> or <tt>false</tt>,
 then the response <bcp14>MUST</bcp14> contain an <tt>&lt;extension&gt;</tt> element,
@@ -327,25 +325,41 @@ These elements <bcp14>SHOULD NOT</bcp14> have the <tt>min</tt>, <tt>default</tt>
 </t>
 
 <t>
-If a server receives an &lt;info&gt; command for a domain or host object which includes a &lt;ttl:info&gt; element with a <tt>policy</tt> attribute that is present and is <tt>1</tt> or <tt>true</tt>,
+Example domain <tt>&lt;info&gt;</tt> command with a <tt>&lt;ttl:info&gt;</tt> element with a <tt>policy</tt> attribute that is <tt>false</tt>:
+</t>
+
+<sourcecode><xi:include parse="text" href="examples/domain-info-command.xml.txt"/></sourcecode>
+
+<t>
+Example domain <tt>&lt;info&gt;</tt> response to a command with a <tt>&lt;ttl:info&gt;</tt> element with a <tt>policy</tt> attribute that is <tt>false</tt>:
+</t>
+
+<sourcecode><xi:include parse="text" href="examples/domain-info-response.xml.txt"/></sourcecode>
+
+<t>
+Example host <tt>&lt;info&gt;</tt> command with a &lt;ttl:info&gt; element with a <tt>policy</tt> attribute that is <tt>false</tt>:
+</t>
+
+<sourcecode><xi:include parse="text" href="examples/host-info-command.xml.txt"/></sourcecode>
+
+<t>
+Example domain <tt>&lt;info&gt;</tt> response to a command with a &lt;ttl:info&gt; element with a <tt>policy</tt> attribute that is <tt>false</tt>:
+</t>
+
+<sourcecode><xi:include parse="text" href="examples/host-info-response.xml.txt"/></sourcecode>
+
+</section>
+
+<section title="Policy mode">
+
+<t>
+If a server receives an <tt>&lt;info&gt;</tt> command for a domain or host object which includes a <tt>&lt;ttl:info&gt;</tt> element with a <tt>policy</tt> attribute that is present and is <tt>1</tt> or <tt>true</tt>,
 then the response <bcp14>MUST</bcp14> contain an <tt>&lt;extension&gt;</tt> element,
 which <bcp14>MUST</bcp14> contain a <tt>&lt;ttl:infData&gt;</tt> element,
 which <bcp14>MUST</bcp14> include <tt>&lt;ttl:ttl&gt;</tt> records for all supported DNS record types,
 irrespective of whether those record types are actually in use by the object in question.
 These elements <bcp14>MUST</bcp14> have the <tt>min</tt>, <tt>default</tt> and <tt>max</tt> attributes.
 </t>
-
-<t>
-Example domain <tt>&lt;info&gt;</tt> command with a &lt;ttl:info&gt; element with a <tt>policy</tt> attribute that is <tt>false</tt>:
-</t>
-
-<sourcecode><xi:include parse="text" href="examples/domain-info-command.xml.txt"/></sourcecode>
-
-<t>
-Example domain <tt>&lt;info&gt;</tt> response to a command with a &lt;ttl:info&gt; element with a <tt>policy</tt> attribute that is <tt>false</tt>:
-</t>
-
-<sourcecode><xi:include parse="text" href="examples/domain-info-response.xml.txt"/></sourcecode>
 
 <t>
 Example domain <tt>&lt;info&gt;</tt> command requesting the server policies:
@@ -360,18 +374,6 @@ Example domain <tt>&lt;info&gt;</tt> response providing the server policies:
 <sourcecode><xi:include parse="text" href="examples/domain-info-response-extended.xml.txt"/></sourcecode>
 
 <t>
-Example host <tt>&lt;info&gt;</tt> command with a &lt;ttl:info&gt; element with a <tt>policy</tt> attribute that is <tt>false</tt>:
-</t>
-
-<sourcecode><xi:include parse="text" href="examples/host-info-command.xml.txt"/></sourcecode>
-
-<t>
-Example domain <tt>&lt;info&gt;</tt> response to a command with a &lt;ttl:info&gt; element with a <tt>policy</tt> attribute that is <tt>false</tt>:
-</t>
-
-<sourcecode><xi:include parse="text" href="examples/host-info-response.xml.txt"/></sourcecode>
-
-<t>
 Example host <tt>&lt;info&gt;</tt> command requesting the server policies:
 </t>
 
@@ -382,6 +384,15 @@ Example host <tt>&lt;info&gt;</tt> response providing the server policies:
 </t>
 
 <sourcecode><xi:include parse="text" href="examples/extended-host-info-response.xml.txt"/></sourcecode>
+
+</section>
+
+<section title="Unextended &lt;info&gt; command">
+<t>
+If a server receives an <tt>&lt;info&gt;</tt> command which does not contain a <tt>&lt;ttl:info&gt;</tt> element,
+then the response <bcp14>MUST NOT</bcp14> contain a <tt>&lt;ttl:infData&gt;</tt> element.
+</t>
+</section>
 
 </section>
 

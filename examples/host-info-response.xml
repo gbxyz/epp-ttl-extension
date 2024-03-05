@@ -20,7 +20,7 @@
     <extension>
       <ttl:infData
         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
-        <ttl:ttl for="A">3600</ttl:ttl>
+        <ttl:ttl for="A">172800</ttl:ttl>
         <ttl:ttl for="AAAA">86400</ttl:ttl>
       </ttl:infData>
     </extension>

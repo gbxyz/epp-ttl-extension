@@ -1,4 +1,4 @@
-VERSION = 06
+VERSION = 07
 DOC = "draft-ietf-regext-epp-ttl-$(VERSION)"
 XML = "$(DOC).xml"
 

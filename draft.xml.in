@@ -276,11 +276,11 @@ EPP servers which use the "host attribute" model (described in <xref sectionForm
 <section anchor="info-element" title="The &lt;ttl:info&gt; element">
 
 <t>
-The <tt>&lt;ttl:info&gt;</tt> element is used to by clients to request that the server include additional information in <tt>&lt;info&gt;</tt> responses for domain and host objects.
+The <tt>&lt;ttl:info&gt;</tt> element is used by clients to request that the server include additional information in <tt>&lt;info&gt;</tt> responses for domain and host objects.
 </t>
 
 <t>
-It has a single <bcp14>OPTIONAL</bcp14> attribute, <tt>policy</tt>, which takes a boolean value with a default value of <tt>false</tt>.
+It has a single <bcp14>OPTIONAL</bcp14> <tt>policy</tt> attribute, which takes a boolean value with a default value of <tt>false</tt>.
 </t>
 
 <t>
@@ -308,20 +308,31 @@ This extension defines an additional element for EPP <tt>&lt;info&gt;</tt> comma
 </t>
 
 <t>
-The EPP <tt>&lt;info&gt;</tt> command is extended to support two different "modes".
-The first "default" mode requests the inclusion of all non-default TTL values in the response.
-The second "policy" mode requests the inclusion of TTL information for all supported DNS record types in the response, along with the minimum, default and maximum values for those records.
+The EPP <tt>&lt;info&gt;</tt> command is extended to support two different modes:
 </t>
 
-<section title="Default mode">
+<ol>
+<li>
+The Default Mode (<xref target="default-mode"/>),
+which requests the inclusion of all non-default TTL values in the response; and
+</li>
+
+<li>
+The Policy Mode (<xref target="policy-mode"/>)
+which requests the inclusion of TTL information for all supported DNS record types in the response,
+along with the minimum, default and maximum values for those records.
+</li>
+
+</ol>
+
+<section title="Default Mode" anchor="default-mode">
 
 <t>
-If a server receives an <tt>&lt;info&gt;</tt> command for a domain or host object which includes a <tt>&lt;ttl:info&gt;</tt> element without a <tt>policy</tt> attribute,
-or with a <tt>policy</tt> attribute that is <tt>0</tt> or <tt>false</tt>,
-then the response <bcp14>MUST</bcp14> contain an <tt>&lt;extension&gt;</tt> element,
-which <bcp14>MUST</bcp14> contain a <tt>&lt;ttl:infData&gt;</tt> element,
-which <bcp14>MUST</bcp14> contain <tt>&lt;ttl&gt;</tt> records for all DNS record types that have non-default TTL values.
-These elements <bcp14>SHOULD NOT</bcp14> have the <tt>min</tt>, <tt>default</tt> and <tt>max</tt> attributes.
+If a server receives an <tt>&lt;info&gt;</tt> command for a domain or host object which includes a <tt>&lt;ttl:info&gt;</tt> element
+with a <tt>policy</tt> attribute that is <tt>0</tt> or <tt>false</tt>,
+then the EPP response contain <bcp14>MUST</bcp14> contain in its <tt>&lt;extension&gt;</tt> element a <tt>&lt;ttl:infData&gt;</tt> element,
+which <bcp14>MUST</bcp14> contain <tt>&lt;ttl:ttl&gt;</tt> records for all DNS record types that have non-default TTL values.
+These elements <bcp14>MUST NOT</bcp14> have the <tt>min</tt>, <tt>default</tt> and <tt>max</tt> attributes.
 </t>
 
 <t>
@@ -343,19 +354,19 @@ Example host <tt>&lt;info&gt;</tt> command with a &lt;ttl:info&gt; element with 
 <sourcecode><xi:include parse="text" href="examples/host-info-command.xml.txt"/></sourcecode>
 
 <t>
-Example domain <tt>&lt;info&gt;</tt> response to a command with a &lt;ttl:info&gt; element with a <tt>policy</tt> attribute that is <tt>false</tt>:
+Example host <tt>&lt;info&gt;</tt> response to a command with a &lt;ttl:info&gt; element with a <tt>policy</tt> attribute that is <tt>false</tt>:
 </t>
 
 <sourcecode><xi:include parse="text" href="examples/host-info-response.xml.txt"/></sourcecode>
 
 </section>
 
-<section title="Policy mode">
+<section title="Policy Mode" anchor="policy-mode">
 
 <t>
-If a server receives an <tt>&lt;info&gt;</tt> command for a domain or host object which includes a <tt>&lt;ttl:info&gt;</tt> element with a <tt>policy</tt> attribute that is present and is <tt>1</tt> or <tt>true</tt>,
-then the response <bcp14>MUST</bcp14> contain an <tt>&lt;extension&gt;</tt> element,
-which <bcp14>MUST</bcp14> contain a <tt>&lt;ttl:infData&gt;</tt> element,
+If a server receives an <tt>&lt;info&gt;</tt> command for a domain or host object which includes a <tt>&lt;ttl:info&gt;</tt> element
+with a <tt>policy</tt> attribute is <tt>1</tt> or <tt>true</tt>,
+then the EPP response contain <bcp14>MUST</bcp14> contain in its <tt>&lt;extension&gt;</tt> element a <tt>&lt;ttl:infData&gt;</tt> element,
 which <bcp14>MUST</bcp14> include <tt>&lt;ttl:ttl&gt;</tt> records for all supported DNS record types,
 irrespective of whether those record types are actually in use by the object in question.
 These elements <bcp14>MUST</bcp14> have the <tt>min</tt>, <tt>default</tt> and <tt>max</tt> attributes.
@@ -385,13 +396,6 @@ Example host <tt>&lt;info&gt;</tt> response providing the server policies:
 
 <sourcecode><xi:include parse="text" href="examples/extended-host-info-response.xml.txt"/></sourcecode>
 
-</section>
-
-<section title="Unextended &lt;info&gt; command">
-<t>
-If a server receives an <tt>&lt;info&gt;</tt> command which does not contain a <tt>&lt;ttl:info&gt;</tt> element,
-then the response <bcp14>MUST NOT</bcp14> contain a <tt>&lt;ttl:infData&gt;</tt> element.
-</t>
 </section>
 
 </section>
@@ -729,10 +733,19 @@ The formal syntax presented here is a complete schema representation of the exte
 
 <section title="Change log" anchor="change_log" removeInRFC="true">
 
+<section title="Change from 06 to 07"><ol>
+
+<li>
+Minor wording changes and nits reported by JG.
+</li>
+
+</ol></section>
+
 <section title="Change from 05 to 06"><ol>
 
 <li>
-Changed how <tt>&lt;info&gt;</tt> commands work so that a <tt>&lt;ttl:info&gt;</tt> element is required in order for <tt>&lt;ttl&gt;</tt> elements to be included in the response. Thanks to Jim Gould for this feedback.
+Changed how <tt>&lt;info&gt;</tt> commands work so that a <tt>&lt;ttl:info&gt;</tt> element is required in order for <tt>&lt;ttl:ttl&gt;</tt> elements to be included in the response.
+Thanks to JG for this feedback.
 </li>
 
 </ol></section>
@@ -756,7 +769,7 @@ Add the the Verisign EPP SDK to <xref target="implementation-status"/>.
 </li>
 
 <li>
-Add the <tt>&lt;ttl:info&gt;</tt> element and document how it affects server  <tt>&lt;info&gt;</tt> responses.
+Add the <tt>&lt;ttl:info&gt;</tt> element and document how it affects server <tt>&lt;info&gt;</tt> responses.
 </li>
 
 <li>
@@ -856,10 +869,10 @@ The author wishes to thank the following people for their advice and feedback du
 </t>
 
 <ol>
+<li>James Gould;</li>
 <li>Hugo Salgado;</li>
 <li>Patrick Mevzek;</li>
 <li>Rick Wilhelm;</li>
-<li>James Gould;</li>
 <li>Marc Groeneweg;</li>
 <li>Ties de Kock.</li>
 </ol>

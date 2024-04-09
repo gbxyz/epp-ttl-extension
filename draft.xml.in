@@ -11,6 +11,7 @@
 <!ENTITY RFC8499 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8499.xml">
 <!ENTITY RFC8590 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8590.xml">
 <!ENTITY RFC9364 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.9364.xml">
+<!ENTITY RFC9499 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.9499.xml">
 ]>
 
 <?xml-stylesheet type="text/xsl" href="rfc2629.xslt" ?>
@@ -134,7 +135,7 @@ The <tt>&lt;ttl:ttl&gt;</tt> element is used to define TTL values for the DNS re
 </t>
 
 <t>
-The <tt>&lt;ttl:ttl&gt;</tt> element may have the following attributes, depending on whether it appears in a command or response frame:
+<tt>&lt;ttl:ttl&gt;</tt> elements <bcp14>MAY</bcp14> have the following attributes, depending on whether it appears in a command or response frame:
 </t>
 
 <ol>
@@ -149,15 +150,15 @@ Additionally, the record type <bcp14>MUST</bcp14> be registered with IANA.
 </li>
 
 <li>
-"<tt>min</tt>", which <bcp14>MUST NOT</bcp14> be present in commands frames but <bcp14>MAY</bcp14> be present in response frames (see <xref target="info-command"/>), and which is used by the server to indicate the lowest value that may be set;
+"<tt>min</tt>", which <bcp14>MUST NOT</bcp14> be present in command frames but <bcp14>MAY</bcp14> be present in response frames (see <xref target="info-command"/>), and which is used by the server to indicate the lowest value that may be set;
 </li>
 
 <li>
-"<tt>default</tt>", which <bcp14>MUST NOT</bcp14> be present in commands frames but <bcp14>MAY</bcp14> be present in response frames (see <xref target="info-command"/>), and which is used by the server to indicate the default value;
+"<tt>default</tt>", which <bcp14>MUST NOT</bcp14> be present in command frames but <bcp14>MAY</bcp14> be present in response frames (see <xref target="info-command"/>), and which is used by the server to indicate the default value;
 </li>
 
 <li>
-"<tt>max</tt>", which <bcp14>MUST NOT</bcp14> be present in commands frames but <bcp14>MAY</bcp14> be present in response frames (see <xref target="info-command"/>), and which is used by the server to indicate the highest value that may be set;
+"<tt>max</tt>", which <bcp14>MUST NOT</bcp14> be present in command frames but <bcp14>MAY</bcp14> be present in response frames (see <xref target="info-command"/>), and which is used by the server to indicate the highest value that may be set;
 </li>
 
 </ol>
@@ -189,7 +190,8 @@ To facilitate forward compatibility with future changes to the DNS protocol, thi
 </t>
 
 <t>
-The regular expression which is used to validate the values of the "<tt>custom</tt>" attribute is based on the expression found in <xref sectionFormat="of" section="1.3" target="RFC6895"/>, and is intended to match any existing and future RRTYPE mnemonic registered with the IANA: this eliminates the need to update this document in the event that a new DNS record that exists above a zone cut is specified.
+The regular expression which is used to validate the values of the "<tt>custom</tt>" attribute is based on the expression found in <xref sectionFormat="of" section="1.3" target="RFC6895"/>, and is intended to match both existing and future RRTYPE mnemonics.
+This eliminates the need to update this document in the event that new DNS records that exist above a zone cut (<xref sectionFormat="of" section="7" target="RFC9499"/>) see is specified.
 </t>
 
 <t>
@@ -224,7 +226,10 @@ As an illustrative example, a server <bcp14>MAY</bcp14> allow clients to specify
 
 <t>
 Servers which implement host objects (<xref target="RFC5732"/>) <bcp14>MAY</bcp14> allow clients to specify TTL values for <tt>A</tt> and <tt>AAAA</tt> records for host objects.
-These servers <bcp14>MUST</bcp14> reject commands which attempt to set TTL values for these record types for domain objects using a 2004 "Parameter value range" error.
+</t>
+
+<t>
+A server which implements host objects which receives a command which attempts to set TTL values for <tt>A</tt> and <tt>AAAA</tt> records on a domain object <bcp14>MUST</bcp14> respond with a 2004 "Parameter value range" error.
 </t>
 
 <t>
@@ -468,7 +473,7 @@ If an EPP server receives an <tt>&lt;update&gt;</tt> command containing a TTL va
 
 <section title="Permitted record types">
 <t>
-Servers <bcp14>MAY</bcp14> restrict the supported DNS record types in accordance with their own operational needs.
+Servers <bcp14>MAY</bcp14> restrict the supported DNS record types in accordance with their own policy.
 For example, a server <bcp14>MAY</bcp14> allow clients to specify TTL values for <tt>DS</tt> records only.
 </t>
 
@@ -513,7 +518,7 @@ If a TTL value is changed out-of-band, EPP server operators <bcp14>MAY</bcp14> n
 <section title="Operational impact of TTL values">
 
 <t>
-Domain registry operators must strike a balance between, on the one hand, the desire of registrants for changes to their domains to be visible in the DNS quickly, and on the other, the increased DNS query traffic that short TTLs can bring.
+Domain registry operators must consider the balance between the desire of registrants for changes to their domains to be visible in the DNS quickly, and the increased DNS query traffic that short TTLs can bring.
 Historically, registry operators have used a global TTL value which was applied to all delegations within their zones, which could then be tuned to an optimum value.
 </t>
 
@@ -535,7 +540,7 @@ This arises due to a misunderstanding about how TTLs work.
 </t>
 
 <t>
-Implementations of this specification <bcp14>SHOULD</bcp14> ensure that the user understands that changes to a TTL are only effective in shortening transition periods if implemented a period of time — at least equal to the current TTL — <em>before</em> the planned change.
+Implementations of this specification <bcp14>SHOULD</bcp14> ensure that the user understands that changes to a TTL are only effective in shortening transition periods if implemented a period of time &#8212; at least equal to the current TTL &#8212; <em>before</em> the planned change.
 </t>
 
 </section>
@@ -606,7 +611,7 @@ Registration for the TTL XML schema:
 <section title="EPP extension registry">
 
 <t>
-The EPP extension described in this document has been registered by the IANA in the Extensions for the "Extensible Provisioning Protocol (EPP)" registry described in <xref target="RFC7451"/>.
+The EPP extension described in this document has been registered by IANA in the Extensions for the "Extensible Provisioning Protocol (EPP)" registry described in <xref target="RFC7451"/>.
 The details of the registration are as follows:
 </t>
 
@@ -704,7 +709,7 @@ The formal syntax presented here is a complete schema representation of the exte
 </t>
 
 <t>
-<strong>Description:</strong> The Pepper EPP client will fully implement this specification.
+<strong>Description:</strong> The Pepper EPP client fully implements this specification. The underlying <tt>Net::EPP::</tt> Perl module also implements this specification.
 </t>
 
 <t>
@@ -732,6 +737,14 @@ The formal syntax presented here is a complete schema representation of the exte
 </section>
 
 <section title="Change log" anchor="change_log" removeInRFC="true">
+
+<section title="Change from 07 to 08"><ol>
+
+<li>
+Some wording changes suggested by Rick Wilhelm.
+</li>
+
+</ol></section>
 
 <section title="Change from 06 to 07"><ol>
 
@@ -898,6 +911,7 @@ The author wishes to thank the following people for their advice and feedback du
 &RFC8499;
 &RFC8590;
 &RFC9364;
+&RFC9499;
 
 <reference anchor="SAC-025" target="https://www.icann.org/en/system/files/files/sac-025-en.pdf">
   <front>

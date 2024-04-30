@@ -8,6 +8,7 @@
 <!ENTITY RFC6895 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6895.xml">
 <!ENTITY RFC6927 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6927.xml">
 <!ENTITY RFC7451 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7451.xml">
+<!ENTITY RFC8174 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml">
 <!ENTITY RFC8499 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8499.xml">
 <!ENTITY RFC8590 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8590.xml">
 <!ENTITY RFC9364 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.9364.xml">
@@ -93,7 +94,7 @@ It also describes how EPP servers should handle TTLs specified by EPP clients, a
 <section title="Conventions used in this document">
 
 <t>
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <xref target="RFC2119"/>.
+The key words "<bcp14>MUST</bcp14>", "<bcp14>MUST NOT</bcp14>", "<bcp14>REQUIRED</bcp14>", "<bcp14>SHALL</bcp14>", "<bcp14>SHALL NOT</bcp14>", "<bcp14>SHOULD</bcp14>", "<bcp14>SHOULD NOT</bcp14>", "<bcp14>RECOMMENDED</bcp14>", "<bcp14>NOT RECOMMENDED</bcp14>", "<bcp14>MAY</bcp14>", and "<bcp14>OPTIONAL</bcp14>" in this document are to be interpreted as described in BCP 14 <xref target="RFC2119" format="default" sectionFormat="of" derivedContent="RFC2119"/> <xref target="RFC8174" format="default" sectionFormat="of" derivedContent="RFC8174"/> when, and only when, they appear in all capitals, as shown here.
 </t>
 
 <t>
@@ -904,6 +905,7 @@ The author wishes to thank the following people for their advice and feedback du
 &RFC5910;
 &RFC6895;
 &RFC7451;
+&RFC8174;
 </references>
 
 <references title="Informative references">

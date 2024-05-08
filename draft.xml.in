@@ -192,7 +192,7 @@ To facilitate forward compatibility with future changes to the DNS protocol, thi
 
 <t>
 The regular expression which is used to validate the values of the "<tt>custom</tt>" attribute is based on the expression found in <xref sectionFormat="of" section="1.3" target="RFC6895"/>, and is intended to match both existing and future RRTYPE mnemonics.
-This eliminates the need to update this document in the event that new DNS records that exist above a zone cut (<xref sectionFormat="of" section="7" target="RFC9499"/>) see is specified.
+This eliminates the need to update this document in the event that new DNS records that exist above a zone cut (<xref sectionFormat="of" section="7" target="RFC9499"/>) is specified.
 </t>
 
 <t>
@@ -200,7 +200,7 @@ Nevertheless, EPP servers which implement this extension <bcp14>MUST</bcp14> res
 </t>
 
 <t>
-A server which receives a <tt>&lt;create&gt;</tt> or <tt>&lt;update&gt;</tt> command which includes an invalid DNS record type <bcp14>MUST</bcp14> respond with a 2004 "Parameter value range" error.
+A server that receives a <tt>&lt;create&gt;</tt> or <tt>&lt;update&gt;</tt> command that attempts to set TTL values for inapplicable DNS record types <bcp14>MUST</bcp14> respond with a 2004 "Parameter value range" error.
 </t>
 
 <t>
@@ -324,7 +324,7 @@ which requests the inclusion of all non-default TTL values in the response; and
 </li>
 
 <li>
-The Policy Mode (<xref target="policy-mode"/>)
+The Policy Mode (<xref target="policy-mode"/>),
 which requests the inclusion of TTL information for all supported DNS record types in the response,
 along with the minimum, default and maximum values for those records.
 </li>
@@ -335,10 +335,9 @@ along with the minimum, default and maximum values for those records.
 
 <t>
 If a server receives an <tt>&lt;info&gt;</tt> command for a domain or host object which includes a <tt>&lt;ttl:info&gt;</tt> element
-with a <tt>policy</tt> attribute that is <tt>0</tt> or <tt>false</tt>,
-then the EPP response contain <bcp14>MUST</bcp14> contain in its <tt>&lt;extension&gt;</tt> element a <tt>&lt;ttl:infData&gt;</tt> element,
-which <bcp14>MUST</bcp14> contain <tt>&lt;ttl:ttl&gt;</tt> records for all DNS record types that have non-default TTL values.
-These elements <bcp14>MUST NOT</bcp14> have the <tt>min</tt>, <tt>default</tt> and <tt>max</tt> attributes.
+with a <tt>policy</tt> attribute that is "<tt>0</tt>" or "<tt>false</tt>",
+then the EPP response contain <bcp14>MUST</bcp14> contain <tt>&lt;ttl:ttl&gt;</tt> records for all DNS record types that have non-default TTL values.
+These elements <bcp14>MUST NOT</bcp14> have the "<tt>min</tt>", "<tt>default</tt>" and "<tt>max</tt>" attributes.
 </t>
 
 <t>
@@ -371,11 +370,10 @@ Example host <tt>&lt;info&gt;</tt> response to a command with a &lt;ttl:info&gt;
 
 <t>
 If a server receives an <tt>&lt;info&gt;</tt> command for a domain or host object which includes a <tt>&lt;ttl:info&gt;</tt> element
-with a <tt>policy</tt> attribute is <tt>1</tt> or <tt>true</tt>,
-then the EPP response contain <bcp14>MUST</bcp14> contain in its <tt>&lt;extension&gt;</tt> element a <tt>&lt;ttl:infData&gt;</tt> element,
-which <bcp14>MUST</bcp14> include <tt>&lt;ttl:ttl&gt;</tt> records for all supported DNS record types,
+with a <tt>policy</tt> attribute is "<tt>1</tt>" or "<tt>true</tt>",
+then the EPP response contain <bcp14>MUST</bcp14> contain <tt>&lt;ttl:ttl&gt;</tt> records for all supported DNS record types,
 irrespective of whether those record types are actually in use by the object in question.
-These elements <bcp14>MUST</bcp14> have the <tt>min</tt>, <tt>default</tt> and <tt>max</tt> attributes.
+These elements <bcp14>MUST</bcp14> have the "<tt>min</tt>", "<tt>default</tt>" and "<tt>max</tt>" attributes.
 </t>
 
 <t>
@@ -519,12 +517,12 @@ If a TTL value is changed out-of-band, EPP server operators <bcp14>MAY</bcp14> n
 <section title="Operational impact of TTL values">
 
 <t>
-Domain registry operators must consider the balance between the desire of registrants for changes to their domains to be visible in the DNS quickly, and the increased DNS query traffic that short TTLs can bring.
-Historically, registry operators have used a global TTL value which was applied to all delegations within their zones, which could then be tuned to an optimum value.
+Registry operators must consider the balance between registrants' desire for changes to domains to be visible in the DNS quickly, and the increased DNS query traffic that short TTLs can bring.
+Historically, registry operators have used a global TTL value for all delegations within their zones, which could then be tuned to an optimum value.
 </t>
 
 <t>
-Domain registry operators <bcp14>SHOULD</bcp14> implement limits on the maximum and minimum accepted TTL values that are narrower than the values permitted in the XML schema in the <xref target="formal-syntax" format="title"/> (which were chosen to allow any TTL permitted in DNS records), in order to prevent scenarios where an excessively high or low TTL causes operational issues on either side of the zone cut.
+Registry operators <bcp14>SHOULD</bcp14> implement limits on the maximum and minimum accepted TTL values that are narrower than the values permitted in the XML schema in the <xref target="formal-syntax" format="title"/> (which were chosen to allow any TTL permitted in DNS records), in order to prevent scenarios where an excessively high or low TTL causes operational issues on either side of the zone cut.
 </t>
 
 <t>
@@ -542,6 +540,7 @@ This arises due to a misunderstanding about how TTLs work.
 
 <t>
 Implementations of this specification <bcp14>SHOULD</bcp14> ensure that the user understands that changes to a TTL are only effective in shortening transition periods if implemented a period of time &#8212; at least equal to the current TTL &#8212; <em>before</em> the planned change.
+The latency between receipt of the <tt>&lt;update&gt;</tt> command and the actual publication of the changes in the DNS should also be taken into consideration in this calculation.
 </t>
 
 </section>
@@ -738,6 +737,14 @@ The formal syntax presented here is a complete schema representation of the exte
 </section>
 
 <section title="Change log" anchor="change_log" removeInRFC="true">
+
+<section title="Change from 08 to 09"><ol>
+
+<li>
+Some wording changes suggested by James Gould.
+</li>
+
+</ol></section>
 
 <section title="Change from 07 to 08"><ol>
 

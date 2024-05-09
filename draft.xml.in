@@ -9,7 +9,6 @@
 <!ENTITY RFC6927 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6927.xml">
 <!ENTITY RFC7451 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7451.xml">
 <!ENTITY RFC8174 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml">
-<!ENTITY RFC8499 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8499.xml">
 <!ENTITY RFC8590 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8590.xml">
 <!ENTITY RFC9364 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.9364.xml">
 <!ENTITY RFC9499 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.9499.xml">
@@ -917,7 +916,6 @@ The author wishes to thank the following people for their advice and feedback du
 
 <references title="Informative references">
 &RFC6927;
-&RFC8499;
 &RFC8590;
 &RFC9364;
 &RFC9499;

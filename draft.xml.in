@@ -77,17 +77,18 @@ The source for this draft, and an issue tracker, may can be found at <eref targe
 <t>
 The principal output of any domain name provisioning system is a DNS zone file, which contains the delegation record(s) for names registered within a zone (such as a top-level domain).
 These records typically include one or more <tt>NS</tt> records, but may also include <tt>DS</tt> records for domains secured with DNSSEC (<xref target="RFC9364"/>), and <tt>DNAME</tt> records for IDN variants (<xref target="RFC6927"/>).
-Where glue (see <xref section="7" sectionFormat="of" target="RFC8499"/>) is required, <tt>A</tt> and/or <tt>AAAA</tt> records may also be published for nameservers.
+<tt>A</tt> and/or <tt>AAAA</tt> records may also be published for nameservers where required by DNS resolvers to avoid an infinite loop.
 </t>
 
 <t>
-Typically, the Time-To-Live value (TTL, see <xref section="5" sectionFormat="of" target="RFC8499"/>) of these records is determined by the registry operator.
-However, in some circumstances it may be desirable to allow the sponsoring client of a domain name to change the TTL values used for that domain's delegation: for example, to reduce the amount of time required to complete a change of DNS servers, DNSSEC deployment or key rollover, or to allow for fast rollback of such changes.
+Typically, the Time-To-Live value (TTL, see <xref section="5" sectionFormat="of" target="RFC9499"/>) of these records is determined by the registry operator.
+However, in some circumstances it may be desirable to allow the sponsoring client of a domain name to change the TTL values used for that domain's delegation:
+for example, to reduce the amount of time required to complete a change of DNS servers, DNSSEC deployment or key rollover, or to allow for fast rollback of such changes.
 </t>
 
 <t>
 This document describes an EPP extension to the domain name and host object mappings (described in <xref target="RFC5731"/> and <xref target="RFC5732"/>, respectively) which allows the sponsor of a domain name or host object to change the TTL values of the resource record(s) associated with that object.
-It also describes how EPP servers should handle TTLs specified by EPP clients, and how both parties co-ordinate to manage TTL values in response to changes in operational or security requirements.
+It also describes how EPP servers should handle TTLs specified by EPP clients and how both parties co-ordinate to manage TTL values in response to changes in operational or security requirements.
 </t>
 
 <section title="Conventions used in this document">
@@ -163,6 +164,10 @@ Additionally, the record type <bcp14>MUST</bcp14> be registered with IANA.
 
 </ol>
 
+<t>
+When present, the value of the "<tt>min</tt>" attribute <bcp14>MUST</bcp14> be lower than the value of the "<tt>max</tt>" attribute. The "<tt>default</tt>" attribute <bcp14>MUST</bcp14> be between the "<tt>min</tt>" and "<tt>max</tt>" values, inclusively.
+</t>
+
 <section title="Element content" anchor="element-content">
 
 <t>
@@ -223,6 +228,10 @@ As an illustrative example, a server <bcp14>MAY</bcp14> allow clients to specify
 </ol>
 
 <section title="Glue records">
+
+<t>
+Glue records are described in <xref section="7" sectionFormat="of" target="RFC9499"/>.
+</t>
 
 <t>
 Servers which implement host objects (<xref target="RFC5732"/>) <bcp14>MAY</bcp14> allow clients to specify TTL values for <tt>A</tt> and <tt>AAAA</tt> records for host objects.
@@ -740,7 +749,7 @@ The formal syntax presented here is a complete schema representation of the exte
 <section title="Change from 08 to 09"><ol>
 
 <li>
-Some wording changes suggested by James Gould.
+Some wording changes suggested by James Gould and Tim Wicinski.
 </li>
 
 </ol></section>
@@ -889,12 +898,13 @@ The author wishes to thank the following people for their advice and feedback du
 </t>
 
 <ol>
-<li>James Gould;</li>
-<li>Hugo Salgado;</li>
-<li>Patrick Mevzek;</li>
-<li>Rick Wilhelm;</li>
-<li>Marc Groeneweg;</li>
-<li>Ties de Kock.</li>
+<li>James Gould</li>
+<li>Hugo Salgado</li>
+<li>Patrick Mevzek</li>
+<li>Rick Wilhelm</li>
+<li>Marc Groeneweg</li>
+<li>Ties de Kock</li>
+<li>Tim Wicinski</li>
 </ol>
 
 </section>

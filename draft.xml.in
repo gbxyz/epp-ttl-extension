@@ -478,7 +478,7 @@ If an EPP server receives an <tt>&lt;update&gt;</tt> command containing a TTL va
 
 <section title="Server processing of TTL values">
 
-<section title="Permitted record types">
+<section anchor="permitted-types" title="Permitted record types">
 <t>
 Servers <bcp14>MAY</bcp14> restrict the supported DNS record types in accordance with their own policy.
 For example, a server <bcp14>MAY</bcp14> allow clients to specify TTL values for <tt>DS</tt> records only.
@@ -750,6 +750,25 @@ The formal syntax presented here is a complete schema representation of the exte
 </section>
 
 <section title="Change log" anchor="change_log" removeInRFC="true">
+
+<section title="Change from 09 to 10">
+
+<t>
+Changes resulting from the Dnsdir review:
+</t>
+
+<ol>
+
+<li>
+Fixed example IPv6 addresses to use the preferred prefix 2001:DB8::.
+</li>
+
+<li>
+Added paragraph to <xref target="permitted-types"/> describing how clients can use the Policy Mode <tt>&lt;info&gt;</tt> command (<xref target="policy-mode"/>) to discover the DNS record types supported by the server.
+</li>
+
+</ol>
+</section>
 
 <section title="Change from 08 to 09"><ol>
 

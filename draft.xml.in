@@ -488,6 +488,11 @@ For example, a server <bcp14>MAY</bcp14> allow clients to specify TTL values for
 A server which receives a <tt>&lt;create&gt;</tt> or <tt>&lt;update&gt;</tt> command which includes a restricted record type <bcp14>MUST</bcp14> respond with a 2306 "Parameter value policy" error.
 </t>
 
+<t>
+Clients can discover the DNS record types for which an EPP server permits TTL values to be changed by performing a "Policy Mode" <tt>&lt;info&gt;</tt> command,
+as outlined in <xref target="policy-mode"/>.
+</t>
+
 </section>
 
 <section title="Use of TTL values in delegation records" anchor="using_ttl_values">

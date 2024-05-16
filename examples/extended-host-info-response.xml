@@ -11,7 +11,7 @@
         <host:roid>NS1_EXAMPLE1-REP</host:roid>
         <host:status s="ok"/>
         <host:addr ip="v4">192.0.2.2</host:addr>
-        <host:addr ip="v6">1080::8:800:200C:417A</host:addr>
+        <host:addr ip="v6">2001:DB8::8:800:200C:417A</host:addr>
         <host:clID>ClientX</host:clID>
         <host:crID>ClientX</host:crID>
         <host:crDate>2023-11-08T10:14:55.0Z</host:crDate>

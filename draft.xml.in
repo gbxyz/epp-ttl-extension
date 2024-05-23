@@ -498,7 +498,7 @@ as outlined in <xref target="policy-mode"/>.
 <section title="Use of TTL values in delegation records" anchor="using_ttl_values">
 
 <t>
-EPP servers which implement this extension <bcp14>SHOULD</bcp14> use the values provided by EPP clients for the TTL values records published in the DNS for domain and and objects.
+EPP servers which implement this extension <bcp14>SHOULD</bcp14> use the values provided by EPP clients for the TTL values records published in the DNS for domain and (if supported) host objects.
 </t>
 
 <t>

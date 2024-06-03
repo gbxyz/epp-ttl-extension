@@ -751,7 +751,15 @@ The formal syntax presented here is a complete schema representation of the exte
 
 <section title="Change log" anchor="change_log" removeInRFC="true">
 
-<section title="Change from 09 to 10">
+<section title="Changes from 10 to 11"><ol>
+
+<li>
+Fix double word in <xref target="using_ttl_values"/>.
+</li>
+
+</ol></section>
+
+<section title="Changes from 09 to 10">
 
 <t>
 Changes resulting from the Dnsdir review:
@@ -770,7 +778,7 @@ Added paragraph to <xref target="permitted-types"/> describing how clients can u
 </ol>
 </section>
 
-<section title="Change from 08 to 09"><ol>
+<section title="Changes from 08 to 09"><ol>
 
 <li>
 Some wording changes suggested by James Gould and Tim Wicinski.
@@ -778,7 +786,7 @@ Some wording changes suggested by James Gould and Tim Wicinski.
 
 </ol></section>
 
-<section title="Change from 07 to 08"><ol>
+<section title="Changes from 07 to 08"><ol>
 
 <li>
 Some wording changes suggested by Rick Wilhelm.
@@ -786,7 +794,7 @@ Some wording changes suggested by Rick Wilhelm.
 
 </ol></section>
 
-<section title="Change from 06 to 07"><ol>
+<section title="Changes from 06 to 07"><ol>
 
 <li>
 Minor wording changes and nits reported by JG.
@@ -794,7 +802,7 @@ Minor wording changes and nits reported by JG.
 
 </ol></section>
 
-<section title="Change from 05 to 06"><ol>
+<section title="Changes from 05 to 06"><ol>
 
 <li>
 Changed how <tt>&lt;info&gt;</tt> commands work so that a <tt>&lt;ttl:info&gt;</tt> element is required in order for <tt>&lt;ttl:ttl&gt;</tt> elements to be included in the response.
@@ -803,7 +811,7 @@ Thanks to JG for this feedback.
 
 </ol></section>
 
-<section title="Change from 04 to 05"><ol>
+<section title="Changes from 04 to 05"><ol>
 
 <li>
 removed the erroneous <tt>required="true"</tt> attribute from the <tt>min</tt>, <tt>default</tt> and <tt>max</tt> attributes of the <tt>responseTTLType</tt> type (thanks JG).
@@ -815,7 +823,7 @@ fixed the reference to RFC 6895 (thanks HS).
 
 </ol></section>
 
-<section title="Change from 04 to 05"><ol>
+<section title="Changes from 04 to 05"><ol>
 
 <li>
 Add the the Verisign EPP SDK to <xref target="implementation-status"/>.
@@ -835,7 +843,7 @@ Minor schema issue fixed.
 
 </ol></section>
 
-<section title="Change from 03 to 04"><ol>
+<section title="Changes from 03 to 04"><ol>
 
 <li>
 Changed the <tt>for</tt> attribute to be an enumeration and added the <tt>custom</tt> attribute.
@@ -851,7 +859,7 @@ Apply feedback from Jim Gould.
 
 </ol></section>
 
-<section title="Change from 02 to 03"><ol>
+<section title="Changes from 02 to 03"><ol>
 
 <li>
 Rolled back the "straw man" syntax from 02.
@@ -869,7 +877,7 @@ Removed the cascading effect where a TTL set on a domain affects subordinate hos
 
 </ol></section>
 
-<section title="Change from 01 to 02"><ol>
+<section title="Changes from 01 to 02"><ol>
 
 <li>
 Renamed the <tt>ttl:seconds</tt> XSD type to <tt>ttl:container</tt>, and the <tt>ttl:nonNegativeInteger</tt> type to <tt>ttl:ttlType</tt>, to permit multiple TTL values.
@@ -881,7 +889,7 @@ Converted XML instances from artwork to source code.
 
 </ol></section>
 
-<section title="Change from 00 to 01"><ol>
+<section title="Changes from 00 to 01"><ol>
 
 <li>
 Incorporate feedback from Jim Gould.

@@ -238,7 +238,7 @@ Servers which implement host objects (<xref target="RFC5732"/>) <bcp14>MAY</bcp1
 </t>
 
 <t>
-A server which implements host objects which receives a command which attempts to set TTL values for <tt>A</tt> and <tt>AAAA</tt> records on a domain object <bcp14>MUST</bcp14> respond with a 2004 "Parameter value range" error.
+A server supporting host objects which receives a command that attempts to set TTL values for <tt>A</tt> and <tt>AAAA</tt> records on a domain object <bcp14>MUST</bcp14> respond with a 2004 "Parameter value range" error.
 </t>
 
 <t>
@@ -343,8 +343,8 @@ along with the minimum, default and maximum values for those records.
 
 <t>
 If a server receives an <tt>&lt;info&gt;</tt> command for a domain or host object which includes a <tt>&lt;ttl:info&gt;</tt> element
-with a <tt>policy</tt> attribute that is "<tt>0</tt>" or "<tt>false</tt>",
-then the EPP response contain <bcp14>MUST</bcp14> contain <tt>&lt;ttl:ttl&gt;</tt> records for all DNS record types that have non-default TTL values.
+with a "<tt>policy</tt>" attribute that is "<tt>0</tt>" or "<tt>false</tt>",
+then the EPP response <bcp14>MUST</bcp14> contain <tt>&lt;ttl:ttl&gt;</tt> records for all DNS record types that have non-default TTL values.
 These elements <bcp14>MUST NOT</bcp14> have the "<tt>min</tt>", "<tt>default</tt>" and "<tt>max</tt>" attributes.
 </t>
 
@@ -378,8 +378,8 @@ Example host <tt>&lt;info&gt;</tt> response to a command with a &lt;ttl:info&gt;
 
 <t>
 If a server receives an <tt>&lt;info&gt;</tt> command for a domain or host object which includes a <tt>&lt;ttl:info&gt;</tt> element
-with a <tt>policy</tt> attribute is "<tt>1</tt>" or "<tt>true</tt>",
-then the EPP response contain <bcp14>MUST</bcp14> contain <tt>&lt;ttl:ttl&gt;</tt> records for all supported DNS record types,
+with a "<tt>policy</tt>" attribute is "<tt>1</tt>" or "<tt>true</tt>",
+then the EPP response <bcp14>MUST</bcp14> contain <tt>&lt;ttl:ttl&gt;</tt> records for all supported DNS record types,
 irrespective of whether those record types are actually in use by the object in question.
 These elements <bcp14>MUST</bcp14> have the "<tt>min</tt>", "<tt>default</tt>" and "<tt>max</tt>" attributes.
 </t>
@@ -750,6 +750,14 @@ The formal syntax presented here is a complete schema representation of the exte
 </section>
 
 <section title="Change log" anchor="change_log" removeInRFC="true">
+
+<section title="Changes from 11 to 12"><ol>
+
+<li>
+Updates as per the document shepherd's email to the list of 2024-06-10.
+</li>
+
+</ol></section>
 
 <section title="Changes from 10 to 11"><ol>
 

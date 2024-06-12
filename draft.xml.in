@@ -121,6 +121,12 @@ The XML namespace prefixes used in examples (such as the string <tt>ttl</tt> in 
 A conforming implementation <bcp14>MUST NOT</bcp14> require the use of these or any other specific namespace prefixes.
 </t>
 
+<t>
+In accordance with <xref target="XSD-DATATYPES">Section 3.2.2.1 of XML Schema Part 2: Datatypes</xref>,
+the allowable lexical representations for the <tt>xs:boolean</tt> datatype are the strings "<tt>0</tt>" and "<tt>false</tt>" for the concept 'false' and the strings "<tt>1</tt>" and "<tt>true</tt>" for the concept 'true'.
+Implementations <bcp14>MUST</bcp14> support both styles of lexical representation.
+</t>
+
 </section>
 
 <section title="Extension elements" anchor="extension-elements">
@@ -191,7 +197,7 @@ empty, in which case the server's default TTL for the given record type is to be
 <section title="Supported DNS record types" anchor="supported-dns-record-types">
 
 <t>
-To facilitate forward compatibility with future changes to the DNS protocol, this document does not enumerate or restrict the DNS record types that can be included in the "<tt>for</tt>" and "<tt>custom</tt>" attributes of <tt>&lt;ttl:ttl&gt;</tt> elements.
+To facilitate forward compatibility with future changes to the DNS protocol, this document does not enumerate or restrict the DNS record types that can be included in the "<tt>custom</tt>" attributes of <tt>&lt;ttl:ttl&gt;</tt> elements.
 </t>
 
 <t>
@@ -751,6 +757,14 @@ The formal syntax presented here is a complete schema representation of the exte
 
 <section title="Change log" anchor="change_log" removeInRFC="true">
 
+<section title="Changes from 12 to 13"><ol>
+
+<li>
+Updates as per the document shepherd's suggestions.
+</li>
+
+</ol></section>
+
 <section title="Changes from 11 to 12"><ol>
 
 <li>
@@ -962,6 +976,15 @@ The author wishes to thank the following people for their advice and feedback du
 &RFC6895;
 &RFC7451;
 &RFC8174;
+
+<reference anchor="XSD-DATATYPES" target="https://www.w3.org/TR/xmlschema-2/">
+  <front>
+    <title>XML Schema Part 2: Datatypes Second Edition</title>
+    <author><organization>World Wide Web Consortium (W3C)</organization></author>
+    <date month="October" year="2004"/>
+  </front>
+</reference>
+
 </references>
 
 <references title="Informative references">

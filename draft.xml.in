@@ -573,7 +573,7 @@ Some malicious actors use a technique called "fast flux DNS" (<xref target="SAC-
 </t>
 
 <t>
-Registry operators <bcp14>SHOULD</bcp14> take this into consideration when setting the lower limit on TTL values, since a short TTL on delegations may enhance the effectiveness of fast flux techniques on evasion.
+Registry operators should take this into consideration when setting the lower limit on TTL values, since a short TTL on delegations may enhance the effectiveness of fast flux techniques on evasion.
 </t>
 
 </section>

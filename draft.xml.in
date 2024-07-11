@@ -201,8 +201,8 @@ To facilitate forward compatibility with future changes to the DNS protocol, thi
 </t>
 
 <t>
-The regular expression which is used to validate the values of the "<tt>custom</tt>" attribute is based on the expression found in <xref sectionFormat="of" section="1.3" target="RFC6895"/>, and is intended to match both existing and future RRTYPE mnemonics.
-This eliminates the need to update this document in the event that new DNS records that exist above a zone cut (<xref sectionFormat="of" section="7" target="RFC9499"/>) is specified.
+The regular expression which is used to validate the values of the "<tt>custom</tt>" attribute is based on the expression found in <xref sectionFormat="of" section="3.1" target="RFC6895"/>, and is intended to match both existing and future RRTYPE mnemonics.
+This eliminates the need to update this document in the event that new DNS records that exist above a zone cut (<xref sectionFormat="of" section="7" target="RFC9499"/>) are specified.
 </t>
 
 <t>
@@ -504,7 +504,7 @@ as outlined in <xref target="policy-mode"/>.
 <section title="Use of TTL values in delegation records" anchor="using_ttl_values">
 
 <t>
-EPP servers which implement this extension <bcp14>SHOULD</bcp14> use the values provided by EPP clients for the TTL values records published in the DNS for domain and (if supported) host objects.
+EPP servers which implement this extension <bcp14>SHOULD</bcp14> use the values provided by EPP clients for the TTL values of records published in the DNS for domain and (if supported) host objects.
 </t>
 
 <t>
@@ -757,6 +757,18 @@ The formal syntax presented here is a complete schema representation of the exte
 
 <section title="Change log" anchor="change_log" removeInRFC="true">
 
+<section title="Changes from 14 to 15"><ol>
+
+<li>
+Correct section in reference to RFC 6895 (thanks Jasdip Singh).
+</li>
+
+<li>
+Minor typographic fixes (thanks Jasdip Singh).
+</li>
+
+</ol></section>
+
 <section title="Changes from 13 to 14"><ol>
 
 <li>
@@ -967,6 +979,7 @@ The author wishes to thank the following people for their advice and feedback du
 <li>Marc Groeneweg</li>
 <li>Ties de Kock</li>
 <li>Tim Wicinski</li>
+<li>Jasdip Singh</li>
 </ol>
 
 </section>

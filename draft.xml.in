@@ -445,7 +445,7 @@ Example host <tt>&lt;create&gt;</tt> command:
 <sourcecode><xi:include parse="text" href="examples/host-create-command.xml.txt"/></sourcecode>
 
 <t>
-If an EPP server receives a <tt>&lt;create&gt;</tt> command containing a TTL value that is outside the server's permitted range, it <bcp14>MUST</bcp14> reject the command with a <tt>2306</tt> "Parameter value policy error" response.
+If an EPP server receives a <tt>&lt;create&gt;</tt> command containing a TTL value that is outside the server's permitted range, it <bcp14>MUST</bcp14> reject the command with a <tt>2004</tt> "Parameter value range error" response.
 </t>
 
 </section>
@@ -473,7 +473,7 @@ Example host <tt>&lt;update&gt;</tt> command:
 <sourcecode><xi:include parse="text" href="examples/host-update-command.xml.txt"/></sourcecode>
 
 <t>
-If an EPP server receives an <tt>&lt;update&gt;</tt> command containing a TTL value that is outside the server's permitted range, it <bcp14>MUST</bcp14> reject the command with a <tt>2306</tt> "Parameter value policy error" response.
+If an EPP server receives an <tt>&lt;update&gt;</tt> command containing a TTL value that is outside the server's permitted range, it <bcp14>MUST</bcp14> reject the command with a <tt>2004</tt> "Parameter value range error" response.
 </t>
 
 </section>
@@ -486,7 +486,7 @@ If an EPP server receives an <tt>&lt;update&gt;</tt> command containing a TTL va
 
 <section anchor="permitted-types" title="Permitted record types">
 <t>
-Servers <bcp14>MAY</bcp14> restrict the supported DNS record types in accordance with their own policy.
+Servers <bcp14>SHOULD</bcp14> restrict the supported DNS record types in accordance with their own policy.
 For example, a server <bcp14>MAY</bcp14> allow clients to specify TTL values for <tt>DS</tt> records only.
 </t>
 
@@ -537,7 +537,6 @@ If a TTL value is changed out-of-band, EPP server operators <bcp14>MAY</bcp14> n
 
 <t>
 Registry operators must consider the balance between registrants' desire for changes to domains to be visible in the DNS quickly, and the increased DNS query traffic that short TTLs can bring.
-Historically, registry operators have used a global TTL value for all delegations within their zones, which could then be tuned to an optimum value.
 </t>
 
 <t>
@@ -558,7 +557,7 @@ This arises due to a misunderstanding about how TTLs work.
 </t>
 
 <t>
-Implementations of this specification <bcp14>SHOULD</bcp14> ensure that the user understands that changes to a TTL are only effective in shortening transition periods if implemented a period of time &#8212; at least equal to the current TTL &#8212; <em>before</em> the planned change.
+It is <bcp14>RECOMMENDED</bcp14> that guidance be provided to users so they are aware that changes to a TTL are only effective in shortening transition periods if implemented a period of time &#8212; at least equal to the current TTL &#8212; <em>before</em> the planned change.
 The latency between receipt of the <tt>&lt;update&gt;</tt> command and the actual publication of the changes in the DNS should also be taken into consideration in this calculation.
 </t>
 
@@ -570,10 +569,12 @@ The latency between receipt of the <tt>&lt;update&gt;</tt> command and the actua
 
 <t>
 Some malicious actors use a technique called "fast flux DNS" (<xref target="SAC-025"/>) to rapidly change the DNS configuration for a zone in order to evade takedown and law enforcement activity.
+Server operators should take this into consideration when setting the lower limit on TTL values, since a short TTL on delegations may enhance the effectiveness of fast flux techniques on evasion.
 </t>
 
 <t>
-Registry operators should take this into consideration when setting the lower limit on TTL values, since a short TTL on delegations may enhance the effectiveness of fast flux techniques on evasion.
+Client implementations which provide an interface for customers to configure TTL values for domain names should consider implementing controls to deter and mitigate abusive behaviour,
+such as those outlined in the "Current and Possible Mitigation Alternatives" section of <xref target="SAC-025"/>.
 </t>
 
 </section>
@@ -584,7 +585,7 @@ Registry operators should take this into consideration when setting the lower li
 
 <t>
 This document uses URNs to describe XML namespaces and XML schemas conforming to a registry mechanism described in <xref target="RFC3688"/>.
-The following URI assignment has been made by IANA:
+The following URI assignment is requested of IANA:
 </t>
 
 <t>
@@ -605,6 +606,7 @@ Registration for the TTL namespace:
 </t>
 
 </list>
+
 <t>
 Registration for the TTL XML schema:
 </t>
@@ -630,7 +632,7 @@ Registration for the TTL XML schema:
 <section title="EPP extension registry">
 
 <t>
-The EPP extension described in this document has been registered by IANA in the Extensions for the "Extensible Provisioning Protocol (EPP)" registry described in <xref target="RFC7451"/>.
+The EPP extension described in this document is to be registered by IANA in the Extensions for the "Extensible Provisioning Protocol (EPP)" registry described in <xref target="RFC7451"/>.
 The details of the registration are as follows:
 </t>
 
@@ -758,6 +760,10 @@ The formal syntax presented here is a complete schema representation of the exte
 <section title="Change log" anchor="change_log" removeInRFC="true">
 
 <section title="Changes from 14 to 15"><ol>
+
+<li>
+Updates as suggested during AD review.
+</li>
 
 <li>
 Correct section in reference to RFC 6895 (thanks Jasdip Singh).

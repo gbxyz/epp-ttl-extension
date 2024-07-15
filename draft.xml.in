@@ -292,7 +292,7 @@ EPP servers which use the "host attribute" model
 
 <sourcecode>&lt;ttl:ttl
   for="custom"
-  custom="DELEG"&gt;3600&lt;ttl:ttl&gt;</sourcecode>
+  custom="NEWRRTYPE"&gt;3600&lt;ttl:ttl&gt;</sourcecode>
 
 </section>
 
@@ -517,7 +517,7 @@ EPP servers which implement this extension <bcp14>SHOULD</bcp14> use the values 
 </t>
 
 <t>
-EPP servers that use the "host attribute" model <bcp14>SHOULD</bcp14> use any <tt>A</tt> and/or <tt>AAAA</tt> TTL values specified for the domain object when publishing <tt>NS</tt>, <tt>A</tt> and <tt>AAAA</tt> records derived from host attributes.
+EPP servers that use the "host attribute" model <bcp14>SHOULD</bcp14> use any <tt>NS</tt>, <tt>A</tt> and/or <tt>AAAA</tt> TTL values specified for the domain object when publishing <tt>NS</tt>, <tt>A</tt> and/or <tt>AAAA</tt> records derived from host attributes.
 </t>
 
 </section>
@@ -770,6 +770,19 @@ The underlying <tt>Net::EPP::</tt> Perl module also implements this specificatio
 <section title="Change log" anchor="change_log" removeInRFC="true">
 
 <section title="Changes from 14 to 15"><ol>
+
+<li>
+In the last paragraph of Section 3.2, make both lists of RR types be the same.
+</li>
+
+<li>
+Use <tt>NEWRRTYPE</tt> instead of <tt>DELEG</tt>.
+</li>
+
+<li>
+Update error codes to be consistent: 2004 (range error) when the TTL value is outside the permitted range,
+and 2306 (policy error) for an invalid record type.
+</li>
 
 <li>
 Updates as suggested during AD review.

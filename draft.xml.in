@@ -148,11 +148,14 @@ The <tt>&lt;ttl:ttl&gt;</tt> element is used to define TTL values for the DNS re
 <ol>
 
 <li>
-"<tt>for</tt>", which is <bcp14>REQUIRED</bcp14> in both commands and responses, and which specifies the DNS record type to which the TTL value pertains. This attribute <bcp14>MUST</bcp14> have one of the following values: "<tt>NS</tt>", "<tt>DS</tt>", "<tt>DNAME</tt>", "<tt>A</tt>", "<tt>AAAA</tt>" or "<tt>custom</tt>";
+"<tt>for</tt>", which is <bcp14>REQUIRED</bcp14> in both commands and responses,
+and which specifies the DNS record type to which the TTL value pertains.
+This attribute <bcp14>MUST</bcp14> have one of the following values: "<tt>NS</tt>", "<tt>DS</tt>", "<tt>DNAME</tt>", "<tt>A</tt>", "<tt>AAAA</tt>" or "<tt>custom</tt>";
 </li>
 
 <li>
-If the value of the "<tt>for</tt>" attribute is "<tt>custom</tt>", then the <tt>&lt;ttl:ttl&gt;</tt> element <bcp14>MUST</bcp14> also have a "<tt>custom</tt>" attribute containing a DNS record type conforming with the regular expression in <xref sectionFormat="of" section="3.1" target="RFC6895"/>.
+If the value of the "<tt>for</tt>" attribute is "<tt>custom</tt>",
+then the <tt>&lt;ttl:ttl&gt;</tt> element <bcp14>MUST</bcp14> also have a "<tt>custom</tt>" attribute containing a DNS record type conforming with the regular expression in <xref sectionFormat="of" section="3.1" target="RFC6895"/>.
 Additionally, the record type <bcp14>MUST</bcp14> be registered with IANA.
 </li>
 
@@ -197,16 +200,20 @@ empty, in which case the server's default TTL for the given record type is to be
 <section title="Supported DNS record types" anchor="supported-dns-record-types">
 
 <t>
-To facilitate forward compatibility with future changes to the DNS protocol, this document does not enumerate or restrict the DNS record types that can be included in the "<tt>custom</tt>" attribute of the <tt>&lt;ttl:ttl&gt;</tt> element.
+To facilitate forward compatibility with future changes to the DNS protocol,
+this document does not enumerate or restrict the DNS record types that can be included in the "<tt>custom</tt>" attribute of the <tt>&lt;ttl:ttl&gt;</tt> element.
 </t>
 
 <t>
-The regular expression which is used to validate the values of the "<tt>custom</tt>" attribute is based on the expression found in <xref sectionFormat="of" section="3.1" target="RFC6895"/>, and is intended to match both existing and future RRTYPE mnemonics.
+The regular expression which is used to validate the values of the "<tt>custom</tt>" attribute is based on the expression found in <xref sectionFormat="of" section="3.1" target="RFC6895"/>,
+and is intended to match both existing and future RRTYPE mnemonics.
 This eliminates the need to update this document in the event that new DNS records that exist above a zone cut (<xref sectionFormat="of" section="7" target="RFC9499"/>) are specified.
 </t>
 
 <t>
-Nevertheless, EPP servers which implement this extension <bcp14>MUST</bcp14> restrict the DNS record types that are accepted in <tt>&lt;create&gt;</tt> and <tt>&lt;update&gt;</tt> commands, and included in <tt>&lt;info&gt;</tt> responses, allowing only those types that are actually published in the DNS for domain and host objects.
+Nevertheless, EPP servers which implement this extension <bcp14>MUST</bcp14> restrict the DNS record types that are accepted in <tt>&lt;create&gt;</tt> and <tt>&lt;update&gt;</tt> commands,
+and included in <tt>&lt;info&gt;</tt> responses,
+allowing only those types that are actually published in the DNS for domain and host objects.
 </t>
 
 <t>
@@ -244,11 +251,13 @@ Servers which implement host objects (<xref target="RFC5732"/>) <bcp14>MAY</bcp1
 </t>
 
 <t>
-A server supporting host objects which receives a command that attempts to set TTL values for <tt>A</tt> and <tt>AAAA</tt> records on a domain object <bcp14>MUST</bcp14> respond with a 2004 "Parameter value range" error.
+A server supporting host objects which receives a command that attempts to set TTL values for <tt>A</tt> and <tt>AAAA</tt> records on a domain object <bcp14>MUST</bcp14> respond with a 2306 "Parameter value policy" error.
 </t>
 
 <t>
-EPP servers which use the "host attribute" model (described in <xref sectionFormat="of" section="1.1" target="RFC5731"/>) <bcp14>MAY</bcp14> allow clients to specify TTL values for <tt>A</tt> and <tt>AAAA</tt> records for domain objects.
+EPP servers which use the "host attribute" model
+(described in <xref sectionFormat="of" section="1.1" target="RFC5731"/>)
+<bcp14>MAY</bcp14> allow clients to specify TTL values for <tt>A</tt> and <tt>AAAA</tt> records for domain objects.
 </t>
 
 </section>
@@ -730,7 +739,8 @@ The formal syntax presented here is a complete schema representation of the exte
 </t>
 
 <t>
-<strong>Description:</strong> The Pepper EPP client fully implements this specification. The underlying <tt>Net::EPP::</tt> Perl module also implements this specification.
+<strong>Description:</strong> The Pepper EPP client fully implements this specification.
+The underlying <tt>Net::EPP::</tt> Perl module also implements this specification.
 </t>
 
 <t>

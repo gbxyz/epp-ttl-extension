@@ -217,7 +217,7 @@ allowing only those types that are actually published in the DNS for domain and 
 </t>
 
 <t>
-A server that receives a <tt>&lt;create&gt;</tt> or <tt>&lt;update&gt;</tt> command that attempts to set TTL values for inapplicable DNS record types <bcp14>MUST</bcp14> respond with a 2004 "Parameter value range" error.
+A server that receives a <tt>&lt;create&gt;</tt> or <tt>&lt;update&gt;</tt> command that attempts to set TTL values for inapplicable DNS record types <bcp14>MUST</bcp14> respond with a 2306 "Parameter value policy" error.
 </t>
 
 <t>

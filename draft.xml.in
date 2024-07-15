@@ -772,20 +772,16 @@ The underlying <tt>Net::EPP::</tt> Perl module also implements this specificatio
 <section title="Changes from 14 to 15"><ol>
 
 <li>
-In the last paragraph of Section 3.2, make both lists of RR types be the same.
+Updates as suggested during AD review.
 </li>
 
 <li>
-Use <tt>NEWRRTYPE</tt> instead of <tt>DELEG</tt>.
+In the last paragraph of Section 3.2, make both lists of RR types be the same.
 </li>
 
 <li>
 Update error codes to be consistent: 2004 (range error) when the TTL value is outside the permitted range,
 and 2306 (policy error) for an invalid record type.
-</li>
-
-<li>
-Updates as suggested during AD review.
 </li>
 
 <li>

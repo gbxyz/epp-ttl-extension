@@ -4,10 +4,10 @@ XML = "$(DOC).xml"
 
 all: html
 
-lint:
+lint: clean
 	@echo "Running lint check..."
 
-	@xmllint --noout draft.xml.in 
+	@xmllint --noout draft.xml.in
 
 test: lint
 	@echo "Testing example XML files..."

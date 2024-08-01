@@ -893,7 +893,7 @@ fixed the reference to RFC 6895 (thanks HS).
 <section title="Changes from 04 to 05"><ol>
 
 <li>
-Add the the Verisign EPP SDK to <xref target="implementation-status"/>.
+Add the Verisign EPP SDK to <xref target="implementation-status"/>.
 </li>
 
 <li>

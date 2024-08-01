@@ -1020,7 +1020,6 @@ The author wishes to thank the following people for their advice and feedback du
 &RFC5732;
 &RFC5910;
 &RFC6895;
-&RFC7451;
 &RFC8174;
 
 <reference anchor="XSD-DATATYPES" target="https://www.w3.org/TR/xmlschema-2/">
@@ -1035,6 +1034,7 @@ The author wishes to thank the following people for their advice and feedback du
 
 <references title="Informative references">
 &RFC6927;
+&RFC7451;
 &RFC8590;
 &RFC9364;
 &RFC9499;

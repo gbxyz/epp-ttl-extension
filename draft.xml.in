@@ -331,7 +331,7 @@ The semantics of this element are described in <xref target="info-command"/>.
 <section title="EPP query commands">
 
 <section anchor="info-command" title="EPP &lt;info&gt; command">
-  
+
 <t>
 This extension defines an additional element for EPP <tt>&lt;info&gt;</tt> commands and responses for domain and host objects.
 </t>

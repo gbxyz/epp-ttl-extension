@@ -75,7 +75,7 @@ The source for this draft, and an issue tracker, may can be found at <eref targe
 <section title="Introduction">
 
 <t>
-The principal output of any domain name provisioning system is a DNS zone file, which contains the delegation record(s) for names registered within a zone (such as a top-level domain).
+The principal output of any domain name registry system is a DNS zone file, which contains the delegation record(s) for names registered within a zone (such as a top-level domain).
 These records typically include one or more <tt>NS</tt> records, but may also include <tt>DS</tt> records for domains secured with DNSSEC (<xref target="RFC9364"/>), and <tt>DNAME</tt> records for IDN variants (<xref target="RFC6927"/>).
 <tt>A</tt> and/or <tt>AAAA</tt> records may also be published for nameservers where required by DNS resolvers to avoid an infinite loop.
 </t>
@@ -142,7 +142,7 @@ The <tt>&lt;ttl:ttl&gt;</tt> element is used to define TTL values for the DNS re
 </t>
 
 <t>
-<tt>&lt;ttl:ttl&gt;</tt> elements <bcp14>MAY</bcp14> have the following attributes, depending on whether it appears in a command or response frame:
+<tt>&lt;ttl:ttl&gt;</tt> elements may have the following attributes, depending on whether it appears in a command or response frame:
 </t>
 
 <ol>
@@ -235,7 +235,7 @@ As an illustrative example, a server <bcp14>MAY</bcp14> allow clients to specify
 </li>
 
 <li>
-<tt>DNAME</tt> (if the registry implements IDN variants using <tt>DNAME</tt> records).
+<tt>DNAME</tt> (if the server implements IDN variants using <tt>DNAME</tt> records).
 </li>
 
 </ol>
@@ -259,6 +259,30 @@ EPP servers which use the "host attribute" model
 (described in <xref sectionFormat="of" section="1.1" target="RFC5731"/>)
 <bcp14>MAY</bcp14> allow clients to specify TTL values for <tt>A</tt> and <tt>AAAA</tt> records for domain objects.
 </t>
+
+</section>
+
+</section>
+
+<section anchor="info-element" title="The &lt;ttl:info&gt; element">
+
+<t>
+The <tt>&lt;ttl:info&gt;</tt> element is used by clients to request that the server include additional information in <tt>&lt;info&gt;</tt> responses for domain and host objects.
+</t>
+
+<t>
+It has a single <bcp14>OPTIONAL</bcp14> <tt>policy</tt> attribute, which takes a boolean value with a default value of <tt>false</tt>.
+</t>
+
+<t>
+The semantics of this element are described in <xref target="info-command"/>.
+</t>
+
+<section title="Example">
+
+<sourcecode>&lt;ttl:info policy="true"/&gt;</sourcecode>
+
+</section>
 
 </section>
 
@@ -295,30 +319,6 @@ EPP servers which use the "host attribute" model
   custom="NEWRRTYPE"&gt;3600&lt;ttl:ttl&gt;</sourcecode>
 
 </section>
-
-</section>
-
-</section>
-
-</section>
-
-<section anchor="info-element" title="The &lt;ttl:info&gt; element">
-
-<t>
-The <tt>&lt;ttl:info&gt;</tt> element is used by clients to request that the server include additional information in <tt>&lt;info&gt;</tt> responses for domain and host objects.
-</t>
-
-<t>
-It has a single <bcp14>OPTIONAL</bcp14> <tt>policy</tt> attribute, which takes a boolean value with a default value of <tt>false</tt>.
-</t>
-
-<t>
-The semantics of this element are described in <xref target="info-command"/>.
-</t>
-
-<section title="Example">
-
-<sourcecode>&lt;ttl:info policy="true"/&gt;</sourcecode>
 
 </section>
 
@@ -494,6 +494,7 @@ If an EPP server receives an <tt>&lt;update&gt;</tt> command containing a TTL va
 <section title="Server processing of TTL values">
 
 <section anchor="permitted-types" title="Permitted record types">
+
 <t>
 Servers <bcp14>SHOULD</bcp14> restrict the supported DNS record types in accordance with their own policy.
 For example, a server <bcp14>MAY</bcp14> allow clients to specify TTL values for <tt>DS</tt> records only.
@@ -501,6 +502,7 @@ For example, a server <bcp14>MAY</bcp14> allow clients to specify TTL values for
 
 <t>
 A server which receives a <tt>&lt;create&gt;</tt> or <tt>&lt;update&gt;</tt> command which includes a restricted record type <bcp14>MUST</bcp14> respond with a 2306 "Parameter value policy" error.
+
 </t>
 
 <t>
@@ -576,6 +578,8 @@ The latency between receipt of the <tt>&lt;update&gt;</tt> command and the actua
 
 <section anchor="security-considerations" title="Security considerations">
 
+<section title="Fast-flux DNS">
+
 <t>
 Some malicious actors use a technique called "fast flux DNS" (<xref target="SAC-025"/>) to rapidly change the DNS configuration for a zone in order to evade takedown and law enforcement activity.
 Server operators should take this into consideration when setting the lower limit on TTL values, since a short TTL on delegations may enhance the effectiveness of fast flux techniques on evasion.
@@ -585,6 +589,22 @@ Server operators should take this into consideration when setting the lower limi
 Client implementations which provide an interface for customers to configure TTL values for domain names should consider implementing controls to deter and mitigate abusive behaviour,
 such as those outlined in the "Current and Possible Mitigation Alternatives" section of <xref target="SAC-025"/>.
 </t>
+
+</section>
+
+<section title="Compromised user accounts">
+
+<t>
+An attacker who obtains access to a customer account at a domain registrar which supports this extension could make unauthorised changes to the <tt>NS</tt> and/or glue records for a domain,
+and then increase the associated TTLs so that the changes persist in caches for a long time after the attack has been detected.
+</t>
+
+<t>
+Client implementations which provide an interface for customers to configure TTL values for domain names should consider implementing upper limits in order to reduce the impact of account compromise,
+in addition to best practices relating to credential management, multi-factor authentication, risk-based access control, and so on.
+</t>
+
+</section>
 
 </section>
 
@@ -768,6 +788,14 @@ The underlying <tt>Net::EPP::</tt> Perl module also implements this specificatio
 </section>
 
 <section title="Change log" anchor="change_log" removeInRFC="true">
+
+<section title="Changes from 15 to 16"><ol>
+
+<li>
+Updates as suggested during IESG review.
+</li>
+
+</ol></section>
 
 <section title="Changes from 14 to 15"><ol>
 

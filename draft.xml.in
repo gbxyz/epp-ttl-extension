@@ -574,6 +574,18 @@ The latency between receipt of the <tt>&lt;update&gt;</tt> command and the actua
 
 </section>
 
+<section title="Changes to server policy">
+
+<t>
+Registry operators may change their policies relating to TTL values from time to time.
+Previously configured TTL values may consequently fall outside a newly-applied policy.
+This document places no obligation on EPP server operators in respect of these values,
+and server operators may, as part of a policy change, change the TTL values specified by clients for domain and host objects.
+<xref target="oob-changes"/> describes how such out-of-band changes should be carried out.
+</t>
+
+</section>
+
 </section>
 
 <section anchor="security-considerations" title="Security considerations">
@@ -788,6 +800,14 @@ The underlying <tt>Net::EPP::</tt> Perl module also implements this specificatio
 </section>
 
 <section title="Change log" anchor="change_log" removeInRFC="true">
+
+<section title="Changes from 16 to 17"><ol>
+
+<li>
+Further updates as suggested during IESG review.
+</li>
+
+</ol></section>
 
 <section title="Changes from 15 to 16"><ol>
 

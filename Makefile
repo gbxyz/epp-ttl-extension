@@ -1,4 +1,4 @@
-VERSION = 17
+VERSION = 18
 DOC = "draft-ietf-regext-epp-ttl-$(VERSION)"
 XML = "$(DOC).xml"
 
@@ -18,8 +18,8 @@ xml: test
 	@echo "Compiling XML file..."
 
 	@find examples -name '*.xml' -exec cp -fv {} {}.txt \;
-	@find examples -name '*-command.xml.txt' -exec sed -i "" "s/^/C:/g" {} \;
-	@find examples -name '*-response.xml.txt' -exec sed -i "" "s/^/S:/g" {} \;
+	@find examples -name '*-command.xml.txt' -exec sed -i "" "s/^/C: /g" {} \;
+	@find examples -name '*-response.xml.txt' -exec sed -i "" "s/^/S: /g" {} \;
 
 	@xmllint --xinclude "draft.xml.in" > "$(XML)"
 	@xmlstarlet edit --inplace --update '//rfc/@docName' --value "$(DOC)" "$(XML)"

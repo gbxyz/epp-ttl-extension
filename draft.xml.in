@@ -409,7 +409,7 @@ Example domain <tt>&lt;info&gt;</tt> command requesting the server policies:
 Example domain <tt>&lt;info&gt;</tt> response providing the server policies:
 </t>
 
-<sourcecode><xi:include parse="text" href="examples/domain-info-response-extended.xml.txt"/></sourcecode>
+<sourcecode><xi:include parse="text" href="examples/domain-info-extended-response.xml.txt"/></sourcecode>
 
 <t>
 Example host <tt>&lt;info&gt;</tt> command requesting the server policies:
@@ -800,6 +800,14 @@ The underlying <tt>Net::EPP::</tt> Perl module also implements this specificatio
 </section>
 
 <section title="Change log" anchor="change_log" removeInRFC="true">
+
+<section title="Changes from 17 to 18"><ol>
+
+<li>
+Fixed the prefixing of lines in the example in Section 2.1.1.2 (thanks Tim Bray).
+</li>
+
+</ol></section>
 
 <section title="Changes from 16 to 17"><ol>
 

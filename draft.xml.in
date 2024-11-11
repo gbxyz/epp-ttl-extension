@@ -804,6 +804,10 @@ The underlying <tt>Net::EPP::</tt> Perl module also implements this specificatio
 <section title="Changes from 17 to 18"><ol>
 
 <li>
+Add a space after the <t>C:</t> and <t>S:</t> line prefixes in examples.
+</li>
+
+<li>
 Fixed the prefixing of lines in the example in Section 2.1.1.2 (thanks Tim Bray).
 </li>
 

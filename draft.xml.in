@@ -292,7 +292,7 @@ The semantics of this element are described in <xref target="info-command"/>.
 
 <section title="Explicit TTL value (&lt;create&gt; or &lt;update&gt; command)">
 
-<sourcecode>&lt;ttl:ttl for="NS"&gt;3600&lt;ttl:ttl&gt;</sourcecode>
+<sourcecode>&lt;ttl:ttl for="NS"&gt;3600&lt;/ttl:ttl&gt;</sourcecode>
 
 </section>
 
@@ -302,7 +302,7 @@ The semantics of this element are described in <xref target="info-command"/>.
   for="NS"
   min="60"
   default="86400"
-  max="172800"&gt;3600&lt;ttl:ttl&gt;</sourcecode>
+  max="172800"&gt;3600&lt;/ttl:ttl&gt;</sourcecode>
 
 </section>
 
@@ -316,7 +316,7 @@ The semantics of this element are described in <xref target="info-command"/>.
 
 <sourcecode>&lt;ttl:ttl
   for="custom"
-  custom="NEWRRTYPE"&gt;3600&lt;ttl:ttl&gt;</sourcecode>
+  custom="NEWRRTYPE"&gt;3600&lt;/ttl:ttl&gt;</sourcecode>
 
 </section>
 
@@ -809,6 +809,10 @@ Add a space after the <t>C:</t> and <t>S:</t> line prefixes in examples.
 
 <li>
 Fixed the prefixing of lines in the example in Section 2.1.1.2 (thanks Tim Bray).
+</li>
+
+<li>
+Fixed broken end tags in examples in Section 1.2.2 and the capitalisation of IPv6 addresses (thanks Erik Kline).
 </li>
 
 </ol></section>

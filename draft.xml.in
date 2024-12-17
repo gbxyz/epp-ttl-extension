@@ -135,14 +135,14 @@ Implementations <bcp14>MUST</bcp14> support both styles of lexical representatio
 This extension adds additional elements to the EPP domain and host mappings.
 </t>
 
-<section title="The &lt;ttl:ttl&gt; element">
+<section anchor="ttl_element" title="The &lt;ttl:ttl&gt; element">
 
 <t>
 The <tt>&lt;ttl:ttl&gt;</tt> element is used to define TTL values for the DNS resource records associated with domain and host objects.
 </t>
 
 <t>
-<tt>&lt;ttl:ttl&gt;</tt> elements may have the following attributes, depending on whether it appears in a command or response frame:
+<tt>&lt;ttl:ttl&gt;</tt> elements have the optional following attributes, depending on whether they appear in an EPP command or response:
 </t>
 
 <ol>
@@ -804,7 +804,7 @@ The underlying <tt>Net::EPP::</tt> Perl module also implements this specificatio
 <section title="Changes from 17 to 18"><ol>
 
 <li>
-Add a space after the <t>C:</t> and <t>S:</t> line prefixes in examples.
+Add a space after the <tt>C:</tt> and <tt>S:</tt> line prefixes in examples.
 </li>
 
 <li>
@@ -813,6 +813,18 @@ Fixed the prefixing of lines in the example in Section 2.1.1.2 (thanks Tim Bray)
 
 <li>
 Fixed broken end tags in examples in Section 1.2.2 and the capitalisation of IPv6 addresses (thanks Erik Kline).
+</li>
+
+<li>
+Added normative reference to <xref target="IANA-RRTYPES"/>.
+</li>
+
+<li>
+Replaced references to "command/response frames" with "EPP commands/responses".
+</li>
+
+<li>
+Minor wording change in paragraph 2 of <xref target="ttl_element"/>.
 </li>
 
 </ol></section>

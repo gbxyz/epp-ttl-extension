@@ -160,15 +160,15 @@ Additionally, the record type <bcp14>MUST</bcp14> be registered with IANA in <xr
 </li>
 
 <li>
-"<tt>min</tt>", which <bcp14>MUST NOT</bcp14> be present in command frames but <bcp14>MAY</bcp14> be present in response frames (see <xref target="info-command"/>), and which is used by the server to indicate the lowest value that may be set;
+"<tt>min</tt>", which <bcp14>MUST NOT</bcp14> be present in EPP commands but <bcp14>MAY</bcp14> be present in EPP responses (see <xref target="info-command"/>), and which is used by the server to indicate the lowest value that may be set;
 </li>
 
 <li>
-"<tt>default</tt>", which <bcp14>MUST NOT</bcp14> be present in command frames but <bcp14>MAY</bcp14> be present in response frames (see <xref target="info-command"/>), and which is used by the server to indicate the default value;
+"<tt>default</tt>", which <bcp14>MUST NOT</bcp14> be present in EPP commands but <bcp14>MAY</bcp14> be present in EPP responses (see <xref target="info-command"/>), and which is used by the server to indicate the default value;
 </li>
 
 <li>
-"<tt>max</tt>", which <bcp14>MUST NOT</bcp14> be present in command frames but <bcp14>MAY</bcp14> be present in response frames (see <xref target="info-command"/>), and which is used by the server to indicate the highest value that may be set;
+"<tt>max</tt>", which <bcp14>MUST NOT</bcp14> be present in EPP commands but <bcp14>MAY</bcp14> be present in EPP responses (see <xref target="info-command"/>), and which is used by the server to indicate the highest value that may be set;
 </li>
 
 </ol>

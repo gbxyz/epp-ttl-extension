@@ -437,7 +437,7 @@ This extension defines an additional element for EPP <tt>&lt;create&gt;</tt> com
 </t>
 
 <t>
-The <tt>&lt;command&gt;</tt> element of the <tt>&lt;create&gt;</tt> command frame <bcp14>MAY</bcp14> contain an <tt>&lt;extension&gt;</tt> element which <bcp14>MAY</bcp14> contain a <tt>&lt;ttl:create&gt;</tt> element.
+The <tt>&lt;command&gt;</tt> element of the <tt>&lt;create&gt;</tt> command <bcp14>MAY</bcp14> contain an <tt>&lt;extension&gt;</tt> element which <bcp14>MAY</bcp14> contain a <tt>&lt;ttl:create&gt;</tt> element.
 This element <bcp14>MUST</bcp14> contain one or more <tt>&lt;ttl:ttl&gt;</tt> records as described in <xref target="extension-elements"/>.
 </t>
 
@@ -465,7 +465,7 @@ This extension defines an additional element for EPP <tt>&lt;update&gt;</tt> com
 </t>
 
 <t>
-The <tt>&lt;command&gt;</tt> element of the <tt>&lt;update&gt;</tt> command frame <bcp14>MAY</bcp14> contain an <tt>&lt;extension&gt;</tt> element which <bcp14>MAY</bcp14> contain a <tt>&lt;ttl:update&gt;</tt> element.
+The <tt>&lt;command&gt;</tt> element of the <tt>&lt;update&gt;</tt> command <bcp14>MAY</bcp14> contain an <tt>&lt;extension&gt;</tt> element which <bcp14>MAY</bcp14> contain a <tt>&lt;ttl:update&gt;</tt> element.
 This element <bcp14>MUST</bcp14> contain one or more <tt>&lt;ttl:ttl&gt;</tt> records as described in <xref target="extension-elements"/>.
 </t>
 

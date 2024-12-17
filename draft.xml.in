@@ -156,7 +156,7 @@ This attribute <bcp14>MUST</bcp14> have one of the following values: "<tt>NS</tt
 <li>
 If the value of the "<tt>for</tt>" attribute is "<tt>custom</tt>",
 then the <tt>&lt;ttl:ttl&gt;</tt> element <bcp14>MUST</bcp14> also have a "<tt>custom</tt>" attribute containing a DNS record type conforming with the regular expression in <xref sectionFormat="of" section="3.1" target="RFC6895"/>.
-Additionally, the record type <bcp14>MUST</bcp14> be registered with IANA.
+Additionally, the record type <bcp14>MUST</bcp14> be registered with IANA in <xref target="IANA-RRTYPES"/>.
 </li>
 
 <li>
@@ -1091,6 +1091,13 @@ The author wishes to thank the following people for their advice and feedback du
     <title>XML Schema Part 2: Datatypes Second Edition</title>
     <author><organization>World Wide Web Consortium (W3C)</organization></author>
     <date month="October" year="2004"/>
+  </front>
+</reference>
+
+<reference anchor="IANA-RRTYPES" target="https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-4">
+  <front>
+    <title>Resource Record (RR) TYPEs</title>
+    <author><organization>IANA</organization></author>
   </front>
 </reference>
 

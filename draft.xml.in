@@ -496,7 +496,7 @@ If an EPP server receives an <tt>&lt;update&gt;</tt> command containing a TTL va
 <section anchor="permitted-types" title="Permitted record types">
 
 <t>
-Servers <bcp14>SHOULD</bcp14> restrict the supported DNS record types in accordance with their own policy.
+Server operators <bcp14>SHOULD</bcp14> configure server policy to restrict the supported DNS record types, in accordance with their own requirements.
 For example, a server <bcp14>MAY</bcp14> allow clients to specify TTL values for <tt>DS</tt> records only.
 </t>
 

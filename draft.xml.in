@@ -213,7 +213,7 @@ This eliminates the need to update this document in the event that new DNS recor
 <t>
 Nevertheless, EPP servers which implement this extension <bcp14>MUST</bcp14> restrict the DNS record types that are accepted in <tt>&lt;create&gt;</tt> and <tt>&lt;update&gt;</tt> commands,
 and included in <tt>&lt;info&gt;</tt> responses,
-allowing only those types that are actually published in the DNS for domain and host objects.
+allowing only those types that are (a) registered in <xref target="IANA-RRTYPES"/> and (b) appropriate for use above a zone cut.
 </t>
 
 <t>
@@ -825,6 +825,10 @@ Replaced references to "command/response frames" with "EPP commands/responses".
 
 <li>
 Minor wording change in paragraph 2 of <xref target="ttl_element"/>.
+</li>
+
+<li>
+Clarified wording in <xref target="supported-dns-record-types"/>.
 </li>
 
 </ol></section>

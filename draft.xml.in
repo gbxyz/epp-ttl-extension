@@ -491,12 +491,12 @@ If an EPP server receives an <tt>&lt;update&gt;</tt> command containing a TTL va
 
 </section>
 
-<section title="Server processing of TTL values">
+<section anchor="server-processing" title="Server processing of TTL values">
 
 <section anchor="permitted-types" title="Permitted record types">
 
 <t>
-Server operators <bcp14>SHOULD</bcp14> configure server policy to restrict the supported DNS record types, in accordance with their own requirements.
+EPP servers <bcp14>MAY</bcp14> restrict the supported DNS record types.
 For example, a server <bcp14>MAY</bcp14> allow clients to specify TTL values for <tt>DS</tt> records only.
 </t>
 
@@ -516,6 +516,8 @@ as outlined in <xref target="policy-mode"/>.
 
 <t>
 EPP servers which implement this extension <bcp14>SHOULD</bcp14> use the values provided by EPP clients for the TTL values of records published in the DNS for domain and (if supported) host objects.
+Server operators <bcp14>MAY</bcp14> disregard these values in order to address security and stability issues,
+as described in <xref target="operational-considerations"/> and <xref target="security-considerations"/>.
 </t>
 
 <t>
@@ -829,6 +831,10 @@ Minor wording change in paragraph 2 of <xref target="ttl_element"/>.
 
 <li>
 Clarified wording in <xref target="supported-dns-record-types"/>.
+</li>
+
+<li>
+Wordsmithing of <xref target="server-processing"/> due to feedback from the IESG.
 </li>
 
 </ol></section>

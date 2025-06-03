@@ -1,1148 +1,1425 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
+
+
 <!DOCTYPE rfc [
-<!ENTITY RFC2119 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml">
-<!ENTITY RFC3688 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.3688.xml">
-<!ENTITY RFC5731 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5731.xml">
-<!ENTITY RFC5732 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5732.xml">
-<!ENTITY RFC5910 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5910.xml">
-<!ENTITY RFC6895 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6895.xml">
-<!ENTITY RFC6927 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6927.xml">
-<!ENTITY RFC7451 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7451.xml">
-<!ENTITY RFC8174 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml">
-<!ENTITY RFC8590 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8590.xml">
-<!ENTITY RFC9364 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.9364.xml">
-<!ENTITY RFC9499 SYSTEM "https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.9499.xml">
+  <!ENTITY nbsp    "&#160;">
+  <!ENTITY zwsp   "&#8203;">
+  <!ENTITY nbhy   "&#8209;">
+  <!ENTITY wj     "&#8288;">
 ]>
 
-<?xml-stylesheet type="text/xsl" href="rfc2629.xslt" ?>
-
-<?rfc strict="yes" ?>
-<?rfc toc="yes"?>
-<?rfc tocdepth="4"?>
-<?rfc symrefs="yes"?>
-<?rfc sortrefs="yes" ?>
-<?rfc compact="yes" ?>
-<?rfc subcompact="no" ?>
-<?rfc comments="yes" ?>
-<?rfc inline="yes" ?>
-
-<rfc
-  category="std"
-  docName=""
-  ipr="trust200902"
-  submissionType="IETF"
-  consensus="true"
-  xmlns:xi="http://www.w3.org/2001/XInclude">
-
-<front>
-<title abbrev="TTL mapping for EPP">
-Extensible Provisioning Protocol (EPP) mapping for DNS Time-To-Live (TTL) values
-</title>
-
-<author fullname="Gavin Brown">
-  <organization>ICANN</organization>
-  <address>
-    <postal>
-      <street>12025 Waterfront Drive, Suite 300</street>
-      <city>Los Angeles</city>
-      <region>CA</region>
-      <code>90292</code>
-      <country>US</country>
-    </postal>
-    <email>gavin.brown@icann.org</email>
-    <uri>https://www.icann.org/</uri>
-  </address>
-</author>
-
-<date/>
-<area>Applications</area>
-<workgroup>Registration Protocols Extensions (regext)</workgroup>
-
-<abstract>
-<t>
-This document describes an extension to the Extensible Provisioning Protocol (EPP) that allows EPP clients to manage the Time-To-Live (TTL) value for domain name delegation records.
-</t>
-</abstract>
-
-<note title="About this draft" removeInRFC="true"><t>
-The source for this draft, and an issue tracker, may can be found at <eref target="https://github.com/gbxyz/epp-ttl-extension"/>.
-</t></note>
-
-</front>
-
-<middle>
-
-<section title="Introduction">
-
-<t>
-The principal output of any domain name registry system is a DNS zone file, which contains the delegation record(s) for names registered within a zone (such as a top-level domain).
-These records typically include one or more <tt>NS</tt> records, but may also include <tt>DS</tt> records for domains secured with DNSSEC (<xref target="RFC9364"/>), and <tt>DNAME</tt> records for IDN variants (<xref target="RFC6927"/>).
-<tt>A</tt> and/or <tt>AAAA</tt> records may also be published for nameservers where required by DNS resolvers to avoid an infinite loop.
-</t>
-
-<t>
-Typically, the Time-To-Live value (TTL, see <xref section="5" sectionFormat="of" target="RFC9499"/>) of these records is determined by the registry operator.
-However, in some circumstances it may be desirable to allow the sponsoring client of a domain name to change the TTL values used for that domain's delegation:
-for example, to reduce the amount of time required to complete a change of DNS servers, DNSSEC deployment or key rollover, or to allow for fast rollback of such changes.
-</t>
-
-<t>
-This document describes an EPP extension to the domain name and host object mappings (described in <xref target="RFC5731"/> and <xref target="RFC5732"/>, respectively) which allows the sponsor of a domain name or host object to change the TTL values of the resource record(s) associated with that object.
-It also describes how EPP servers should handle TTLs specified by EPP clients and how both parties co-ordinate to manage TTL values in response to changes in operational or security requirements.
-</t>
-
-<section title="Conventions used in this document">
-
-<t>
-The key words "<bcp14>MUST</bcp14>", "<bcp14>MUST NOT</bcp14>", "<bcp14>REQUIRED</bcp14>", "<bcp14>SHALL</bcp14>", "<bcp14>SHALL NOT</bcp14>", "<bcp14>SHOULD</bcp14>", "<bcp14>SHOULD NOT</bcp14>", "<bcp14>RECOMMENDED</bcp14>", "<bcp14>NOT RECOMMENDED</bcp14>", "<bcp14>MAY</bcp14>", and "<bcp14>OPTIONAL</bcp14>" in this document are to be interpreted as described in BCP 14 <xref target="RFC2119" format="default" sectionFormat="of" derivedContent="RFC2119"/> <xref target="RFC8174" format="default" sectionFormat="of" derivedContent="RFC8174"/> when, and only when, they appear in all capitals, as shown here.
-</t>
-
-<t>
-In examples, "C:" represents lines sent by a protocol client and "S:" represents lines returned by a protocol server.
-Indentation and white space in examples are provided only to illustrate element relationships and are not required features of this protocol.
-</t>
-
-<t>
-A protocol client that is authorized to manage an existing object is described as a "sponsoring" client throughout this document.
-</t>
-
-<t>
-XML is case sensitive.
-Unless stated otherwise, XML specifications and examples provided in this document <bcp14>MUST</bcp14> be interpreted in the character case presented in order to develop a conforming implementation.
-</t>
-
-<t>
-EPP uses XML namespaces to provide an extensible object management framework and to identify schemas required for XML instance parsing and validation.
-These namespaces and schema definitions are used to identify both the base protocol schema and the schemas for managed objects.
-</t>
-
-<t>
-The XML namespace prefixes used in examples (such as the string <tt>ttl</tt> in <tt>ttl:create</tt>) are solely for illustrative purposes.
-A conforming implementation <bcp14>MUST NOT</bcp14> require the use of these or any other specific namespace prefixes.
-</t>
-
-<t>
-In accordance with <xref target="XSD-DATATYPES">Section 3.2.2.1 of XML Schema Part 2: Datatypes</xref>,
-the allowable lexical representations for the <tt>xs:boolean</tt> datatype are the strings "<tt>0</tt>" and "<tt>false</tt>" for the concept 'false' and the strings "<tt>1</tt>" and "<tt>true</tt>" for the concept 'true'.
-Implementations <bcp14>MUST</bcp14> support both styles of lexical representation.
-</t>
-
-</section>
-
-<section title="Extension elements" anchor="extension-elements">
-
-<t>
-This extension adds additional elements to the EPP domain and host mappings.
-</t>
-
-<section anchor="ttl_element" title="The &lt;ttl:ttl&gt; element">
-
-<t>
-The <tt>&lt;ttl:ttl&gt;</tt> element is used to define TTL values for the DNS resource records associated with domain and host objects.
-</t>
-
-<t>
-<tt>&lt;ttl:ttl&gt;</tt> elements have the optional following attributes, depending on whether they appear in an EPP command or response:
-</t>
-
-<ol>
-
-<li>
-"<tt>for</tt>", which is <bcp14>REQUIRED</bcp14> in both commands and responses,
-and which specifies the DNS record type to which the TTL value pertains.
-This attribute <bcp14>MUST</bcp14> have one of the following values: "<tt>NS</tt>", "<tt>DS</tt>", "<tt>DNAME</tt>", "<tt>A</tt>", "<tt>AAAA</tt>" or "<tt>custom</tt>";
-</li>
-
-<li>
-If the value of the "<tt>for</tt>" attribute is "<tt>custom</tt>",
-then the <tt>&lt;ttl:ttl&gt;</tt> element <bcp14>MUST</bcp14> also have a "<tt>custom</tt>" attribute containing a DNS record type conforming with the regular expression in <xref sectionFormat="of" section="3.1" target="RFC6895"/>.
-Additionally, the record type <bcp14>MUST</bcp14> be registered with IANA in <xref target="IANA-RRTYPES"/>.
-</li>
-
-<li>
-"<tt>min</tt>", which <bcp14>MUST NOT</bcp14> be present in EPP commands but <bcp14>MAY</bcp14> be present in EPP responses (see <xref target="info-command"/>), and which is used by the server to indicate the lowest value that may be set;
-</li>
-
-<li>
-"<tt>default</tt>", which <bcp14>MUST NOT</bcp14> be present in EPP commands but <bcp14>MAY</bcp14> be present in EPP responses (see <xref target="info-command"/>), and which is used by the server to indicate the default value;
-</li>
-
-<li>
-"<tt>max</tt>", which <bcp14>MUST NOT</bcp14> be present in EPP commands but <bcp14>MAY</bcp14> be present in EPP responses (see <xref target="info-command"/>), and which is used by the server to indicate the highest value that may be set;
-</li>
-
-</ol>
-
-<t>
-When present, the value of the "<tt>min</tt>" attribute <bcp14>MUST</bcp14> be lower than the value of the "<tt>max</tt>" attribute. The "<tt>default</tt>" attribute <bcp14>MUST</bcp14> be between the "<tt>min</tt>" and "<tt>max</tt>" values, inclusively.
-</t>
-
-<section title="Element content" anchor="element-content">
-
-<t>
-The XML schema found in <xref target="formal-syntax"/> of this document restricts the content of <tt>&lt;ttl:ttl&gt;</tt> elements to be either:
-</t>
-
-<ol>
-
-<li>
-a non-negative integer, indicating the value of the TTL in seconds, or
-</li>
-
-<li>
-empty, in which case the server's default TTL for the given record type is to be applied.
-</li>
-
-</ol>
-
-</section>
-
-<section title="Supported DNS record types" anchor="supported-dns-record-types">
-
-<t>
-To facilitate forward compatibility with future changes to the DNS protocol,
-this document does not enumerate or restrict the DNS record types that can be included in the "<tt>custom</tt>" attribute of the <tt>&lt;ttl:ttl&gt;</tt> element.
-</t>
-
-<t>
-The regular expression which is used to validate the values of the "<tt>custom</tt>" attribute is based on the expression found in <xref sectionFormat="of" section="3.1" target="RFC6895"/>,
-and is intended to match both existing and future RRTYPE mnemonics.
-This eliminates the need to update this document in the event that new DNS records that exist above a zone cut (<xref sectionFormat="of" section="7" target="RFC9499"/>) are specified.
-</t>
-
-<t>
-Nevertheless, EPP servers which implement this extension <bcp14>MUST</bcp14> restrict the DNS record types that are accepted in <tt>&lt;create&gt;</tt> and <tt>&lt;update&gt;</tt> commands,
-and included in <tt>&lt;info&gt;</tt> responses,
-allowing only those types that are (a) registered in <xref target="IANA-RRTYPES"/> and (b) appropriate for use above a zone cut.
-</t>
-
-<t>
-A server that receives a <tt>&lt;create&gt;</tt> or <tt>&lt;update&gt;</tt> command that attempts to set TTL values for inapplicable DNS record types <bcp14>MUST</bcp14> respond with a 2306 "Parameter value policy" error.
-</t>
-
-<t>
-As an illustrative example, a server <bcp14>MAY</bcp14> allow clients to specify TTL values for the following record types for domain objects:
-</t>
-
-<ol>
-
-<li>
-<tt>NS</tt>;
-</li>
-
-<li>
-<tt>DS</tt> (if the server also implements <xref target="RFC5910"/>);
-</li>
-
-<li>
-<tt>DNAME</tt> (if the server implements IDN variants using <tt>DNAME</tt> records).
-</li>
-
-</ol>
-
-<section title="Glue records">
-
-<t>
-Glue records are described in <xref section="7" sectionFormat="of" target="RFC9499"/>.
-</t>
-
-<t>
-Servers which implement host objects (<xref target="RFC5732"/>) <bcp14>MAY</bcp14> allow clients to specify TTL values for <tt>A</tt> and <tt>AAAA</tt> records for host objects.
-</t>
-
-<t>
-A server supporting host objects which receives a command that attempts to set TTL values for <tt>A</tt> and <tt>AAAA</tt> records on a domain object <bcp14>MUST</bcp14> respond with a 2306 "Parameter value policy" error.
-</t>
-
-<t>
-EPP servers which use the "host attribute" model
-(described in <xref sectionFormat="of" section="1.1" target="RFC5731"/>)
-<bcp14>MAY</bcp14> allow clients to specify TTL values for <tt>A</tt> and <tt>AAAA</tt> records for domain objects.
-</t>
-
-</section>
-
-</section>
-
-<section anchor="info-element" title="The &lt;ttl:info&gt; element">
-
-<t>
-The <tt>&lt;ttl:info&gt;</tt> element is used by clients to request that the server include additional information in <tt>&lt;info&gt;</tt> responses for domain and host objects.
-</t>
-
-<t>
-It has a single <bcp14>OPTIONAL</bcp14> <tt>policy</tt> attribute, which takes a boolean value with a default value of <tt>false</tt>.
-</t>
-
-<t>
-The semantics of this element are described in <xref target="info-command"/>.
-</t>
-
-<section title="Example">
-
-<sourcecode>&lt;ttl:info policy="true"/&gt;</sourcecode>
-
-</section>
-
-</section>
-
-</section>
-
-<section title="Examples">
-
-<section title="Explicit TTL value (&lt;create&gt; or &lt;update&gt; command)">
-
-<sourcecode>&lt;ttl:ttl for="NS"&gt;3600&lt;/ttl:ttl&gt;</sourcecode>
-
-</section>
-
-<section title="Explicit TTL value (&lt;info&gt; policy mode)">
-
-<sourcecode>&lt;ttl:ttl
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-regext-epp-ttl-18" number="9803" ipr="trust200902" submissionType="IETF" consensus="true" tocInclude="true" tocDepth="4" symRefs="true" sortRefs="true" updates="" obsoletes="" version="3" xml:lang="en">
+
+  <front>
+    <title abbrev="TTL Mapping for EPP">Extensible Provisioning Protocol (EPP) Mapping for DNS Time-to-Live (TTL) Values</title>
+    <seriesInfo name="RFC" value="9803"/>
+    <author fullname="Gavin Brown">
+      <organization>ICANN</organization>
+      <address>
+        <postal>
+          <street>12025 Waterfront Drive, Suite 300</street>
+          <city>Los Angeles</city>
+          <region>CA</region>
+          <code>90292</code>
+          <country>United States of America</country>
+        </postal>
+        <email>gavin.brown@icann.org</email>
+        <uri>https://www.icann.org/</uri>
+      </address>
+    </author>
+    <date month="June" year="2025"/>
+    <area>ART</area>
+    <workgroup>regext</workgroup>
+
+<!-- [rfced] Please insert any keywords (beyond those that appear in
+the title) for use on https://www.rfc-editor.org/search. -->
+
+<keyword>example</keyword>
+
+    <abstract>
+      <t>This document describes an extension to the Extensible Provisioning
+      Protocol (EPP) that allows EPP clients to manage the Time-to-Live (TTL)
+      value for domain name delegation records.
+      </t>
+    </abstract>
+  </front>
+
+  <middle>
+    <section>
+      <name>Introduction</name>
+      <t>
+	The principal output of any domain name registry system is a DNS zone
+	file, which contains the delegation record(s) for names registered
+	within a zone (such as a top-level domain).  These records typically
+	include one or more <tt>NS</tt> records, but may also include
+	<tt>DS</tt> records for domains secured with DNSSEC <xref
+	target="RFC9364"/>, and <tt>DNAME</tt> records for Internationalized Domain Name (IDN) variants <xref
+	target="RFC6927"/>.  <tt>A</tt> and/or <tt>AAAA</tt> records may also
+	be published for nameservers where they are required by DNS resolvers
+	to avoid an infinite loop.</t>
+      <t>
+	Typically, the Time-to-Live (TTL) value (see <xref section="5"
+	sectionFormat="of" target="RFC9499"/>) of these records is determined
+	by the registry operator.  However, in some circumstances it may be
+	desirable to allow the sponsoring client of a domain name to change
+	the TTL values used for that domain's delegation: for example, to
+	reduce the amount of time required to complete a change of DNS
+	servers, DNSSEC deployment or key rollover, or to allow for fast
+	rollback of such changes.</t>
+      <t>
+	This document describes an EPP extension to the domain name and host
+	object mappings (described in <xref target="RFC5731"/> and <xref
+	target="RFC5732"/>, respectively) that allows the sponsor of a domain
+	name or host object to change the TTL values of the resource record(s)
+	associated with that object.  It also describes how EPP servers should
+	handle TTLs specified by EPP clients and how both parties coordinate
+	to manage TTL values in response to changes in operational or security
+	requirements.</t>
+
+      <section>
+        <name>Conventions Used in This Document</name>
+        <t>
+    The key words "<bcp14>MUST</bcp14>", "<bcp14>MUST NOT</bcp14>",
+    "<bcp14>REQUIRED</bcp14>", "<bcp14>SHALL</bcp14>", "<bcp14>SHALL NOT</bcp14>",
+    "<bcp14>SHOULD</bcp14>", "<bcp14>SHOULD NOT</bcp14>",
+    "<bcp14>RECOMMENDED</bcp14>", "<bcp14>NOT RECOMMENDED</bcp14>",
+    "<bcp14>MAY</bcp14>", and "<bcp14>OPTIONAL</bcp14>" in this document are to be
+    interpreted as described in BCP&nbsp;14 <xref target="RFC2119"/> <xref
+    target="RFC8174"/> when, and only when, they appear in all capitals, as
+    shown here.
+        </t>
+
+        <t>
+	  In this document's examples, "C:" represents lines sent by a protocol client and
+	  "S:" represents lines returned by a protocol server.  Indentation
+	  and white space in these examples are provided only to illustrate element
+	  relationships and are not required features of this protocol.</t>
+        <t>
+	  A protocol client that is authorized to manage an existing object is
+	  described as a "sponsoring" client throughout this document.</t>
+        <t>
+	  XML is case sensitive.  Unless stated otherwise, the XML specifications
+	  and examples provided in this document <bcp14>MUST</bcp14> be
+	  interpreted in the character case presented in order to develop a
+	  conforming implementation.</t>
+        <t>
+	  EPP uses XML namespaces to provide an extensible object management
+	  framework and to identify schemas required for XML instance parsing
+	  and validation.  These namespaces and schema definitions are used to
+	  identify both the base protocol schema and the schemas for managed
+	  objects.</t>
+        <t>
+	  The XML namespace prefixes used in these examples (such as the string
+	  <tt>ttl</tt> in <tt>ttl:create</tt>) are solely for illustrative
+	  purposes.  A conforming implementation <bcp14>MUST NOT</bcp14>
+	  require the use of these or any other specific namespace prefixes.</t>
+        <t>
+	  In accordance with Section 3.2.2.1 of XML Schema Part 2: Datatypes
+	  <xref target="XSD-DATATYPES"/>, the allowable lexical
+	  representations for the <tt>xs:boolean</tt> datatype are the strings
+	  "<tt>0</tt>" and "<tt>false</tt>" for the concept 'false' and the
+	  strings "<tt>1</tt>" and "<tt>true</tt>" for the concept 'true'.
+	  Implementations <bcp14>MUST</bcp14> support both styles of lexical
+	  representation.</t>
+      </section>
+
+      <section anchor="extension-elements">
+        <name>Extension Elements</name>
+        <t>This extension adds additional elements to the EPP domain and host mappings.</t>
+        <section anchor="ttl_element">
+          <name>The &lt;ttl:ttl&gt; Element</name>
+          <t>
+	    The <tt>&lt;ttl:ttl&gt;</tt> element is used to define TTL values
+	    for the DNS resource records associated with domain and host
+	    objects.
+	  </t>
+          <t>
+	    <tt>&lt;ttl:ttl&gt;</tt> elements have the optional following
+	    attributes, depending on whether they appear in an EPP command or
+	    response:
+	  </t>
+
+<!-- [rfced] We have reformatted the list below for readability; please review
+and let us know if you prefer otherwise.
+
+Original:
+   <ttl:ttl> elements have the optional following attributes, depending
+   on whether they appear in an EPP command or response:
+
+   1.  "for", which is REQUIRED in both commands and responses, and
+       which specifies the DNS record type to which the TTL value
+       pertains.  This attribute MUST have one of the following values:
+       "NS", "DS", "DNAME", "A", "AAAA" or "custom";
+
+   2.  If the value of the "for" attribute is "custom", then the
+       <ttl:ttl> element MUST also have a "custom" attribute containing
+       a DNS record type conforming with the regular expression in
+       Section 3.1 of [RFC6895].  Additionally, the record type MUST be
+       registered with IANA in [IANA-RRTYPES].
+
+   3.  "min", which MUST NOT be present in EPP commands but MAY be
+       present in EPP responses (see Section 2.1.1), and which is used
+       by the server to indicate the lowest value that may be set;
+
+   4.  "default", which MUST NOT be present in EPP commands but MAY be
+       present in EPP responses (see Section 2.1.1), and which is used
+       by the server to indicate the default value;
+
+   5.  "max", which MUST NOT be present in EPP commands but MAY be
+       present in EPP responses (see Section 2.1.1), and which is used
+       by the server to indicate the highest value that may be set;
+
+Current:
+   "for"
+      REQUIRED in both commands and responses, and specifies the DNS
+      record type to which the TTL value pertains.  This attribute MUST
+      have one of the following values: "NS", "DS", "DNAME", "A", "AAAA"
+      or "custom".
+
+   "custom"
+      If the value of the "for" attribute is "custom", then the
+      <ttl:ttl> element MUST also have a "custom" attribute containing a
+      DNS record type conforming with the regular expression in
+      Section 3.1 of [RFC6895].  Additionally, the record type MUST be
+      registered with IANA in [IANA-RRTYPES].
+
+   "min"
+      MUST NOT be present in EPP commands but MAY be present in EPP
+      responses (see Section 2.1.1).  It is also used by the server to
+      indicate the lowest value that may be set.
+
+   "default"
+      MUST NOT be present in EPP commands but MAY be present in EPP
+      responses (see Section 2.1.1).  It is also used by the server to
+      indicate the default value.
+
+   "max"
+      MUST NOT be present in EPP commands but MAY be present in EPP
+      responses (see Section 2.1.1).  It is also used by the server to
+      indicate the highest value that may be set.
+-->
+
+          <dl newline="true">
+            <dt>"<tt>for</tt>"</dt>
+	    <dd>
+	      <bcp14>REQUIRED</bcp14> in both commands and responses, and
+	      specifies the DNS record type to which the TTL value pertains.
+	      This attribute <bcp14>MUST</bcp14> have one of the following
+	      values: "<tt>NS</tt>", "<tt>DS</tt>", "<tt>DNAME</tt>",
+	      "<tt>A</tt>", "<tt>AAAA</tt>" or "<tt>custom</tt>".
+	    </dd>
+	    
+	    <dt>"<tt>custom</tt>"</dt>
+	      <dd>If the value of the "<tt>for</tt>" attribute is
+	      "<tt>custom</tt>", then the <tt>&lt;ttl:ttl&gt;</tt> element
+	      <bcp14>MUST</bcp14> also have a "<tt>custom</tt>" attribute
+	      containing a DNS record type conforming with the regular
+	      expression in <xref sectionFormat="of" section="3.1"
+	      target="RFC6895"/>.  Additionally, the record type
+	      <bcp14>MUST</bcp14> be registered with IANA in <xref
+	      target="IANA-RRTYPES"/>.
+	      </dd>
+	    
+
+            <dt>"<tt>min</tt>"</dt>
+	    <dd>
+	      <bcp14>MUST NOT</bcp14> be present in EPP commands but
+	      <bcp14>MAY</bcp14> be present in EPP responses (see <xref
+	      target="info-command"/>). It is also used by the server to
+	      indicate the lowest value that may be set.
+	    </dd>
+
+            <dt>"<tt>default</tt>"</dt>
+	    <dd>
+	      <bcp14>MUST NOT</bcp14> be present in EPP commands but
+	      <bcp14>MAY</bcp14> be present in EPP responses (see <xref
+	      target="info-command"/>). It is also used by the server to
+	      indicate the default value.
+	    </dd>
+
+            <dt>"<tt>max</tt>"</dt>
+	    <dd>
+	      <bcp14>MUST NOT</bcp14> be present in EPP commands but
+	      <bcp14>MAY</bcp14> be present in EPP responses (see <xref
+	      target="info-command"/>). It is also used by the server to
+	      indicate the highest value that may be set.
+	    </dd>
+          </dl>
+
+          <t>
+	    When present, the value of the "<tt>min</tt>" attribute
+	    <bcp14>MUST</bcp14> be lower than the value of the "<tt>max</tt>"
+	    attribute. The "<tt>default</tt>" attribute <bcp14>MUST</bcp14> be
+	    between the "<tt>min</tt>" and "<tt>max</tt>" values, inclusively.</t>
+
+          <section anchor="element-content">
+            <name>Element Content</name>
+            <t>
+	      The XML schema found in <xref target="formal-syntax"/> of this
+	      document restricts the content of <tt>&lt;ttl:ttl&gt;</tt>
+	      elements to be either:</t>
+            <ol>
+              <li>a non-negative integer, indicating the value of the TTL in seconds, or</li>
+              <li>empty, in which case the server's default TTL for the given record type is to be applied.</li>
+            </ol>
+          </section>
+
+          <section anchor="supported-dns-record-types">
+            <name>Supported DNS Record Types</name>
+            <t>
+	      To facilitate forward compatibility with future changes to the
+	      DNS protocol, this document does not enumerate or restrict the
+	      DNS record types that can be included in the "<tt>custom</tt>"
+	      attribute of the <tt>&lt;ttl:ttl&gt;</tt> element.</t>
+            <t>
+	      The regular expression that is used to validate the values of
+	      the "<tt>custom</tt>" attribute is based on the expression found
+	      in <xref sectionFormat="of" section="3.1" target="RFC6895"/>,
+	      and it is intended to match both existing and future RRTYPE
+	      mnemonics.  This eliminates the need to update this document in
+	      the event that new DNS records that exist above a zone cut
+	      (<xref sectionFormat="of" section="7" target="RFC9499"/>) are
+	      specified.</t>
+            <t>
+	      Nevertheless, EPP servers that implement this extension
+	      <bcp14>MUST</bcp14> restrict the DNS record types that are
+	      accepted in <tt>&lt;create&gt;</tt> and <tt>&lt;update&gt;</tt>
+	      commands, and included in <tt>&lt;info&gt;</tt> responses,
+	      allowing only those types that are (a) registered in <xref
+	      target="IANA-RRTYPES"/> and (b) appropriate for use above a zone
+	      cut.</t>
+            <t>
+	      A server that receives a <tt>&lt;create&gt;</tt> or
+	      <tt>&lt;update&gt;</tt> command that attempts to set TTL values
+	      for inapplicable DNS record types <bcp14>MUST</bcp14> respond
+	      with a 2306 "Parameter value policy" error.</t>
+            <t>
+	      As an illustrative example, a server <bcp14>MAY</bcp14> allow
+	      clients to specify TTL values for the following record types for
+	      domain objects:
+	    </t>
+
+            <ol>
+              <li>
+                <tt>NS</tt>;
+	      </li>
+              <li>
+                <tt>DS</tt> (if the server also implements <xref target="RFC5910"/>);
+	      </li>
+              <li>
+                <tt>DNAME</tt> (if the server implements IDN variants using
+                <tt>DNAME</tt> records).
+	      </li>
+            </ol>
+
+            <section>
+              <name>Glue Records</name>
+              <t>
+		Glue records are described in <xref section="7"
+		sectionFormat="of" target="RFC9499"/>.</t>
+              <t>
+		Servers that implement host objects <xref target="RFC5732"/>
+		<bcp14>MAY</bcp14> allow clients to specify TTL values for
+		<tt>A</tt> and <tt>AAAA</tt> records for host objects.</t>
+              <t>
+		A server supporting host objects that receives a command that
+		attempts to set TTL values for <tt>A</tt> and <tt>AAAA</tt>
+		records on a domain object <bcp14>MUST</bcp14> respond with a
+		2306 "Parameter value policy" error.</t>
+              <t>
+		EPP servers that use the host attribute model (described in
+		<xref sectionFormat="of" section="1.1" target="RFC5731"/>)
+		<bcp14>MAY</bcp14> allow clients to specify TTL values for
+		<tt>A</tt> and <tt>AAAA</tt> records for domain objects.</t>
+            </section>
+          </section>
+
+          <section anchor="info-element">
+            <name>The &lt;ttl:info&gt; Element</name>
+            <t>
+	      The <tt>&lt;ttl:info&gt;</tt> element is used by clients to
+	      request that the server include additional information in
+	      <tt>&lt;info&gt;</tt> responses for domain and host objects.</t>
+            <t>
+	      It has a single <bcp14>OPTIONAL</bcp14> "<tt>policy</tt>"
+	      attribute, which takes a boolean value with a default value of
+	      "<tt>false</tt>".</t>
+            <t>
+	      The semantics of this element are described in <xref
+	      target="info-command"/>.</t>
+
+<!-- [rfced] The section titles for 1.2.1.3.1 and 1.2.2. are similar. 
+For clarity, which of these options do you prefer? Or, please feel 
+free to suggest otherwise.
+a) Make the title of Section 1.2.1.3.1 more specific, or
+b) Include the example in 1.2.1.3 and remove section 1.2.1.3.1, or 
+c) Move the example in 1.2.1.3.1 to a subsection of Section 1.2.2 ("Examples").
+
+Original:
+1.2.1.3.  The <ttl:info> element
+
+   [...]
+
+1.2.1.3.1.  Example
+
+   <ttl:info policy="true"/>
+
+1.2.2.  Examples
+
+
+Perhaps (if option b):
+
+1.2.1.3.  The <ttl:info> element
+
+   The <ttl:info> element is used by clients to request that the server
+   include additional information in <info> responses for domain and
+   host objects.
+
+   It has a single OPTIONAL policy attribute, which takes a boolean
+   value with a default value of false.
+
+   The semantics of this element are described in Section 2.1.1.
+   Here's an example: <ttl:info policy="true"/>  
+
+1.2.2. Examples
+-->
+
+            <section>
+              <name>Example</name>
+              <sourcecode type=""><![CDATA[
+<ttl:info policy="true"/>
+]]></sourcecode>
+            </section>
+          </section>
+        </section>
+
+        <section>
+          <name>Examples</name>
+          <section>
+            <name>Explicit TTL Value (&lt;create&gt; or &lt;update&gt; Command)</name>
+           <sourcecode><![CDATA[
+<ttl:ttl for="NS">3600</ttl:ttl>
+]]></sourcecode>
+          </section>
+
+          <section>
+            <name>Explicit TTL Value (&lt;info&gt; Policy Mode)</name>
+            <sourcecode><![CDATA[
+<ttl:ttl
   for="NS"
   min="60"
   default="86400"
-  max="172800"&gt;3600&lt;/ttl:ttl&gt;</sourcecode>
+  max="172800">3600</ttl:ttl>
+]]></sourcecode>
+          </section>
+          <section>
+            <name>Empty Value Indicating Default TTL (&lt;create&gt; or &lt;update&gt; Command, &lt;info&gt; Default Mode)</name>
 
-</section>
+            <sourcecode><![CDATA[
+<ttl:ttl for="NS"/>
+]]></sourcecode>
+          </section>
 
-<section title="Empty value indicating default TTL (&lt;create&gt; or &lt;update&gt; command, &lt;info&gt; default mode)">
-
-<sourcecode>&lt;ttl:ttl for="NS"/&gt;</sourcecode>
-
-</section>
-
-<section title="Custom record type (&lt;create&gt; or &lt;update&gt; command, &lt;info&gt; default mode)">
-
-<sourcecode>&lt;ttl:ttl
+          <section>
+            <name>Custom Record Type (&lt;create&gt; or &lt;update&gt; Command, &lt;info&gt; Default Mode)</name>
+            <sourcecode><![CDATA[
+<ttl:ttl
   for="custom"
-  custom="NEWRRTYPE"&gt;3600&lt;/ttl:ttl&gt;</sourcecode>
+  custom="NEWRRTYPE">3600</ttl:ttl>
+]]></sourcecode>
+          </section>
+        </section>
+      </section>
+    </section>
+    <section>
+      <name>EPP Command Mapping</name>
+      <section>
+        <name>EPP Query Commands</name>
+        <section anchor="info-command">
+          <name>EPP &lt;info&gt; Command</name>
+          <t>
+	    This extension defines an additional element for EPP
+	    <tt>&lt;info&gt;</tt> commands and responses for domain and host
+	    objects.</t>
+          <t>
+	    The EPP <tt>&lt;info&gt;</tt> command is extended to support two
+	    different modes:</t>
+          <ol>
+            <li>The Default Mode (<xref target="default-mode"/>), which
+            requests the inclusion of all non-default TTL values in the
+            response; and</li>
+            <li>The Policy Mode (<xref target="policy-mode"/>), which requests
+            the inclusion of TTL information for all supported DNS record
+            types in the response, along with the minimum, default, and maximum
+            values for those records.</li>
+          </ol>
+
+          <section anchor="default-mode">
+            <name>Default Mode</name>
+            <t>
+	      If a server receives an <tt>&lt;info&gt;</tt> command for a
+	      domain or host object that includes a <tt>&lt;ttl:info&gt;</tt>
+	      element with a "<tt>policy</tt>" attribute that is "<tt>0</tt>"
+	      or "<tt>false</tt>", then the EPP response <bcp14>MUST</bcp14>
+	      contain <tt>&lt;ttl:ttl&gt;</tt> records for all DNS record
+	      types that have non-default TTL values.  These elements
+	      <bcp14>MUST NOT</bcp14> have the "<tt>min</tt>",
+	      "<tt>default</tt>", and "<tt>max</tt>" attributes.</t>
+            <t>
+	      Below is an example domain <tt>&lt;info&gt;</tt> command with a
+	      <tt>&lt;ttl:info&gt;</tt> element with a "<tt>policy</tt>"
+	      attribute that is "<tt>false</tt>":</t>
+
+            <sourcecode markers="false"><![CDATA[
+C: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+C: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+C:   <command>
+C:     <info>
+C:       <domain:info
+C:        xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+C:         <domain:name>example.com</domain:name>
+C:       </domain:info>
+C:     </info>
+C:     <extension>
+C:       <ttl:info
+C:         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0"
+C:         policy="false"/>
+C:     </extension>
+C:   </command>
+C: </epp>
+]]></sourcecode>
+
+            <t>
+	      Below is an example domain <tt>&lt;info&gt;</tt> response to a command with
+	      a <tt>&lt;ttl:info&gt;</tt> element with a "<tt>policy</tt>"
+	      attribute that is "<tt>false</tt>":</t>
+
+            <sourcecode markers="false"><![CDATA[
+S: <?xml version="1.0" encoding="utf-8" standalone="no"?>
+S: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:   <response>
+S:     <result code="1000">
+S:       <msg>Command completed successfully</msg>
+S:     </result>
+S:     <resData>
+S:       <domain:infData
+S:         xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+S:         <domain:name>example.com</domain:name>
+S:         <domain:roid>EXAMPLE1-REP</domain:roid>
+S:         <domain:status s="ok"/>
+S:         <domain:ns>
+S:           <domain:hostObj>ns1.example.com</domain:hostObj>
+S:           <domain:hostObj>ns1.example.net</domain:hostObj>
+S:         </domain:ns>
+S:         <domain:clID>ClientX</domain:clID>
+S:         <domain:crID>ClientX</domain:crID>
+S:         <domain:crDate>2023-11-08T10:14:55.0Z</domain:crDate>
+S:         <domain:exDate>2024-11-08T10:14:55.0Z</domain:exDate>
+S:       </domain:infData>
+S:     </resData>
+S:     <extension>
+S:       <ttl:infData
+S:         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
+S:         <ttl:ttl for="NS">172800</ttl:ttl>
+S:         <ttl:ttl for="DS">300</ttl:ttl>
+S:       </ttl:infData>
+S:       <secDNS:infData
+S:         xmlns:secDNS="urn:ietf:params:xml:ns:secDNS-1.1">
+S:         <secDNS:dsData>
+S:           <secDNS:keyTag>12345</secDNS:keyTag>
+S:           <secDNS:alg>13</secDNS:alg>
+S:           <secDNS:digestType>2</secDNS:digestType>
+S:           <secDNS:digest>49FD46E6C4B45C55D4AC</secDNS:digest>
+S:         </secDNS:dsData>
+S:       </secDNS:infData>
+S:     </extension>
+S:     <trID>
+S:       <clTRID>ABC-12345</clTRID>
+S:       <svTRID>54322-XYZ</svTRID>
+S:     </trID>
+S:   </response>
+S: </epp>
+]]></sourcecode>
+
+            <t>
+	      Below is an example host <tt>&lt;info&gt;</tt> command with a
+	      &lt;ttl:info&gt; element with a "<tt>policy</tt>" attribute that
+	      is "<tt>false</tt>":</t>
+
+            <sourcecode markers="false"><![CDATA[
+C: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+C: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+C:   <command>
+C:     <info>
+C:       <host:info
+C:        xmlns:host="urn:ietf:params:xml:ns:host-1.0">
+C:         <host:name>ns1.example.com</host:name>
+C:       </host:info>
+C:     </info>
+C:     <extension>
+C:       <ttl:info
+C:         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0"
+C:         policy="false"/>
+C:     </extension>
+C:   </command>
+C: </epp>
+]]></sourcecode>
+
+            <t>Below is an example host <tt>&lt;info&gt;</tt> response to a command with a
+            &lt;ttl:info&gt; element with a "<tt>policy</tt>" attribute that is
+            "<tt>false</tt>":</t>
+
+            <sourcecode markers="false"><![CDATA[
+S: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:   <response>
+S:     <result code="1000">
+S:       <msg>Command completed successfully</msg>
+S:     </result>
+S:     <resData>
+S:       <host:infData
+S:         xmlns:host="urn:ietf:params:xml:ns:host-1.0">
+S:         <host:name>ns1.example.com</host:name>
+S:         <host:roid>NS1_EXAMPLE1-REP</host:roid>
+S:         <host:status s="ok"/>
+S:         <host:addr ip="v4">192.0.2.2</host:addr>
+S:         <host:addr ip="v6">2001:db8::8:800:200c:417a</host:addr>
+S:         <host:clID>ClientX</host:clID>
+S:         <host:crID>ClientX</host:crID>
+S:         <host:crDate>2023-11-08T10:14:55.0Z</host:crDate>
+S:       </host:infData>
+S:     </resData>
+S:     <extension>
+S:       <ttl:infData
+S:         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
+S:         <ttl:ttl for="A">172800</ttl:ttl>
+S:         <ttl:ttl for="AAAA">86400</ttl:ttl>
+S:       </ttl:infData>
+S:     </extension>
+S:     <trID>
+S:       <clTRID>ABC-12345</clTRID>
+S:       <svTRID>54322-XYZ</svTRID>
+S:     </trID>
+S:   </response>
+S: </epp>
+]]></sourcecode>
+
+          </section>
+          <section anchor="policy-mode">
+            <name>Policy Mode</name>
+            <t>
+	      If a server receives an <tt>&lt;info&gt;</tt> command for a
+	      domain or host object that includes a <tt>&lt;ttl:info&gt;</tt>
+	      element with a "<tt>policy</tt>" attribute that is "<tt>1</tt>" or
+	      "<tt>true</tt>", then the EPP response <bcp14>MUST</bcp14>
+	      contain <tt>&lt;ttl:ttl&gt;</tt> records for all supported DNS
+	      record types, irrespective of whether those record types are
+	      actually in use by the object in question.  These elements
+	      <bcp14>MUST</bcp14> have the "<tt>min</tt>", "<tt>default</tt>",
+	      and "<tt>max</tt>" attributes.</t>
+            <t>
+	      Below is an example domain <tt>&lt;info&gt;</tt> command requesting the
+	      server policies:</t>
+
+<sourcecode markers="false"><![CDATA[
+C: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+C: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+C:   <command>
+C:     <info>
+C:       <domain:info
+C:        xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+C:         <domain:name>example.com</domain:name>
+C:       </domain:info>
+C:     </info>
+C:     <extension>
+C:       <ttl:info
+C:         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0"
+C:         policy="true"/>
+C:     </extension>
+C:   </command>
+C: </epp>
+]]></sourcecode>
+
+            <t>Below is an example domain <tt>&lt;info&gt;</tt> response providing the server policies:</t>
+
+<sourcecode markers="false"><![CDATA[
+S: <?xml version="1.0" encoding="utf-8" standalone="no"?>
+S: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:   <response>
+S:     <result code="1000">
+S:       <msg>Command completed successfully</msg>
+S:     </result>
+S:     <resData>
+S:       <domain:infData
+S:         xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+S:         <domain:name>example.com</domain:name>
+S:         <domain:roid>EXAMPLE1-REP</domain:roid>
+S:         <domain:status s="ok"/>
+S:         <domain:ns>
+S:           <domain:hostObj>ns1.example.com</domain:hostObj>
+S:           <domain:hostObj>ns1.example.net</domain:hostObj>
+S:         </domain:ns>
+S:         <domain:clID>ClientX</domain:clID>
+S:         <domain:crID>ClientX</domain:crID>
+S:         <domain:crDate>2023-11-08T10:14:55.0Z</domain:crDate>
+S:         <domain:exDate>2024-11-08T10:14:55.0Z</domain:exDate>
+S:       </domain:infData>
+S:     </resData>
+S:     <extension>
+S:       <ttl:infData
+S:         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
+S:         <ttl:ttl for="NS"
+S:           min="3600"
+S:           default="86400"
+S:           max="172800">172800</ttl:ttl>
+S:         <ttl:ttl for="DS"
+S:           min="60"
+S:           default="86400"
+S:           max="172800">300</ttl:ttl>
+S:       </ttl:infData>
+S:       <secDNS:infData
+S:         xmlns:secDNS="urn:ietf:params:xml:ns:secDNS-1.1">
+S:         <secDNS:dsData>
+S:           <secDNS:keyTag>12345</secDNS:keyTag>
+S:           <secDNS:alg>13</secDNS:alg>
+S:           <secDNS:digestType>2</secDNS:digestType>
+S:           <secDNS:digest>49FD46E6C4B45C55D4AC</secDNS:digest>
+S:         </secDNS:dsData>
+S:       </secDNS:infData>
+S:     </extension>
+S:     <trID>
+S:       <clTRID>ABC-12345</clTRID>
+S:       <svTRID>54322-XYZ</svTRID>
+S:     </trID>
+S:   </response>
+S: </epp>
+]]></sourcecode>
+
+            <t>Below is an example host <tt>&lt;info&gt;</tt> command requesting the server policies:</t>
+
+<sourcecode markers="false"><![CDATA[
+C: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+C: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+C:   <command>
+C:     <info>
+C:       <host:info
+C:        xmlns:host="urn:ietf:params:xml:ns:host-1.0">
+C:         <host:name>ns1.example.com</host:name>
+C:       </host:info>
+C:     </info>
+C:     <extension>
+C:       <ttl:info
+C:         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0"
+C:         policy="true"/>
+C:     </extension>
+C:   </command>
+C: </epp>
+]]></sourcecode>
+
+            <t>Below is an example host <tt>&lt;info&gt;</tt> response providing the server policies:</t>
+
+<sourcecode markers="false"><![CDATA[
+S: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:   <response>
+S:     <result code="1000">
+S:       <msg>Command completed successfully</msg>
+S:     </result>
+S:     <resData>
+S:       <host:infData
+S:         xmlns:host="urn:ietf:params:xml:ns:host-1.0">
+S:         <host:name>ns1.example.com</host:name>
+S:         <host:roid>NS1_EXAMPLE1-REP</host:roid>
+S:         <host:status s="ok"/>
+S:         <host:addr ip="v4">192.0.2.2</host:addr>
+S:         <host:addr ip="v6">2001:db8::8:800:200c:417a</host:addr>
+S:         <host:clID>ClientX</host:clID>
+S:         <host:crID>ClientX</host:crID>
+S:         <host:crDate>2023-11-08T10:14:55.0Z</host:crDate>
+S:       </host:infData>
+S:     </resData>
+S:     <extension>
+S:       <ttl:infData
+S:         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
+S:         <ttl:ttl for="A"
+S:           min="3600"
+S:           default="86400"
+S:           max="172800">172800</ttl:ttl>
+S:         <ttl:ttl for="AAAA"
+S:           min="3600"
+S:           default="86400"
+S:           max="172800">86400</ttl:ttl>
+S:       </ttl:infData>
+S:     </extension>
+S:     <trID>
+S:       <clTRID>ABC-12345</clTRID>
+S:       <svTRID>54322-XYZ</svTRID>
+S:     </trID>
+S:   </response>
+S: </epp>
+]]></sourcecode>
+
+          </section>
+        </section>
+      </section>
+
+      <section>
+        <name>EPP Transform Commands</name>
+        <section>
+          <name>EPP &lt;create&gt; Command</name>
+          <t>
+	    This extension defines an additional element for EPP
+	    <tt>&lt;create&gt;</tt> commands for domain and host objects.</t>
+          <t>
+	    The <tt>&lt;command&gt;</tt> element of the
+	    <tt>&lt;create&gt;</tt> command <bcp14>MAY</bcp14> contain an
+	    <tt>&lt;extension&gt;</tt> element that <bcp14>MAY</bcp14>
+	    contain a <tt>&lt;ttl:create&gt;</tt> element.  This element
+	    <bcp14>MUST</bcp14> contain one or more <tt>&lt;ttl:ttl&gt;</tt>
+	    records as described in <xref target="extension-elements"/>.</t>
+          <t>
+	    Below is an example domain <tt>&lt;create&gt;</tt> command:</t>
+
+<sourcecode markers="false"><![CDATA[
+C: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+C: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+C:   <command>
+C:     <create>
+C:       <domain:create
+C:         xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+C:         <domain:name>example.com</domain:name>
+C:         <domain:period unit="y">1</domain:period>
+C:         <domain:ns>
+C:           <domain:hostObj>ns1.example.com</domain:hostObj>
+C:           <domain:hostObj>ns1.example.net</domain:hostObj>
+C:         </domain:ns>
+C:         <domain:authInfo>
+C:           <domain:pw/>
+C:         </domain:authInfo>
+C:       </domain:create>
+C:     </create>
+C:     <extension>
+C:       <ttl:create
+C:         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
+C:         <ttl:ttl for="NS">172800</ttl:ttl>
+C:         <ttl:ttl for="DS">300</ttl:ttl>
+C:       </ttl:create>
+C:       <secDNS:create
+C:         xmlns:secDNS="urn:ietf:params:xml:ns:secDNS-1.1">
+C:         <secDNS:dsData>
+C:           <secDNS:keyTag>12345</secDNS:keyTag>
+C:           <secDNS:alg>13</secDNS:alg>
+C:           <secDNS:digestType>2</secDNS:digestType>
+C:           <secDNS:digest>49FD46E6C4B45C55D4AC</secDNS:digest>
+C:         </secDNS:dsData>
+C:       </secDNS:create>
+C:     </extension>
+C:     <clTRID>ABC-12345</clTRID>
+C:   </command>
+C: </epp>
+]]></sourcecode>
+
+
+          <t>Below is an example host <tt>&lt;create&gt;</tt> command:</t>
+
+<sourcecode markers="false"><![CDATA[
+C: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+C: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+C:   <command>
+C:     <create>
+C:       <host:create
+C:         xmlns:host="urn:ietf:params:xml:ns:host-1.0">
+C:         <host:name>ns1.example.com</host:name>
+C:         <host:addr ip="v4">192.0.2.2</host:addr>
+C:         <host:addr ip="v6">2001:db8::8:800:200c:417a</host:addr>
+C:       </host:create>
+C:     </create>
+C:     <extension>
+C:       <ttl:create
+C:         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
+C:         <ttl:ttl for="A"/>
+C:         <ttl:ttl for="AAAA">86400</ttl:ttl>
+C:       </ttl:create>
+C:     </extension>
+C:     <clTRID>ABC-12345</clTRID>
+C:   </command>
+C: </epp>
+]]></sourcecode>
+
+          <t>If an EPP server receives a <tt>&lt;create&gt;</tt> command
+          containing a TTL value that is outside the server's permitted range,
+          it <bcp14>MUST</bcp14> reject the command with a 2004
+          "Parameter value range error" response.</t>
+        </section>
+        <section>
+          <name>EPP &lt;update&gt; Command</name>
+          <t>
+	    This extension defines an additional element for EPP
+	    <tt>&lt;update&gt;</tt> commands for domain and host objects.</t>
+          <t>
+	    The <tt>&lt;command&gt;</tt> element of the
+	    <tt>&lt;update&gt;</tt> command <bcp14>MAY</bcp14> contain an
+	    <tt>&lt;extension&gt;</tt> element that <bcp14>MAY</bcp14>
+	    contain a <tt>&lt;ttl:update&gt;</tt> element.  This element
+	    <bcp14>MUST</bcp14> contain one or more <tt>&lt;ttl:ttl&gt;</tt>
+	    records as described in <xref target="extension-elements"/>.</t>
+          <t>
+	    Below is an example domain <tt>&lt;update&gt;</tt> command:</t>
+
+<sourcecode markers="false"><![CDATA[
+C: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+C: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+C:   <command>
+C:     <update>
+C:       <domain:update
+C:         xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+C:         <domain:name>example.com</domain:name>
+C:       </domain:update>
+C:     </update>
+C:     <extension>
+C:       <ttl:update
+C:         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
+C:         <ttl:ttl for="NS"/>
+C:         <ttl:ttl for="custom"
+C:           custom="DELEG"/>
+C:         <ttl:ttl for="DS">86400</ttl:ttl>
+C:       </ttl:update>
+C:     </extension>
+C:     <clTRID>ABC-12345</clTRID>
+C:   </command>
+C: </epp>
+]]></sourcecode>
+
+          <t>Below is an example host <tt>&lt;update&gt;</tt> command:</t>
+
+<sourcecode markers="false"><![CDATA[
+C: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+C: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+C:   <command>
+C:     <update>
+C:       <host:update
+C:         xmlns:host="urn:ietf:params:xml:ns:host-1.0">
+C:         <host:name>ns1.example.com</host:name>
+C:       </host:update>
+C:     </update>
+C:     <extension>
+C:       <ttl:update
+C:         xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0">
+C:         <ttl:ttl for="A">86400</ttl:ttl>
+C:         <ttl:ttl for="AAAA">3600</ttl:ttl>
+C:       </ttl:update>
+C:     </extension>
+C:     <clTRID>ABC-12345</clTRID>
+C:   </command>
+C: </epp>
+]]></sourcecode>
+
+          <t>
+	    If an EPP server receives an <tt>&lt;update&gt;</tt> command
+	    containing a TTL value that is outside the server's permitted
+	    range, it <bcp14>MUST</bcp14> reject the command with a
+	    2004 "Parameter value range error" response.</t>
+        </section>
+      </section>
+    </section>
+
+    <section anchor="server-processing">
+      <name>Server Processing of TTL Values</name>
+      <section anchor="permitted-types">
+        <name>Permitted Record Types</name>
+        <t>
+	  EPP servers <bcp14>MAY</bcp14> restrict the supported DNS record
+	  types.  For example, a server <bcp14>MAY</bcp14> allow clients to
+	  specify TTL values for <tt>DS</tt> records only.</t>
+        <t>
+	  A server that receives a <tt>&lt;create&gt;</tt> or
+	  <tt>&lt;update&gt;</tt> command that includes a restricted record
+	  type <bcp14>MUST</bcp14> respond with a 2306 "Parameter value
+	  policy" error.</t>
+        <t>
+	  Clients can discover the DNS record types for which an EPP server
+	  permits TTL values to be changed by performing a Policy Mode
+	  <tt>&lt;info&gt;</tt> command, as outlined in <xref
+	  target="policy-mode"/>.</t>
+      </section>
+
+      <section anchor="using_ttl_values">
+        <name>Use of TTL Values in Delegation Records</name>
+        <t>
+	  EPP servers that implement this extension <bcp14>SHOULD</bcp14> use
+	  the values provided by EPP clients for the TTL values of records
+	  published in the DNS for domain and (if supported) host objects.
+	  Server operators <bcp14>MAY</bcp14> disregard these values in order
+	  to address security and stability issues, as described in <xref
+	  target="operational-considerations"/> and <xref
+	  target="security-considerations"/>.</t>
+        <t>
+	  EPP servers that use the host attribute model
+	  <bcp14>SHOULD</bcp14> use any <tt>NS</tt>, <tt>A</tt>, and/or
+	  <tt>AAAA</tt> TTL values specified for the domain object when
+	  publishing <tt>NS</tt>, <tt>A</tt>, and/or <tt>AAAA</tt> records
+	  derived from host attributes.</t>
+      </section>
+    </section>
+
+    <section anchor="oob-changes">
+      <name>Out-of-Band Changes to TTL Values</name>
+      <t>In order to address operational or security issues, EPP server
+      operators <bcp14>MAY</bcp14> make changes to TTL values out-of-band
+      (that is, not in response to an <tt>&lt;update&gt;</tt> command received
+      from the sponsoring client).
+      </t>
+      <t>
+	Server operators <bcp14>MAY</bcp14> also implement automatic reset of
+	TTL values, so that they revert to the default value a certain amount
+	of time after an update has been made.
+      </t>
+      <t>
+	If a TTL value is changed out-of-band, EPP server operators
+	<bcp14>MAY</bcp14> notify the sponsoring client using the EPP Change
+	Poll Extension <xref target="RFC8590"/>, which provides a
+	generalized method for EPP servers to notify clients of changes to
+	objects under their sponsorship.
+      </t>
+    </section>
+
+    <section anchor="operational-considerations">
+      <name>Operational Considerations</name>
+      <section>
+        <name>Operational Impact of TTL Values</name>
+        <t>
+	  Registry operators must consider the balance between registrants'
+	  desire for changes to domains to be visible in the DNS quickly, and
+	  the increased DNS query traffic that short TTLs can bring.</t>
+        <t>
+	  Registry operators <bcp14>SHOULD</bcp14> implement limits on the
+	  maximum and minimum accepted TTL values that are narrower than the
+	  values permitted in the XML schema in <xref target="formal-syntax"/>
+	  (which were chosen to allow any TTL permitted in DNS records). This
+	  is in order to prevent scenarios where an excessively high or low
+	  TTL causes operational issues on either side of the zone cut.</t>
+        <t><xref target="oob-changes"/> describes how server operators
+        <bcp14>MAY</bcp14> unilaterally change TTL values in order to address
+        operational or security issues, or only permit changes for limited
+        time periods (after which TTLs revert to the default).</t>
+      </section>
+      <section>
+        <name>When TTL Values Should Be Changed</name>
+        <t>
+	  A common operational mistake is changing the DNS record TTLs during
+	  or after the planned change to the records themselves.  This arises
+	  due to a misunderstanding about how TTLs work.</t>
+        <t>
+	  It is <bcp14>RECOMMENDED</bcp14> that guidance be provided to users
+	  so they are aware that changes to a TTL are only effective in
+	  shortening transition periods if implemented a period of time (at
+	  least equal to the current TTL) <em>before</em> the planned change.
+	  The latency between receipt of the <tt>&lt;update&gt;</tt> command
+	  and the actual publication of the changes in the DNS should also be
+	  taken into consideration in this calculation.</t>
+      </section>
+      <section>
+        <name>Changes to Server Policy</name>
+        <t>
+	  Registry operators may change their policies relating to TTL values
+	  from time to time.  Previously configured TTL values may
+	  consequently fall outside a newly applied policy.  This document
+	  places no obligation on EPP server operators in respect of these
+	  values, and server operators may, as part of a policy change, change
+	  the TTL values specified by clients for domain and host objects.
+	  <xref target="oob-changes"/> describes how such out-of-band changes
+	  should be carried out.</t>
+      </section>
+    </section>
+    <section anchor="security-considerations">
+      <name>Security Considerations</name>
+      <section>
+        <name>Fast Flux DNS</name>
+        <t>
+	  Some malicious actors use a technique called "fast flux DNS" <xref
+	  target="SAC-025"/> to rapidly change the DNS configuration for a
+	  zone in order to evade takedown and law enforcement activity.
+	  Server operators should take this into consideration when setting
+	  the lower limit on TTL values, since a short TTL on delegations may
+	  enhance the effectiveness of fast flux techniques on evasion.</t>
+        <t>
+	  Client implementations that provide an interface for customers to
+	  configure TTL values for domain names should consider implementing
+	  controls to deter and mitigate abusive behavior, such as those
+	  outlined in the "Current and Possible Mitigation Alternatives"
+	  section of <xref target="SAC-025"/>.</t>
+      </section>
+      <section>
+        <name>Compromised User Accounts</name>
+        <t>
+	  An attacker who obtains access to a customer account at a domain
+	  registrar that supports this extension could make unauthorized
+	  changes to the <tt>NS</tt> and/or glue records for a domain, and
+	  then increase the associated TTLs so that the changes persist in
+	  caches for a long time after the attack has been detected.</t>
+        <t>
+	  Client implementations that provide an interface for customers to
+	  configure TTL values for domain names should consider implementing
+	  upper limits in order to reduce the impact of account compromise, in
+	  addition to best practices relating to credential management,
+	  multi-factor authentication, risk-based access control, and so on.</t>
+      </section>
+    </section>
+    <section anchor="IANA">
+      <name>IANA Considerations</name>
+      <section>
+        <name>XML Namespace</name>
+        <t>This document uses URNs to describe XML namespaces and XML schemas
+        conforming to a registry mechanism described in <xref
+        target="RFC3688"/>.  The following URI assignments have been made by
+        IANA:</t>
+
+        <t>Registration for the TTL namespace:</t>
+	<dl spacing="compact" newline="false">
+          <dt><strong>URI:</strong></dt><dd><tt>urn:ietf:params:xml:ns:epp:ttl-1.0</tt></dd>
+          <dt><strong>Registrant Contact:</strong></dt><dd>IESG</dd>
+          <dt><strong>XML:</strong></dt><dd>None. Namespace URIs do not represent an XML specification.</dd>
+        </dl>
+
+        <t>Registration for the TTL XML schema:</t>
+	<dl spacing="compact" newline="false">
+          <dt><strong>URI:</strong></dt><dd><tt>urn:ietf:params:xml:schema:epp:ttl-1.0</tt></dd>
+          <dt><strong>Registrant Contact:</strong></dt><dd>IESG</dd>
+          <dt><strong>XML:</strong></dt><dd>See <xref target="formal-syntax"/> of this
+          document.</dd>
+        </dl>
+      </section>
+      <section>
+        <name>EPP Extension Registry</name>
+
+<!-- [rfced] Section 7.2: May we update the name of the extension as
+shown below? If so, we will ask IANA to update the registry accordingly (https://www.iana.org/assignments/epp-extensions/epp-extensions.xhtml).
+
+This would match the edited title of this document as well as the 
+value's name as it appears in RFC 9499.
+
+CURRENT:
+Extensible Provisioning Protocol (EPP) Mapping for DNS Time-To-Live (TTL) values
+
+SUGGESTED (lowercase 't' and capital 'V'):
+Extensible Provisioning Protocol (EPP) Mapping for DNS Time-to-Live (TTL) Values
+
+In that registry, we note that "Name of Extension" for this one also 
+matches the title of the RFC:
+Extensible Provisioning Protocol (EPP) Secure Authorization 
+Information for Transfer (RFC 9167)
+-->
+
+        <t>The EPP extension described in this document has been registered by
+        IANA in the "Extensions for the Extensible Provisioning Protocol
+        (EPP)" registry described in <xref target="RFC7451"/>.  The details of
+        the registration are as follows:</t>
+
+	<dl spacing="compact" newline="false">
+          <dt><strong>Name of Extension:</strong></dt>
+	  <dd>Extensible Provisioning Protocol (EPP) Mapping for DNS Time-To-Live (TTL) values</dd>
+
+          <dt><strong>Document Status:</strong></dt>
+	  <dd>Standards Track</dd>
+
+          <dt><strong>Reference:</strong></dt>
+	  <dd>RFC 9803</dd>
+
+          <dt><strong>Registrant:</strong></dt>
+	  <dd>IESG</dd>
+
+          <dt><strong>TLDs:</strong></dt>
+	  <dd>Any</dd>
+
+          <dt><strong>IPR Disclosure:</strong></dt>
+	  <dd>None</dd>
+
+          <dt><strong>Status:</strong></dt>
+	  <dd>Active</dd>
+
+          <dt><strong>Notes:</strong></dt>
+	  <dd>None</dd>
+        </dl>
+      </section>
+    </section>
+    <section anchor="formal-syntax">
+      <name>Formal Syntax</name>
+      <t>
+	The formal syntax presented here is a complete schema representation
+	of the extension suitable for automated validation of EPP XML
+	instances.</t>
+
+<sourcecode markers="false" type="xml"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<schema
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="urn:ietf:params:xml:ns:epp:ttl-1.0"
+  xmlns:ttl="urn:ietf:params:xml:ns:epp:ttl-1.0"
+  elementFormDefault="qualified">
+  <annotation>
+    <documentation>
+      Extensible Provisioning Protocol v1.0 extension
+      schema for Time-To-Live (TTL) values for domain
+      and host objects.
+    </documentation>
+  </annotation>
+
+  <element name="info">
+    <complexType>
+      <attribute name="policy" type="boolean" default="false"/>
+    </complexType>
+  </element>
+
+  <!--
+    <ttl> elements can appear in <create> and
+    <update> commands, and <info> responses
+  -->
+
+  <element name="create" type="ttl:commandContainer">
+    <unique name="uniqueRRTypeForCreate">
+      <selector xpath="ttl:ttl"/>
+      <field xpath="@for"/>
+    </unique>
+  </element>
+
+  <element name="update" type="ttl:commandContainer">
+    <unique name="uniqueRRTypeForUpdate">
+      <selector xpath="ttl:ttl"/>
+      <field xpath="@for"/>
+    </unique>
+  </element>
+
+  <element name="infData" type="ttl:responseContainer">
+    <unique name="uniqueRRTypeForInfo">
+      <selector xpath="ttl:ttl"/>
+      <field xpath="@for"/>
+    </unique>
+  </element>
+
+  <complexType name="commandContainer">
+    <sequence>
+      <element
+        name="ttl"
+        type="ttl:commandTTLType"
+        minOccurs="1"
+        maxOccurs="unbounded"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="responseContainer">
+    <sequence>
+      <element
+        name="ttl"
+        type="ttl:responseTTLType"
+        minOccurs="1"
+        maxOccurs="unbounded"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="commandTTLType">
+    <simpleContent>
+      <extension base="ttl:ttlOrNull">
+        <attribute
+          name="for"
+          type="ttl:rrType"
+          use="required"/>
+
+        <attribute
+          name="custom"
+          type="ttl:customRRType"/>
+      </extension>
+    </simpleContent>
+  </complexType>
+
+  <complexType name="responseTTLType">
+    <simpleContent>
+      <extension base="ttl:ttlOrNull">
+        <attribute
+          name="for"
+          type="ttl:rrType"
+          use="required"/>
+
+        <attribute
+          name="custom"
+          type="ttl:customRRType"/>
+
+        <attribute
+          name="min"
+          type="ttl:ttlValue"/>
+
+        <attribute
+          name="default"
+          type="ttl:ttlValue"/>
+
+        <attribute
+          name="max"
+          type="ttl:ttlValue"/>
+      </extension>
+    </simpleContent>
+  </complexType>
+
+  <!--
+    union type allowing the element to either contain
+    nothing or a TTL value
+  -->
+  <simpleType name="ttlOrNull">
+    <union
+      memberTypes="ttl:emptyValue ttl:ttlValue"/>
+  </simpleType>
+
+  <!-- empty value type -->
+  <simpleType name="emptyValue">
+    <restriction base="token">
+      <length value="0"/>
+    </restriction>
+  </simpleType>
+
+  <!-- TTL value type -->
+  <simpleType name="ttlValue">
+    <restriction base="nonNegativeInteger">
+      <minInclusive value="0"/>
+      <maxInclusive value="2147483647"/>
+    </restriction>
+  </simpleType>
+
+  <!-- resource record mnemonic type -->
+  <simpleType name="rrType">
+    <restriction base="token">
+      <enumeration value="NS" />
+      <enumeration value="DS" />
+      <enumeration value="DNAME" />
+      <enumeration value="A" />
+      <enumeration value="AAAA" />
+      <enumeration value="custom" />
+    </restriction>
+  </simpleType>
+
+  <!-- custom resource record type -->
+  <simpleType name="customRRType">
+    <restriction base="token">
+      <pattern value="A|[A-Z][A-Z0-9\-]*[A-Z0-9]"/>
+    </restriction>
+  </simpleType>
+</schema>
+]]></sourcecode>
+
+    </section>
+  </middle>
+  <back>
+    <references>
+      <name>References</name>
+      <references>
+        <name>Normative References</name>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3688.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5731.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5732.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5910.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6895.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
+
+<!-- [XSD-DATATYPES] Updated to match internal guidance for W3C references. -->
+        <reference anchor="XSD-DATATYPES" target="https://www.w3.org/TR/2004/REC-xmlschema-2-20041028/">
+          <front>
+            <title>XML Schema Part 2: Datatypes Second Edition</title>
+            <author initials="P." surname="Biron" fullname="Paul V. Biron" role="editor"/>
+            <author initials="A." surname="Malhotra" fullname="Ashok Malhotra" role="editor"/>
+            <date month="October" year="2004"/>
+          </front>
+          <refcontent>W3C Recommendation</refcontent>
+          <annotation>Latest version available at <eref target="https://www.w3.org/TR/xmlschema-2/" brackets="angle"/>.</annotation>
+        </reference>
+        <reference anchor="IANA-RRTYPES" target="https://www.iana.org/assignments/dns-parameters">
+          <front>
+            <title>Resource Record (RR) TYPEs</title>
+            <author>
+              <organization>IANA</organization>
+            </author>
+          </front>
+        </reference>
+      </references>
+      <references>
+        <name>Informative References</name>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6927.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7451.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8590.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9364.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9499.xml"/>
+        <reference anchor="SAC-025" target="https://www.icann.org/en/system/files/files/sac-025-en.pdf">
+          <front>
+            <title>SSAC Advisory on Fast Flux Hosting and DNS</title>
+            <author>
+              <organization>ICANN Security and Stability Advisory Committee (SSAC)</organization>
+            </author>
+            <date month="January" year="2008"/>
+          </front>
+          <seriesInfo name="SAC" value="025"/>
+        </reference>
+      </references>
+    </references>
+
+    <section numbered="false">
+      <name>Acknowledgments</name>
+      <t>The author wishes to thank the following people for their advice and
+      feedback during the development of this document:</t>
+      <ul>
+        <li><t><contact fullname="James Gould"/></t></li>
+        <li><t><contact fullname="Hugo Salgado"/></t></li>
+        <li><t><contact fullname="Patrick Mevzek"/></t></li>
+        <li><t><contact fullname="Rick Wilhelm"/></t></li>
+        <li><t><contact fullname="Marc Groeneweg"/></t></li>
+        <li><t><contact fullname="Ties de Kock"/></t></li>
+        <li><t><contact fullname="Tim Wicinski"/></t></li>
+        <li><t><contact fullname="Jasdip Singh"/></t></li>
+      </ul>
+    </section>
+  </back>
+
+<!-- [rfced] FYI, we have added expansions for abbreviations upon first use
+per Section 3.6 of RFC 7322 ("RFC Style Guide"). Please review each
+expansion in the document carefully to ensure correctness.
+-->
+
+
+<!-- [rfced] Regarding usage of  <tt>, <em>, and <strong> elements,
+please review the occurrences and let us know if any updates are 
+needed for consistency. Details below.
+
+In the HTML and PDF outputs, <tt> yields fixed-width font.
+In the text output, there is no change.
+ - In this document: seemingly used for RR names, attribute names, 
+and some examples.
+
+In the HTML and PDF outputs, <em> yields italics.
+In the text output, <em> yields an underscore before and after.
+ - In this document: used for one instance of emphasis.
+
+In the HTML and PDF outputs, <strong> yields bold. 
+In the text output, <strong> yields an asterisk before and after.
+ - In this document: used for field names in the IANA Considerations.
+ - We recommend removing these, as the asterisks seem unnecessary in the
+text file, and this font styling is not typically used in 
+IANA Considerations sections. Please let us know if you agree.
+-->
+
+<!-- [rfced] Please review the "type" attribute of each sourcecode element
+in the XML file to ensure correctness. If the current list of preferred
+values for "type"
+(https://www.rfc-editor.org/rpc/wiki/doku.php?id=sourcecode-types)
+does not contain an applicable type, then feel free to let us know.
+Also, it is acceptable to leave the "type" attribute not set. -->
+
+<!-- [rfced] Please review the "Inclusive Language" portion of the online 
+Style Guide <https://www.rfc-editor.org/styleguide/part2/#inclusive_language>
+and let us know if any changes are needed.  Updates of this nature typically
+result in more precise language, which is helpful for readers.
+
+For example, please consider whether "white space" should be updated in the
+text below:
+
+   Indentation and white space in examples are provided only to illustrate
+   element relationships and are not required features of this protocol.
+-->
 
-</section>
-
-</section>
-
-</section>
-
-</section>
-
-<section title="EPP command mapping">
-
-<section title="EPP query commands">
-
-<section anchor="info-command" title="EPP &lt;info&gt; command">
-
-<t>
-This extension defines an additional element for EPP <tt>&lt;info&gt;</tt> commands and responses for domain and host objects.
-</t>
-
-<t>
-The EPP <tt>&lt;info&gt;</tt> command is extended to support two different modes:
-</t>
-
-<ol>
-<li>
-The Default Mode (<xref target="default-mode"/>),
-which requests the inclusion of all non-default TTL values in the response; and
-</li>
-
-<li>
-The Policy Mode (<xref target="policy-mode"/>),
-which requests the inclusion of TTL information for all supported DNS record types in the response,
-along with the minimum, default and maximum values for those records.
-</li>
-
-</ol>
-
-<section title="Default Mode" anchor="default-mode">
-
-<t>
-If a server receives an <tt>&lt;info&gt;</tt> command for a domain or host object which includes a <tt>&lt;ttl:info&gt;</tt> element
-with a "<tt>policy</tt>" attribute that is "<tt>0</tt>" or "<tt>false</tt>",
-then the EPP response <bcp14>MUST</bcp14> contain <tt>&lt;ttl:ttl&gt;</tt> records for all DNS record types that have non-default TTL values.
-These elements <bcp14>MUST NOT</bcp14> have the "<tt>min</tt>", "<tt>default</tt>" and "<tt>max</tt>" attributes.
-</t>
-
-<t>
-Example domain <tt>&lt;info&gt;</tt> command with a <tt>&lt;ttl:info&gt;</tt> element with a <tt>policy</tt> attribute that is <tt>false</tt>:
-</t>
-
-<sourcecode><xi:include parse="text" href="examples/domain-info-command.xml.txt"/></sourcecode>
-
-<t>
-Example domain <tt>&lt;info&gt;</tt> response to a command with a <tt>&lt;ttl:info&gt;</tt> element with a <tt>policy</tt> attribute that is <tt>false</tt>:
-</t>
-
-<sourcecode><xi:include parse="text" href="examples/domain-info-response.xml.txt"/></sourcecode>
-
-<t>
-Example host <tt>&lt;info&gt;</tt> command with a &lt;ttl:info&gt; element with a <tt>policy</tt> attribute that is <tt>false</tt>:
-</t>
-
-<sourcecode><xi:include parse="text" href="examples/host-info-command.xml.txt"/></sourcecode>
-
-<t>
-Example host <tt>&lt;info&gt;</tt> response to a command with a &lt;ttl:info&gt; element with a <tt>policy</tt> attribute that is <tt>false</tt>:
-</t>
-
-<sourcecode><xi:include parse="text" href="examples/host-info-response.xml.txt"/></sourcecode>
-
-</section>
-
-<section title="Policy Mode" anchor="policy-mode">
-
-<t>
-If a server receives an <tt>&lt;info&gt;</tt> command for a domain or host object which includes a <tt>&lt;ttl:info&gt;</tt> element
-with a "<tt>policy</tt>" attribute is "<tt>1</tt>" or "<tt>true</tt>",
-then the EPP response <bcp14>MUST</bcp14> contain <tt>&lt;ttl:ttl&gt;</tt> records for all supported DNS record types,
-irrespective of whether those record types are actually in use by the object in question.
-These elements <bcp14>MUST</bcp14> have the "<tt>min</tt>", "<tt>default</tt>" and "<tt>max</tt>" attributes.
-</t>
-
-<t>
-Example domain <tt>&lt;info&gt;</tt> command requesting the server policies:
-</t>
-
-<sourcecode><xi:include parse="text" href="examples/extended-domain-info-command.xml.txt"/></sourcecode>
-
-<t>
-Example domain <tt>&lt;info&gt;</tt> response providing the server policies:
-</t>
-
-<sourcecode><xi:include parse="text" href="examples/domain-info-extended-response.xml.txt"/></sourcecode>
-
-<t>
-Example host <tt>&lt;info&gt;</tt> command requesting the server policies:
-</t>
-
-<sourcecode><xi:include parse="text" href="examples/extended-host-info-command.xml.txt"/></sourcecode>
-
-<t>
-Example host <tt>&lt;info&gt;</tt> response providing the server policies:
-</t>
-
-<sourcecode><xi:include parse="text" href="examples/extended-host-info-response.xml.txt"/></sourcecode>
-
-</section>
-
-</section>
-
-</section>
-
-<section title="EPP transform commands">
-
-<section title="EPP &lt;create&gt; command">
-<t>
-This extension defines an additional element for EPP <tt>&lt;create&gt;</tt> commands for domain and host objects.
-</t>
-
-<t>
-The <tt>&lt;command&gt;</tt> element of the <tt>&lt;create&gt;</tt> command <bcp14>MAY</bcp14> contain an <tt>&lt;extension&gt;</tt> element which <bcp14>MAY</bcp14> contain a <tt>&lt;ttl:create&gt;</tt> element.
-This element <bcp14>MUST</bcp14> contain one or more <tt>&lt;ttl:ttl&gt;</tt> records as described in <xref target="extension-elements"/>.
-</t>
-
-<t>
-Example domain <tt>&lt;create&gt;</tt> command:
-</t>
-
-<sourcecode><xi:include parse="text" href="examples/domain-create-command.xml.txt"/></sourcecode>
-
-<t>
-Example host <tt>&lt;create&gt;</tt> command:
-</t>
-
-<sourcecode><xi:include parse="text" href="examples/host-create-command.xml.txt"/></sourcecode>
-
-<t>
-If an EPP server receives a <tt>&lt;create&gt;</tt> command containing a TTL value that is outside the server's permitted range, it <bcp14>MUST</bcp14> reject the command with a <tt>2004</tt> "Parameter value range error" response.
-</t>
-
-</section>
-
-<section title="EPP &lt;update&gt; command">
-<t>
-This extension defines an additional element for EPP <tt>&lt;update&gt;</tt> commands for domain and host objects.
-</t>
-
-<t>
-The <tt>&lt;command&gt;</tt> element of the <tt>&lt;update&gt;</tt> command <bcp14>MAY</bcp14> contain an <tt>&lt;extension&gt;</tt> element which <bcp14>MAY</bcp14> contain a <tt>&lt;ttl:update&gt;</tt> element.
-This element <bcp14>MUST</bcp14> contain one or more <tt>&lt;ttl:ttl&gt;</tt> records as described in <xref target="extension-elements"/>.
-</t>
-
-<t>
-Example domain <tt>&lt;update&gt;</tt> command:
-</t>
-
-<sourcecode><xi:include parse="text" href="examples/domain-update-command.xml.txt"/></sourcecode>
-
-<t>
-Example host <tt>&lt;update&gt;</tt> command:
-</t>
-
-<sourcecode><xi:include parse="text" href="examples/host-update-command.xml.txt"/></sourcecode>
-
-<t>
-If an EPP server receives an <tt>&lt;update&gt;</tt> command containing a TTL value that is outside the server's permitted range, it <bcp14>MUST</bcp14> reject the command with a <tt>2004</tt> "Parameter value range error" response.
-</t>
-
-</section>
-
-</section>
-
-</section>
-
-<section anchor="server-processing" title="Server processing of TTL values">
-
-<section anchor="permitted-types" title="Permitted record types">
-
-<t>
-EPP servers <bcp14>MAY</bcp14> restrict the supported DNS record types.
-For example, a server <bcp14>MAY</bcp14> allow clients to specify TTL values for <tt>DS</tt> records only.
-</t>
-
-<t>
-A server which receives a <tt>&lt;create&gt;</tt> or <tt>&lt;update&gt;</tt> command which includes a restricted record type <bcp14>MUST</bcp14> respond with a 2306 "Parameter value policy" error.
-
-</t>
-
-<t>
-Clients can discover the DNS record types for which an EPP server permits TTL values to be changed by performing a "Policy Mode" <tt>&lt;info&gt;</tt> command,
-as outlined in <xref target="policy-mode"/>.
-</t>
-
-</section>
-
-<section title="Use of TTL values in delegation records" anchor="using_ttl_values">
-
-<t>
-EPP servers which implement this extension <bcp14>SHOULD</bcp14> use the values provided by EPP clients for the TTL values of records published in the DNS for domain and (if supported) host objects.
-Server operators <bcp14>MAY</bcp14> disregard these values in order to address security and stability issues,
-as described in <xref target="operational-considerations"/> and <xref target="security-considerations"/>.
-</t>
-
-<t>
-EPP servers that use the "host attribute" model <bcp14>SHOULD</bcp14> use any <tt>NS</tt>, <tt>A</tt> and/or <tt>AAAA</tt> TTL values specified for the domain object when publishing <tt>NS</tt>, <tt>A</tt> and/or <tt>AAAA</tt> records derived from host attributes.
-</t>
-
-</section>
-
-</section>
-
-<section anchor="oob-changes" title="Out-of-band changes to TTL values">
-
-<t>
-EPP server operators <bcp14>MAY</bcp14>, in order to address operational or security issues, make changes to TTL values out-of-band (that is, not in response to an <tt>&lt;update&gt;</tt> command received from the sponsoring client).
-</t>
-
-<t>
-Server operators <bcp14>MAY</bcp14> also implement automatic reset of TTL values, so that they revert to the default value a certain amount of time after an update has been made.
-</t>
-
-<t>
-If a TTL value is changed out-of-band, EPP server operators <bcp14>MAY</bcp14> notify the sponsoring client using the EPP Change Poll extension (<xref target="RFC8590"/>), which provides a generalised method for EPP servers to notify clients of changes to objects under their sponsorship.
-</t>
-
-</section>
-
-<section anchor="operational-considerations" title="Operational considerations">
-
-<section title="Operational impact of TTL values">
-
-<t>
-Registry operators must consider the balance between registrants' desire for changes to domains to be visible in the DNS quickly, and the increased DNS query traffic that short TTLs can bring.
-</t>
-
-<t>
-Registry operators <bcp14>SHOULD</bcp14> implement limits on the maximum and minimum accepted TTL values that are narrower than the values permitted in the XML schema in the <xref target="formal-syntax" format="title"/> (which were chosen to allow any TTL permitted in DNS records), in order to prevent scenarios where an excessively high or low TTL causes operational issues on either side of the zone cut.
-</t>
-
-<t>
-<xref target="oob-changes"/> describes how server operators <bcp14>MAY</bcp14> unilaterally change TTL values in order to address operational or security issues, or only permit changes for limited time periods (after which TTLs revert to the default).
-</t>
-
-</section>
-
-<section title="When TTL values should be changed">
-
-<t>
-A common operational mistake is changing of DNS record TTLs during or after the planned change to the records themselves.
-This arises due to a misunderstanding about how TTLs work.
-</t>
-
-<t>
-It is <bcp14>RECOMMENDED</bcp14> that guidance be provided to users so they are aware that changes to a TTL are only effective in shortening transition periods if implemented a period of time &#8212; at least equal to the current TTL &#8212; <em>before</em> the planned change.
-The latency between receipt of the <tt>&lt;update&gt;</tt> command and the actual publication of the changes in the DNS should also be taken into consideration in this calculation.
-</t>
-
-</section>
-
-<section title="Changes to server policy">
-
-<t>
-Registry operators may change their policies relating to TTL values from time to time.
-Previously configured TTL values may consequently fall outside a newly-applied policy.
-This document places no obligation on EPP server operators in respect of these values,
-and server operators may, as part of a policy change, change the TTL values specified by clients for domain and host objects.
-<xref target="oob-changes"/> describes how such out-of-band changes should be carried out.
-</t>
-
-</section>
-
-</section>
-
-<section anchor="security-considerations" title="Security considerations">
-
-<section title="Fast-flux DNS">
-
-<t>
-Some malicious actors use a technique called "fast flux DNS" (<xref target="SAC-025"/>) to rapidly change the DNS configuration for a zone in order to evade takedown and law enforcement activity.
-Server operators should take this into consideration when setting the lower limit on TTL values, since a short TTL on delegations may enhance the effectiveness of fast flux techniques on evasion.
-</t>
-
-<t>
-Client implementations which provide an interface for customers to configure TTL values for domain names should consider implementing controls to deter and mitigate abusive behaviour,
-such as those outlined in the "Current and Possible Mitigation Alternatives" section of <xref target="SAC-025"/>.
-</t>
-
-</section>
-
-<section title="Compromised user accounts">
-
-<t>
-An attacker who obtains access to a customer account at a domain registrar which supports this extension could make unauthorised changes to the <tt>NS</tt> and/or glue records for a domain,
-and then increase the associated TTLs so that the changes persist in caches for a long time after the attack has been detected.
-</t>
-
-<t>
-Client implementations which provide an interface for customers to configure TTL values for domain names should consider implementing upper limits in order to reduce the impact of account compromise,
-in addition to best practices relating to credential management, multi-factor authentication, risk-based access control, and so on.
-</t>
-
-</section>
-
-</section>
-
-<section anchor="IANA" title="IANA considerations">
-
-<section title="XML namespace">
-
-<t>
-This document uses URNs to describe XML namespaces and XML schemas conforming to a registry mechanism described in <xref target="RFC3688"/>.
-The following URI assignment is requested of IANA:
-</t>
-
-<t>
-Registration for the TTL namespace:
-</t>
-
-<list>
-<t>
-<strong>URI:</strong> <tt>urn:ietf:params:xml:ns:epp:ttl-1.0</tt>
-</t>
-
-<t>
-<strong>Registrant Contact:</strong> IESG
-</t>
-
-<t>
-<strong>XML:</strong> None. Namespace URIs do not represent an XML specification
-</t>
-
-</list>
-
-<t>
-Registration for the TTL XML schema:
-</t>
-
-<list>
-
-<t>
-<strong>URI:</strong> <tt>urn:ietf:params:xml:schema:epp:ttl-1.0</tt>
-</t>
-
-<t>
-<strong>Registrant Contact:</strong> IESG
-</t>
-
-<t>
-<strong>XML:</strong> See the "<xref target="formal-syntax" format="title"/>" section of this document
-</t>
-
-</list>
-
-</section>
-
-<section title="EPP extension registry">
-
-<t>
-The EPP extension described in this document is to be registered by IANA in the Extensions for the "Extensible Provisioning Protocol (EPP)" registry described in <xref target="RFC7451"/>.
-The details of the registration are as follows:
-</t>
-
-<list>
-
-<t>
-<strong>Name of Extension:</strong> Extensible Provisioning Protocol (EPP) Mapping for DNS Time-To-Live (TTL) values
-</t>
-
-<t>
-<strong>Document Status:</strong> Standards Track
-</t>
-
-<t>
-<strong>Reference:</strong> URL of this document
-</t>
-
-<t>
-<strong>Registrant Name and Email Address:</strong> IESG
-</t>
-
-<t>
-<strong>TLDs:</strong> Any
-</t>
-
-<t>
-<strong>IPR Disclosure:</strong> None
-</t>
-
-<t>
-<strong>Status:</strong> Active
-</t>
-
-<t>
-<strong>Notes:</strong> None
-</t>
-
-</list>
-
-</section>
-
-</section>
-
-<section anchor="formal-syntax" title="Formal syntax">
-
-<t>
-The formal syntax presented here is a complete schema representation of the extension suitable for automated validation of EPP XML instances.
-</t>
-
-<sourcecode><xi:include parse="text" href="ttl-1.0.xsd"/></sourcecode>
-
-</section>
-
-<section anchor="implementation-status" title="Implementation status" removeInRFC="true">
-
-<section title="Verisign EPP SDK">
-<t>
-<strong>Organization:</strong> Verisign Inc.
-</t>
-
-<t>
-<strong>Name:</strong> Verisign EPP SDK
-</t>
-
-<t>
-<strong>Description:</strong> The Verisign EPP SDK includes both a full client implementation and a full server stub implementation of this specification.
-</t>
-
-<t>
-<strong>Level of maturity:</strong> Development
-</t>
-
-<t>
-<strong>Coverage:</strong> All aspects of the protocol are implemented.
-</t>
-
-<t>
-<strong>Licensing:</strong> GNU Lesser General Public License
-</t>
-
-<t>
-<strong>Contact:</strong> jgould@verisign.com
-</t>
-
-<t>
-<strong>URL:</strong> https://www.verisign.com/en_US/channel-resources/domain-registry-products/epp-sdks
-</t>
-
-</section>
-
-<section title="Pepper EPP Client">
-
-<t>
-<strong>Name:</strong> Pepper EPP Client
-</t>
-
-<t>
-<strong>Description:</strong> The Pepper EPP client fully implements this specification.
-The underlying <tt>Net::EPP::</tt> Perl module also implements this specification.
-</t>
-
-<t>
-<strong>Level of maturity:</strong> Development
-</t>
-
-<t>
-<strong>Coverage:</strong> All aspects of the protocol will be implemented.
-</t>
-
-<t>
-<strong>Licensing:</strong> Perl Artistic License
-</t>
-
-<t>
-<strong>Contact:</strong> The author of this document.
-</t>
-
-<t>
-<strong>URL:</strong> https://github.com/gbxyz/pepper
-</t>
-
-</section>
-
-</section>
-
-<section title="Change log" anchor="change_log" removeInRFC="true">
-
-<section title="Changes from 17 to 18"><ol>
-
-<li>
-Add a space after the <tt>C:</tt> and <tt>S:</tt> line prefixes in examples.
-</li>
-
-<li>
-Fixed the prefixing of lines in the example in Section 2.1.1.2 (thanks Tim Bray).
-</li>
-
-<li>
-Fixed broken end tags in examples in Section 1.2.2 and the capitalisation of IPv6 addresses (thanks Erik Kline).
-</li>
-
-<li>
-Added normative reference to <xref target="IANA-RRTYPES"/>.
-</li>
-
-<li>
-Replaced references to "command/response frames" with "EPP commands/responses".
-</li>
-
-<li>
-Minor wording change in paragraph 2 of <xref target="ttl_element"/>.
-</li>
-
-<li>
-Clarified wording in <xref target="supported-dns-record-types"/>.
-</li>
-
-<li>
-Wordsmithing of <xref target="server-processing"/> due to feedback from the IESG.
-</li>
-
-</ol></section>
-
-<section title="Changes from 16 to 17"><ol>
-
-<li>
-Further updates as suggested during IESG review.
-</li>
-
-</ol></section>
-
-<section title="Changes from 15 to 16"><ol>
-
-<li>
-Updates as suggested during IESG review.
-</li>
-
-</ol></section>
-
-<section title="Changes from 14 to 15"><ol>
-
-<li>
-Updates as suggested during AD review.
-</li>
-
-<li>
-In the last paragraph of Section 3.2, make both lists of RR types be the same.
-</li>
-
-<li>
-Update error codes to be consistent: 2004 (range error) when the TTL value is outside the permitted range,
-and 2306 (policy error) for an invalid record type.
-</li>
-
-<li>
-Correct section in reference to RFC 6895 (thanks Jasdip Singh).
-</li>
-
-<li>
-Minor typographic fixes (thanks Jasdip Singh).
-</li>
-
-</ol></section>
-
-<section title="Changes from 13 to 14"><ol>
-
-<li>
-Resolve remaining nit before IESG submission.
-</li>
-
-</ol></section>
-
-<section title="Changes from 12 to 13"><ol>
-
-<li>
-Updates as per the document shepherd's suggestions.
-</li>
-
-</ol></section>
-
-<section title="Changes from 11 to 12"><ol>
-
-<li>
-Updates as per the document shepherd's email to the list of 2024-06-10.
-</li>
-
-</ol></section>
-
-<section title="Changes from 10 to 11"><ol>
-
-<li>
-Fix double word in <xref target="using_ttl_values"/>.
-</li>
-
-</ol></section>
-
-<section title="Changes from 09 to 10">
-
-<t>
-Changes resulting from the Dnsdir review:
-</t>
-
-<ol>
-
-<li>
-Fixed example IPv6 addresses to use the preferred prefix 2001:DB8::.
-</li>
-
-<li>
-Added paragraph to <xref target="permitted-types"/> describing how clients can use the Policy Mode <tt>&lt;info&gt;</tt> command (<xref target="policy-mode"/>) to discover the DNS record types supported by the server.
-</li>
-
-</ol>
-</section>
-
-<section title="Changes from 08 to 09"><ol>
-
-<li>
-Some wording changes suggested by James Gould and Tim Wicinski.
-</li>
-
-</ol></section>
-
-<section title="Changes from 07 to 08"><ol>
-
-<li>
-Some wording changes suggested by Rick Wilhelm.
-</li>
-
-</ol></section>
-
-<section title="Changes from 06 to 07"><ol>
-
-<li>
-Minor wording changes and nits reported by JG.
-</li>
-
-</ol></section>
-
-<section title="Changes from 05 to 06"><ol>
-
-<li>
-Changed how <tt>&lt;info&gt;</tt> commands work so that a <tt>&lt;ttl:info&gt;</tt> element is required in order for <tt>&lt;ttl:ttl&gt;</tt> elements to be included in the response.
-Thanks to JG for this feedback.
-</li>
-
-</ol></section>
-
-<section title="Changes from 04 to 05"><ol>
-
-<li>
-removed the erroneous <tt>required="true"</tt> attribute from the <tt>min</tt>, <tt>default</tt> and <tt>max</tt> attributes of the <tt>responseTTLType</tt> type (thanks JG).
-</li>
-
-<li>
-fixed the reference to RFC 6895 (thanks HS).
-</li>
-
-</ol></section>
-
-<section title="Changes from 04 to 05"><ol>
-
-<li>
-Add the Verisign EPP SDK to <xref target="implementation-status"/>.
-</li>
-
-<li>
-Add the <tt>&lt;ttl:info&gt;</tt> element and document how it affects server <tt>&lt;info&gt;</tt> responses.
-</li>
-
-<li>
-Updated examples to exercise more of the schema.
-</li>
-
-<li>
-Minor schema issue fixed.
-</li>
-
-</ol></section>
-
-<section title="Changes from 03 to 04"><ol>
-
-<li>
-Changed the <tt>for</tt> attribute to be an enumeration and added the <tt>custom</tt> attribute.
-</li>
-
-<li>
-Added the <tt>min</tt>, <tt>default</tt> and <tt>max</tt> attributes.
-</li>
-
-<li>
-Apply feedback from Jim Gould.
-</li>
-
-</ol></section>
-
-<section title="Changes from 02 to 03"><ol>
-
-<li>
-Rolled back the "straw man" syntax from 02.
-<tt>ttl:ttl</tt> now has a <tt>for</tt> attribute which can be any DNS record type.
-<xref target="supported-dns-record-types"/> describes how the set of supported record types may be limited.
-</li>
-
-<li>
-Removed the global/explicit models and just use the explicit model.
-</li>
-
-<li>
-Removed the cascading effect where a TTL set on a domain affects subordinate hosts.
-</li>
-
-</ol></section>
-
-<section title="Changes from 01 to 02"><ol>
-
-<li>
-Renamed the <tt>ttl:seconds</tt> XSD type to <tt>ttl:container</tt>, and the <tt>ttl:nonNegativeInteger</tt> type to <tt>ttl:ttlType</tt>, to permit multiple TTL values.
-</li>
-
-<li>
-Converted XML instances from artwork to source code.
-</li>
-
-</ol></section>
-
-<section title="Changes from 00 to 01"><ol>
-
-<li>
-Incorporate feedback from Jim Gould.
-</li>
-
-<li>
-Add wording to describe how TTL values are jointly managed by both clients and servers.
-</li>
-
-<li>
-Fix minimum/maximum TTL value and schema namespace (thanks Patrick Mevzek).
-</li>
-
-<li>
-Moved text on how the server should handle impermissible TTL values from the top of Section 4 to Sections 3.2.1 and 3.2.2 (thanks Rick Wilhelm).
-</li>
-
-<li>
-Namespace changed from <tt>urn:ietf:params:xml:ns:ttl-1.0</tt> to <tt>urn:ietf:params:xml:ns:epp:ttl-1.0</tt>.
-</li>
-
-<li>
-Added discussion on EPP servers which use the host attribute model in <xref target="using_ttl_values"/> (thanks Hugo Salgado).
-</li>
-
-<li>
-Added a <xref target="change_log">Change Log</xref>.
-</li>
-
-</ol></section>
-
-</section>
-
-<section title="Acknowledgements">
-
-<t>
-The author wishes to thank the following people for their advice and feedback during the development of this document:
-</t>
-
-<ol>
-<li>James Gould</li>
-<li>Hugo Salgado</li>
-<li>Patrick Mevzek</li>
-<li>Rick Wilhelm</li>
-<li>Marc Groeneweg</li>
-<li>Ties de Kock</li>
-<li>Tim Wicinski</li>
-<li>Jasdip Singh</li>
-</ol>
-
-</section>
-
-</middle>
-
-<back>
-
-<references title="Normative references">
-&RFC2119;
-&RFC3688;
-&RFC5731;
-&RFC5732;
-&RFC5910;
-&RFC6895;
-&RFC8174;
-
-<reference anchor="XSD-DATATYPES" target="https://www.w3.org/TR/xmlschema-2/">
-  <front>
-    <title>XML Schema Part 2: Datatypes Second Edition</title>
-    <author><organization>World Wide Web Consortium (W3C)</organization></author>
-    <date month="October" year="2004"/>
-  </front>
-</reference>
-
-<reference anchor="IANA-RRTYPES" target="https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-4">
-  <front>
-    <title>Resource Record (RR) TYPEs</title>
-    <author><organization>IANA</organization></author>
-  </front>
-</reference>
-
-</references>
-
-<references title="Informative references">
-&RFC6927;
-&RFC7451;
-&RFC8590;
-&RFC9364;
-&RFC9499;
-
-<reference anchor="SAC-025" target="https://www.icann.org/en/system/files/files/sac-025-en.pdf">
-  <front>
-    <title>SSAC Advisory on Fast Flux Hosting and DNS</title>
-    <author><organization>ICANN Security and Stability Advisory Committee (SSAC)</organization></author>
-    <date month="January" year="2008"/>
-  </front>
-  <seriesInfo name="SAC" value="25"/>
-</reference>
-
-</references>
-
-</back>
 
 </rfc>

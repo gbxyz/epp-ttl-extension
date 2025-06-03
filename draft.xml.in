@@ -31,10 +31,10 @@
     <area>ART</area>
     <workgroup>regext</workgroup>
 
-    <!-- [rfced] Please insert any keywords (beyond those that appear in
-    the title) for use on https://www.rfc-editor.org/search. -->
+<!-- [rfced] Please insert any keywords (beyond those that appear in
+the title) for use on https://www.rfc-editor.org/search. -->
 
-    <!-- GB: done. -->
+<!-- GB: done. -->
 
     <keyword>EPP</keyword>
     <keyword>DNS</keyword>
@@ -144,6 +144,66 @@
 	    response:
 	  </t>
 
+<!-- [rfced] We have reformatted the list below for readability; please review
+and let us know if you prefer otherwise.
+
+Original:
+   <ttl:ttl> elements have the optional following attributes, depending
+   on whether they appear in an EPP command or response:
+
+   1.  "for", which is REQUIRED in both commands and responses, and
+       which specifies the DNS record type to which the TTL value
+       pertains.  This attribute MUST have one of the following values:
+       "NS", "DS", "DNAME", "A", "AAAA" or "custom";
+
+   2.  If the value of the "for" attribute is "custom", then the
+       <ttl:ttl> element MUST also have a "custom" attribute containing
+       a DNS record type conforming with the regular expression in
+       Section 3.1 of [RFC6895].  Additionally, the record type MUST be
+       registered with IANA in [IANA-RRTYPES].
+
+   3.  "min", which MUST NOT be present in EPP commands but MAY be
+       present in EPP responses (see Section 2.1.1), and which is used
+       by the server to indicate the lowest value that may be set;
+
+   4.  "default", which MUST NOT be present in EPP commands but MAY be
+       present in EPP responses (see Section 2.1.1), and which is used
+       by the server to indicate the default value;
+
+   5.  "max", which MUST NOT be present in EPP commands but MAY be
+       present in EPP responses (see Section 2.1.1), and which is used
+       by the server to indicate the highest value that may be set;
+
+Current:
+   "for"
+      REQUIRED in both commands and responses, and specifies the DNS
+      record type to which the TTL value pertains.  This attribute MUST
+      have one of the following values: "NS", "DS", "DNAME", "A", "AAAA"
+      or "custom".
+
+   "custom"
+      If the value of the "for" attribute is "custom", then the
+      <ttl:ttl> element MUST also have a "custom" attribute containing a
+      DNS record type conforming with the regular expression in
+      Section 3.1 of [RFC6895].  Additionally, the record type MUST be
+      registered with IANA in [IANA-RRTYPES].
+
+   "min"
+      MUST NOT be present in EPP commands but MAY be present in EPP
+      responses (see Section 2.1.1).  It is also used by the server to
+      indicate the lowest value that may be set.
+
+   "default"
+      MUST NOT be present in EPP commands but MAY be present in EPP
+      responses (see Section 2.1.1).  It is also used by the server to
+      indicate the default value.
+
+   "max"
+      MUST NOT be present in EPP commands but MAY be present in EPP
+      responses (see Section 2.1.1).  It is also used by the server to
+      indicate the highest value that may be set.
+-->
+
           <dl newline="true">
             <dt>"<tt>for</tt>"</dt>
 	    <dd>
@@ -153,7 +213,6 @@
 	      values: "<tt>NS</tt>", "<tt>DS</tt>", "<tt>DNAME</tt>",
 	      "<tt>A</tt>", "<tt>AAAA</tt>" or "<tt>custom</tt>".
 	    </dd>
-
 	    <dt>"<tt>custom</tt>"</dt>
 	      <dd>If the value of the "<tt>for</tt>" attribute is
 	      "<tt>custom</tt>", then the <tt>&lt;ttl:ttl&gt;</tt> element
@@ -164,7 +223,6 @@
 	      <bcp14>MUST</bcp14> be registered with IANA in <xref
 	      target="IANA-RRTYPES"/>.
 	      </dd>
-
 
             <dt>"<tt>min</tt>"</dt>
 	    <dd>
@@ -336,7 +394,7 @@ Perhaps (if option b):
 1.2.2. Examples
 -->
 
-<!-- GB: I chose Option B. -->
+<!-- GB: I chose Option B and made the appropriate edits. -->
 
           </section>
         </section>

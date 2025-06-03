@@ -31,10 +31,15 @@
     <area>ART</area>
     <workgroup>regext</workgroup>
 
-<!-- [rfced] Please insert any keywords (beyond those that appear in
-the title) for use on https://www.rfc-editor.org/search. -->
+    <!-- [rfced] Please insert any keywords (beyond those that appear in
+    the title) for use on https://www.rfc-editor.org/search. -->
 
-<keyword>example</keyword>
+    <!-- GB: done. -->
+
+    <keyword>EPP</keyword>
+    <keyword>DNS</keyword>
+    <keyword>TTL</keyword>
+    <keyword>time-to-live</keyword>
 
     <abstract>
       <t>This document describes an extension to the Extensible Provisioning
@@ -139,66 +144,6 @@ the title) for use on https://www.rfc-editor.org/search. -->
 	    response:
 	  </t>
 
-<!-- [rfced] We have reformatted the list below for readability; please review
-and let us know if you prefer otherwise.
-
-Original:
-   <ttl:ttl> elements have the optional following attributes, depending
-   on whether they appear in an EPP command or response:
-
-   1.  "for", which is REQUIRED in both commands and responses, and
-       which specifies the DNS record type to which the TTL value
-       pertains.  This attribute MUST have one of the following values:
-       "NS", "DS", "DNAME", "A", "AAAA" or "custom";
-
-   2.  If the value of the "for" attribute is "custom", then the
-       <ttl:ttl> element MUST also have a "custom" attribute containing
-       a DNS record type conforming with the regular expression in
-       Section 3.1 of [RFC6895].  Additionally, the record type MUST be
-       registered with IANA in [IANA-RRTYPES].
-
-   3.  "min", which MUST NOT be present in EPP commands but MAY be
-       present in EPP responses (see Section 2.1.1), and which is used
-       by the server to indicate the lowest value that may be set;
-
-   4.  "default", which MUST NOT be present in EPP commands but MAY be
-       present in EPP responses (see Section 2.1.1), and which is used
-       by the server to indicate the default value;
-
-   5.  "max", which MUST NOT be present in EPP commands but MAY be
-       present in EPP responses (see Section 2.1.1), and which is used
-       by the server to indicate the highest value that may be set;
-
-Current:
-   "for"
-      REQUIRED in both commands and responses, and specifies the DNS
-      record type to which the TTL value pertains.  This attribute MUST
-      have one of the following values: "NS", "DS", "DNAME", "A", "AAAA"
-      or "custom".
-
-   "custom"
-      If the value of the "for" attribute is "custom", then the
-      <ttl:ttl> element MUST also have a "custom" attribute containing a
-      DNS record type conforming with the regular expression in
-      Section 3.1 of [RFC6895].  Additionally, the record type MUST be
-      registered with IANA in [IANA-RRTYPES].
-
-   "min"
-      MUST NOT be present in EPP commands but MAY be present in EPP
-      responses (see Section 2.1.1).  It is also used by the server to
-      indicate the lowest value that may be set.
-
-   "default"
-      MUST NOT be present in EPP commands but MAY be present in EPP
-      responses (see Section 2.1.1).  It is also used by the server to
-      indicate the default value.
-
-   "max"
-      MUST NOT be present in EPP commands but MAY be present in EPP
-      responses (see Section 2.1.1).  It is also used by the server to
-      indicate the highest value that may be set.
--->
-
           <dl newline="true">
             <dt>"<tt>for</tt>"</dt>
 	    <dd>
@@ -208,7 +153,7 @@ Current:
 	      values: "<tt>NS</tt>", "<tt>DS</tt>", "<tt>DNAME</tt>",
 	      "<tt>A</tt>", "<tt>AAAA</tt>" or "<tt>custom</tt>".
 	    </dd>
-	    
+
 	    <dt>"<tt>custom</tt>"</dt>
 	      <dd>If the value of the "<tt>for</tt>" attribute is
 	      "<tt>custom</tt>", then the <tt>&lt;ttl:ttl&gt;</tt> element
@@ -219,13 +164,13 @@ Current:
 	      <bcp14>MUST</bcp14> be registered with IANA in <xref
 	      target="IANA-RRTYPES"/>.
 	      </dd>
-	    
+
 
             <dt>"<tt>min</tt>"</dt>
 	    <dd>
 	      <bcp14>MUST NOT</bcp14> be present in EPP commands but
 	      <bcp14>MAY</bcp14> be present in EPP responses (see <xref
-	      target="info-command"/>). It is also used by the server to
+	      target="info-command"/>). It is used by the server to
 	      indicate the lowest value that may be set.
 	    </dd>
 
@@ -233,7 +178,7 @@ Current:
 	    <dd>
 	      <bcp14>MUST NOT</bcp14> be present in EPP commands but
 	      <bcp14>MAY</bcp14> be present in EPP responses (see <xref
-	      target="info-command"/>). It is also used by the server to
+	      target="info-command"/>). It is used by the server to
 	      indicate the default value.
 	    </dd>
 
@@ -241,7 +186,7 @@ Current:
 	    <dd>
 	      <bcp14>MUST NOT</bcp14> be present in EPP commands but
 	      <bcp14>MAY</bcp14> be present in EPP responses (see <xref
-	      target="info-command"/>). It is also used by the server to
+	      target="info-command"/>). It is used by the server to
 	      indicate the highest value that may be set.
 	    </dd>
           </dl>
@@ -348,11 +293,18 @@ Current:
 	      The semantics of this element are described in <xref
 	      target="info-command"/>.</t>
 
-<!-- [rfced] The section titles for 1.2.1.3.1 and 1.2.2. are similar. 
-For clarity, which of these options do you prefer? Or, please feel 
+        <t>Below is an example of a <tt>&lt;ttl:info&gt;</tt>
+        element with an explicit "<tt>policy</tt>" attribute:</t>
+
+        <sourcecode type="xml"><![CDATA[
+<ttl:info policy="true"/>
+]]></sourcecode>
+
+<!-- [rfced] The section titles for 1.2.1.3.1 and 1.2.2. are similar.
+For clarity, which of these options do you prefer? Or, please feel
 free to suggest otherwise.
 a) Make the title of Section 1.2.1.3.1 more specific, or
-b) Include the example in 1.2.1.3 and remove section 1.2.1.3.1, or 
+b) Include the example in 1.2.1.3 and remove section 1.2.1.3.1, or
 c) Move the example in 1.2.1.3.1 to a subsection of Section 1.2.2 ("Examples").
 
 Original:
@@ -379,17 +331,13 @@ Perhaps (if option b):
    value with a default value of false.
 
    The semantics of this element are described in Section 2.1.1.
-   Here's an example: <ttl:info policy="true"/>  
+   Here's an example: <ttl:info policy="true"/>
 
 1.2.2. Examples
 -->
 
-            <section>
-              <name>Example</name>
-              <sourcecode type=""><![CDATA[
-<ttl:info policy="true"/>
-]]></sourcecode>
-            </section>
+<!-- GB: I chose Option B. -->
+
           </section>
         </section>
 
@@ -397,14 +345,14 @@ Perhaps (if option b):
           <name>Examples</name>
           <section>
             <name>Explicit TTL Value (&lt;create&gt; or &lt;update&gt; Command)</name>
-           <sourcecode><![CDATA[
+           <sourcecode type="xml"><![CDATA[
 <ttl:ttl for="NS">3600</ttl:ttl>
 ]]></sourcecode>
           </section>
 
           <section>
             <name>Explicit TTL Value (&lt;info&gt; Policy Mode)</name>
-            <sourcecode><![CDATA[
+            <sourcecode type="xml"><![CDATA[
 <ttl:ttl
   for="NS"
   min="60"
@@ -415,14 +363,14 @@ Perhaps (if option b):
           <section>
             <name>Empty Value Indicating Default TTL (&lt;create&gt; or &lt;update&gt; Command, &lt;info&gt; Default Mode)</name>
 
-            <sourcecode><![CDATA[
+            <sourcecode type="xml"><![CDATA[
 <ttl:ttl for="NS"/>
 ]]></sourcecode>
           </section>
 
           <section>
             <name>Custom Record Type (&lt;create&gt; or &lt;update&gt; Command, &lt;info&gt; Default Mode)</name>
-            <sourcecode><![CDATA[
+            <sourcecode type="xml"><![CDATA[
 <ttl:ttl
   for="custom"
   custom="NEWRRTYPE">3600</ttl:ttl>
@@ -470,7 +418,7 @@ Perhaps (if option b):
 	      <tt>&lt;ttl:info&gt;</tt> element with a "<tt>policy</tt>"
 	      attribute that is "<tt>false</tt>":</t>
 
-            <sourcecode markers="false"><![CDATA[
+            <sourcecode type="xml" markers="false"><![CDATA[
 C: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 C: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 C:   <command>
@@ -494,7 +442,7 @@ C: </epp>
 	      a <tt>&lt;ttl:info&gt;</tt> element with a "<tt>policy</tt>"
 	      attribute that is "<tt>false</tt>":</t>
 
-            <sourcecode markers="false"><![CDATA[
+            <sourcecode type="xml" markers="false"><![CDATA[
 S: <?xml version="1.0" encoding="utf-8" standalone="no"?>
 S: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 S:   <response>
@@ -546,7 +494,7 @@ S: </epp>
 	      &lt;ttl:info&gt; element with a "<tt>policy</tt>" attribute that
 	      is "<tt>false</tt>":</t>
 
-            <sourcecode markers="false"><![CDATA[
+            <sourcecode type="xml" markers="false"><![CDATA[
 C: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 C: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 C:   <command>
@@ -569,7 +517,7 @@ C: </epp>
             &lt;ttl:info&gt; element with a "<tt>policy</tt>" attribute that is
             "<tt>false</tt>":</t>
 
-            <sourcecode markers="false"><![CDATA[
+            <sourcecode type="xml" markers="false"><![CDATA[
 S: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 S: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 S:   <response>
@@ -621,7 +569,7 @@ S: </epp>
 	      Below is an example domain <tt>&lt;info&gt;</tt> command requesting the
 	      server policies:</t>
 
-<sourcecode markers="false"><![CDATA[
+<sourcecode type="xml" markers="false"><![CDATA[
 C: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 C: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 C:   <command>
@@ -642,7 +590,7 @@ C: </epp>
 
             <t>Below is an example domain <tt>&lt;info&gt;</tt> response providing the server policies:</t>
 
-<sourcecode markers="false"><![CDATA[
+<sourcecode type="xml" markers="false"><![CDATA[
 S: <?xml version="1.0" encoding="utf-8" standalone="no"?>
 S: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 S:   <response>
@@ -697,7 +645,7 @@ S: </epp>
 
             <t>Below is an example host <tt>&lt;info&gt;</tt> command requesting the server policies:</t>
 
-<sourcecode markers="false"><![CDATA[
+<sourcecode type="xml" markers="false"><![CDATA[
 C: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 C: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 C:   <command>
@@ -718,7 +666,7 @@ C: </epp>
 
             <t>Below is an example host <tt>&lt;info&gt;</tt> response providing the server policies:</t>
 
-<sourcecode markers="false"><![CDATA[
+<sourcecode type="xml" markers="false"><![CDATA[
 S: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 S: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 S:   <response>
@@ -777,10 +725,16 @@ S: </epp>
 	    contain a <tt>&lt;ttl:create&gt;</tt> element.  This element
 	    <bcp14>MUST</bcp14> contain one or more <tt>&lt;ttl:ttl&gt;</tt>
 	    records as described in <xref target="extension-elements"/>.</t>
+
+      <t>If an EPP server receives a <tt>&lt;create&gt;</tt> command
+      containing a TTL value that is outside the server's permitted range,
+      it <bcp14>MUST</bcp14> reject the command with a 2004
+      "Parameter value range error" response.</t>
+
           <t>
 	    Below is an example domain <tt>&lt;create&gt;</tt> command:</t>
 
-<sourcecode markers="false"><![CDATA[
+<sourcecode type="xml" markers="false"><![CDATA[
 C: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 C: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 C:   <command>
@@ -822,7 +776,7 @@ C: </epp>
 
           <t>Below is an example host <tt>&lt;create&gt;</tt> command:</t>
 
-<sourcecode markers="false"><![CDATA[
+<sourcecode type="xml" markers="false"><![CDATA[
 C: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 C: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 C:   <command>
@@ -845,11 +799,6 @@ C:     <clTRID>ABC-12345</clTRID>
 C:   </command>
 C: </epp>
 ]]></sourcecode>
-
-          <t>If an EPP server receives a <tt>&lt;create&gt;</tt> command
-          containing a TTL value that is outside the server's permitted range,
-          it <bcp14>MUST</bcp14> reject the command with a 2004
-          "Parameter value range error" response.</t>
         </section>
         <section>
           <name>EPP &lt;update&gt; Command</name>
@@ -863,10 +812,17 @@ C: </epp>
 	    contain a <tt>&lt;ttl:update&gt;</tt> element.  This element
 	    <bcp14>MUST</bcp14> contain one or more <tt>&lt;ttl:ttl&gt;</tt>
 	    records as described in <xref target="extension-elements"/>.</t>
+
+      <t>
+  If an EPP server receives an <tt>&lt;update&gt;</tt> command
+  containing a TTL value that is outside the server's permitted
+  range, it <bcp14>MUST</bcp14> reject the command with a
+  2004 "Parameter value range error" response.</t>
+
           <t>
 	    Below is an example domain <tt>&lt;update&gt;</tt> command:</t>
 
-<sourcecode markers="false"><![CDATA[
+<sourcecode type="xml" markers="false"><![CDATA[
 C: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 C: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 C:   <command>
@@ -892,7 +848,7 @@ C: </epp>
 
           <t>Below is an example host <tt>&lt;update&gt;</tt> command:</t>
 
-<sourcecode markers="false"><![CDATA[
+<sourcecode type="xml" markers="false"><![CDATA[
 C: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 C: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 C:   <command>
@@ -913,12 +869,6 @@ C:     <clTRID>ABC-12345</clTRID>
 C:   </command>
 C: </epp>
 ]]></sourcecode>
-
-          <t>
-	    If an EPP server receives an <tt>&lt;update&gt;</tt> command
-	    containing a TTL value that is outside the server's permitted
-	    range, it <bcp14>MUST</bcp14> reject the command with a
-	    2004 "Parameter value range error" response.</t>
         </section>
       </section>
     </section>
@@ -1076,16 +1026,16 @@ C: </epp>
 
         <t>Registration for the TTL namespace:</t>
 	<dl spacing="compact" newline="false">
-          <dt><strong>URI:</strong></dt><dd><tt>urn:ietf:params:xml:ns:epp:ttl-1.0</tt></dd>
-          <dt><strong>Registrant Contact:</strong></dt><dd>IESG</dd>
-          <dt><strong>XML:</strong></dt><dd>None. Namespace URIs do not represent an XML specification.</dd>
+          <dt>URI:</dt><dd><tt>urn:ietf:params:xml:ns:epp:ttl-1.0</tt></dd>
+          <dt>Registrant Contact:</dt><dd>IESG</dd>
+          <dt>XML:</dt><dd>None. Namespace URIs do not represent an XML specification.</dd>
         </dl>
 
         <t>Registration for the TTL XML schema:</t>
 	<dl spacing="compact" newline="false">
-          <dt><strong>URI:</strong></dt><dd><tt>urn:ietf:params:xml:schema:epp:ttl-1.0</tt></dd>
-          <dt><strong>Registrant Contact:</strong></dt><dd>IESG</dd>
-          <dt><strong>XML:</strong></dt><dd>See <xref target="formal-syntax"/> of this
+          <dt>URI:</dt><dd><tt>urn:ietf:params:xml:schema:epp:ttl-1.0</tt></dd>
+          <dt>Registrant Contact:</dt><dd>IESG</dd>
+          <dt>XML:</dt><dd>See <xref target="formal-syntax"/> of this
           document.</dd>
         </dl>
       </section>
@@ -1095,7 +1045,7 @@ C: </epp>
 <!-- [rfced] Section 7.2: May we update the name of the extension as
 shown below? If so, we will ask IANA to update the registry accordingly (https://www.iana.org/assignments/epp-extensions/epp-extensions.xhtml).
 
-This would match the edited title of this document as well as the 
+This would match the edited title of this document as well as the
 value's name as it appears in RFC 9499.
 
 CURRENT:
@@ -1104,11 +1054,13 @@ Extensible Provisioning Protocol (EPP) Mapping for DNS Time-To-Live (TTL) values
 SUGGESTED (lowercase 't' and capital 'V'):
 Extensible Provisioning Protocol (EPP) Mapping for DNS Time-to-Live (TTL) Values
 
-In that registry, we note that "Name of Extension" for this one also 
+In that registry, we note that "Name of Extension" for this one also
 matches the title of the RFC:
-Extensible Provisioning Protocol (EPP) Secure Authorization 
+Extensible Provisioning Protocol (EPP) Secure Authorization
 Information for Transfer (RFC 9167)
 -->
+
+<!-- GB: agreed on the name change. -->
 
         <t>The EPP extension described in this document has been registered by
         IANA in the "Extensions for the Extensible Provisioning Protocol
@@ -1116,28 +1068,28 @@ Information for Transfer (RFC 9167)
         the registration are as follows:</t>
 
 	<dl spacing="compact" newline="false">
-          <dt><strong>Name of Extension:</strong></dt>
+          <dt>Name of Extension:</dt>
 	  <dd>Extensible Provisioning Protocol (EPP) Mapping for DNS Time-To-Live (TTL) values</dd>
 
-          <dt><strong>Document Status:</strong></dt>
+          <dt>Document Status:</dt>
 	  <dd>Standards Track</dd>
 
-          <dt><strong>Reference:</strong></dt>
+          <dt>Reference:</dt>
 	  <dd>RFC 9803</dd>
 
-          <dt><strong>Registrant:</strong></dt>
+          <dt>Registrant:</dt>
 	  <dd>IESG</dd>
 
-          <dt><strong>TLDs:</strong></dt>
+          <dt>TLDs:</dt>
 	  <dd>Any</dd>
 
-          <dt><strong>IPR Disclosure:</strong></dt>
+          <dt>IPR Disclosure:</dt>
 	  <dd>None</dd>
 
-          <dt><strong>Status:</strong></dt>
+          <dt>Status:</dt>
 	  <dd>Active</dd>
 
-          <dt><strong>Notes:</strong></dt>
+          <dt>Notes:</dt>
 	  <dd>None</dd>
         </dl>
       </section>
@@ -1149,7 +1101,7 @@ Information for Transfer (RFC 9167)
 	of the extension suitable for automated validation of EPP XML
 	instances.</t>
 
-<sourcecode markers="false" type="xml"><![CDATA[
+<sourcecode type="xml" markers="false"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <schema
   xmlns="http://www.w3.org/2001/XMLSchema"
@@ -1380,27 +1332,30 @@ per Section 3.6 of RFC 7322 ("RFC Style Guide"). Please review each
 expansion in the document carefully to ensure correctness.
 -->
 
+<!-- GB: they all look fine. -->
 
 <!-- [rfced] Regarding usage of  <tt>, <em>, and <strong> elements,
-please review the occurrences and let us know if any updates are 
+please review the occurrences and let us know if any updates are
 needed for consistency. Details below.
 
 In the HTML and PDF outputs, <tt> yields fixed-width font.
 In the text output, there is no change.
- - In this document: seemingly used for RR names, attribute names, 
+ - In this document: seemingly used for RR names, attribute names,
 and some examples.
 
 In the HTML and PDF outputs, <em> yields italics.
 In the text output, <em> yields an underscore before and after.
  - In this document: used for one instance of emphasis.
 
-In the HTML and PDF outputs, <strong> yields bold. 
+In the HTML and PDF outputs, <strong> yields bold.
 In the text output, <strong> yields an asterisk before and after.
  - In this document: used for field names in the IANA Considerations.
  - We recommend removing these, as the asterisks seem unnecessary in the
-text file, and this font styling is not typically used in 
+text file, and this font styling is not typically used in
 IANA Considerations sections. Please let us know if you agree.
 -->
+
+<!-- GB: agreed. all <strong> tags have been removed. -->
 
 <!-- [rfced] Please review the "type" attribute of each sourcecode element
 in the XML file to ensure correctness. If the current list of preferred
@@ -1409,7 +1364,9 @@ values for "type"
 does not contain an applicable type, then feel free to let us know.
 Also, it is acceptable to leave the "type" attribute not set. -->
 
-<!-- [rfced] Please review the "Inclusive Language" portion of the online 
+<!-- GB: I have set the "type" attribute of all <sourcecode> elements. -->
+
+<!-- [rfced] Please review the "Inclusive Language" portion of the online
 Style Guide <https://www.rfc-editor.org/styleguide/part2/#inclusive_language>
 and let us know if any changes are needed.  Updates of this nature typically
 result in more precise language, which is helpful for readers.
@@ -1421,5 +1378,9 @@ text below:
    element relationships and are not required features of this protocol.
 -->
 
+<!-- GB: I don't see any suggested alternative to "white space" in the NIST
+  guidance. I did some googling and the only suggested alternative is "empty
+  space", but I think the context it was suggested in was graphic design. In this
+  context I think that phrase would be ambiguous. -->
 
 </rfc>
